@@ -127,24 +127,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Board.h" />
     <ClInclude Include="Card.h" />
+    <ClInclude Include="Elements_Mode.h" />
     <ClInclude Include="Element_Card.h" />
     <ClInclude Include="Explosion_Card.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Magicians_Card.h" />
+    <ClInclude Include="Game_Mode.h" />
+    <ClInclude Include="Wizard_Mode.h" />
     <ClInclude Include="Match.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Tournament_Mode.h" />
     <ClInclude Include="Training_Card.h" />
+    <ClInclude Include="Training_Mode.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Board.cpp" />
     <ClCompile Include="Card.cpp" />
+    <ClCompile Include="Elements_Mode.cpp" />
     <ClCompile Include="Element_Card.cpp" />
     <ClCompile Include="Explosion_Card.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Magicians_Card.cpp" />
+    <ClCompile Include="Game_Mode.cpp" />
+    <ClCompile Include="Wizard_Card.cpp" />
+    <ClCompile Include="Wizard_Mode.cpp" />
     <ClCompile Include="Match.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Tournament_Mode.cpp" />
     <ClCompile Include="Training_Card.cpp" />
+    <ClCompile Include="Training_Mode.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

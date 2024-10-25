@@ -33,10 +33,25 @@
     <ClInclude Include="Explosion_Card.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Magicians_Card.h">
+    <ClInclude Include="Element_Card.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Element_Card.h">
+    <ClInclude Include="Training_Mode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game_Mode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Wizard_Mode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tournament_Mode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements_Mode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Board.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,10 +74,28 @@
     <ClCompile Include="Explosion_Card.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Magicians_Card.cpp">
+    <ClCompile Include="Wizard_Card.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Element_Card.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Training_Mode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game_Mode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Wizard_Mode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tournament_Mode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements_Mode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Board.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
