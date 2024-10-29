@@ -4,6 +4,7 @@
 #include "Element_Card.h"
 class Player
 {
+	bool xy;
 	std::vector<Card> cards;
 	std::vector<Element_Card > element_cards;
 	int life_points;

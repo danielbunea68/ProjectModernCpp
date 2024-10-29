@@ -3,8 +3,9 @@
 class Card
 {
 	std::string name;
+	int number;
 	bool ilusion;
-	/// void joaca()?? 
+	
 
 };
 

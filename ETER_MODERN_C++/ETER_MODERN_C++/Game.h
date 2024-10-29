@@ -7,14 +7,19 @@ public:
 	Game_Mode gameMode;
 	Board board;
 	Player player1, player2;
-	void ExecuteRound();/// selecteaza o casuta si daca nu e completata pune cartea lui 
-	bool CheckWinner();
-	void give_cards();
+	void ExecuteRound();
+	/// selecteaza o casuta si daca nu e completata pune cartea lui 
+	/// verifica daca a facut 2 liniii si pune aplica explozia , 
+	/// apeleza fcuntia de rotate table 
+	/// apleaza functia chech the winner ;
+	/// apleaza functia switch turn ;
+	bool CheckWinner();/// verfica tabla de joc daca este completatat pe diagonala sau linii de acelasi player
+	void  friend give_cards(); /// override - 
 	void ResetGame();
 	void SwitchTurn();
-	void CurentTurn();/// ce tip este ?
-	bool is_over();
-	void StartGame();
+	bool CurentTurn();
+	///bool is_over();
+	void StartGame();/// initializeza o tabla goala si apeleaza functia de give cards 
 	void EndGame();
 	///void LoadGame();
 
