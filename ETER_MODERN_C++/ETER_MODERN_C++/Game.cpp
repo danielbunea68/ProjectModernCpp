@@ -16,3 +16,13 @@ Player* Game::CurrentTurn() const
 {
     return currentPlayer;
 }
+
+void Game::StartGame()
+{
+    bool gameOver = false;
+    while (!gameOver)
+    {
+        board.display();
+        std::cout<<currentPlayer->getName()<<currentPlayer->
+    }
+}
