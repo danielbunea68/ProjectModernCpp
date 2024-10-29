@@ -9,4 +9,4 @@ public:
 	void marcare();/// marcam matricea dupa ce punem o carte ;
 
 };
-
+/////
