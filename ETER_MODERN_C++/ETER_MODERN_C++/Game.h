@@ -17,8 +17,5 @@ public:
 	void StartGame();
 	void EndGame();
 	///void LoadGame();
-
-
-
 };
 
