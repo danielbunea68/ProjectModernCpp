@@ -38,7 +38,7 @@ void Card::flip()
 	m_IsFaceDown = !m_IsFaceDown;
 }
 
-bool Card::isPlayable() const//
+bool Card::isPlayable() const
 {
 	return !m_IsFaceDown;
 }
