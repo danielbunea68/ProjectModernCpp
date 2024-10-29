@@ -1,6 +1,6 @@
 #pragma once
 #include "Game_Mode.h"
-class Game: public Game_Mode
+class Game//: public Game_Mode
 {
 public:
 
