@@ -3,6 +3,16 @@
 Player::Player(const std::string& playerName, const Card& wizardCard) : 
 	m_name(playerName), m_wizard(wizardCard), m_LifePoints(100) {}
 
+std::string Player::getColor() const
+{
+	return m_color;
+}
+
+void Player::setColor(const std::string& color)
+{
+	m_color = color;
+}
+
 std::string Player::getName() const
 {
 	return m_name;

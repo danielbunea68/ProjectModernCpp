@@ -8,6 +8,8 @@ private:
 	Board board;
 	Player player1, player2;
 
+	void InitGame();
+
 	void ExecuteRound();
 	/// selecteaza o casuta si daca nu e completata pune cartea lui 
 	/// verifica daca a facut 2 liniii si pune aplica explozia , 
@@ -26,13 +28,11 @@ private:
 
 public:
 	void ExecuteRound();/// selecteaza o casuta si daca nu e completata pune cartea lui 
-	bool CheckWinner();
+	//bool CheckWinner();
 	void give_cards();
 	void ResetGame();
 	void SwitchTurn();
 	Player* CurrentTurn() const;
-
-	
 	bool is_over();
 	void StartGame();
 

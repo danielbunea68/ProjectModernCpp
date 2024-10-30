@@ -1,5 +1,15 @@
 #include "Game.h"
 
+void Game::give_cards()
+{
+
+}
+
+void Game::InitGame()
+{
+
+}
+
 void Game::SwitchTurn()
 {
     if (currentPlayer->getName() == player1.getName()) 

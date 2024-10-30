@@ -13,10 +13,13 @@ private:
 	int m_LifePoints;
 	Card  m_wizard;
 	std::string m_name;
+	std::string m_color;
 
 public:
 
 	Player(const std::string& playerName, const Card& wizardCard);
+	std::string getColor() const;
+	void setColor(const std::string& color);
 	std::string getName() const;
 	void setName(const std::string& newName);
 	void PlayCard();/// ii updataeaza vectorul de carti 

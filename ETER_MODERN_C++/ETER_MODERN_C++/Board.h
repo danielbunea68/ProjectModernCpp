@@ -15,7 +15,7 @@ public:
 	bool verifyEmpty(int row , int col);
 	void display();
 	bool makeMove(int col , int row , Card card );
-	bool CheckWinner(Card card);
+	bool CheckWinner(std::string color);
 	bool isDraw();
 	void resetBoard();
 };
