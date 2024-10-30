@@ -4,6 +4,7 @@
 #include "Element_Card.h"
 #include <string>
 #include <vector>
+#include <iostream>
 
 class Player
 {
@@ -21,8 +22,12 @@ public:
 	std::string getColor() const;
 	void setColor(const std::string& color);
 	std::string getName() const;
+	void ShowHand();
 	void setName(const std::string& newName);
-	void PlayCard();/// ii updataeaza vectorul de carti 
+	Card PlayCard(int cardIndex);/// ii updataeaza vectorul de carti 
+	bool HasCardAtIndex(int cardIndex);
 	void UseAbilty();
+	void AddCard(Card card);
+	void ClearCards();
 };
 

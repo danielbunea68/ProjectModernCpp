@@ -1,8 +1,8 @@
 #include "Card.h"
 
 
-Card::Card(int value, const std::string& type) :
-	m_value(value), m_type(type), m_IsFaceDown(false) {}
+Card::Card(int value, const std::string& color, const std::string& type) :
+	m_value(value), m_color(color), m_type(type), m_IsFaceDown(false) {}
 
 int Card::getValue() const
 {

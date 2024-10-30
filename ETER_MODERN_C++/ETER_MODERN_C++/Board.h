@@ -1,21 +1,22 @@
 #pragma once
 #include <vector>
 #include"Card.h"
-class Board 
+class Board
 {
-private :
+private:
 	int size;
-	
-	std::vector < std::vector < Card >> board= {};
-	std::vector<std::vector<bool>> marked ;
+
+	std::vector < std::vector < Card >> board = {};
+	std::vector<std::vector<bool>> marked;
 
 public:
 
-	void updateMarked(int col, int row );
-	bool verifyEmpty(int row , int col);
-	void display();
-	bool makeMove(int col , int row , Card card );
+	void UpdateMarked(int col, int row);
+	bool IsEmpty(int row, int col);
+	void Display();
+	bool MakeMove(int row, int col, Card card);
 	bool CheckWinner(std::string color);
-	bool isDraw();
-	void resetBoard();
+	bool IsDraw();
+	bool CanMakeMove(int row, int col, Card chosenCard);
+	void Clear();
 };
