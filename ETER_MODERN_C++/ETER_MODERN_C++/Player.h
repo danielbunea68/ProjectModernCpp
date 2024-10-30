@@ -4,6 +4,7 @@
 #include "Element_Card.h"
 #include <string>
 #include <vector>
+#include <iostream>
 
 class Player
 {
@@ -13,13 +14,20 @@ private:
 	int m_LifePoints;
 	Card  m_wizard;
 	std::string m_name;
+	std::string m_color;
 
 public:
 
 	Player(const std::string& playerName, const Card& wizardCard);
+	std::string getColor() const;
+	void setColor(const std::string& color);
 	std::string getName() const;
+	void ShowHand();
 	void setName(const std::string& newName);
-	void PlayCard();/// ii updataeaza vectorul de carti 
+	Card PlayCard(int cardIndex);/// ii updataeaza vectorul de carti 
+	bool HasCardAtIndex(int cardIndex);
 	void UseAbilty();
+	void AddCard(Card card);
+	void ClearCards();
 };
 

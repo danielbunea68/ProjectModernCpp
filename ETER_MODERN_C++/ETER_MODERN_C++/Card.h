@@ -9,7 +9,7 @@ private:
 	std::string m_color;
 
 public:
-	Card(int value = 0, const std::string& type = "normal");
+	Card(int value = 0, const std::string& color = "red", const std::string& type = "normal");
 	int getValue() const;
 	std::string getType() const;
 	bool getIsFaceDown() const;
