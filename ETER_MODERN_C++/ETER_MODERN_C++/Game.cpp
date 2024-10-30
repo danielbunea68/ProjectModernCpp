@@ -36,6 +36,8 @@ void Game::PlayGame()
 		board.Display();
 		currentPlayer->ShowHand();
 
+		// TODO 3: sa poata jucatorul sa puna o bomba unde vrea el
+
 		int cardIndex = -1;
 		while (!currentPlayer->HasCardAtIndex(cardIndex)) {
 			std::cout << currentPlayer->getName() << ", choose a card index to play: ";
