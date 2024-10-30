@@ -15,6 +15,7 @@ private:
 	Card  m_wizard;
 	std::string m_name;
 	std::string m_color;
+	// TODO 2: bool daca playerul are o bomba
 
 public:
 
