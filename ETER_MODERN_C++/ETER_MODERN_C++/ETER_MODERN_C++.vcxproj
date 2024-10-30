@@ -149,6 +149,7 @@
     <ClCompile Include="Explosion_Card.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game_Mode.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Wizard_Card.cpp" />
     <ClCompile Include="Wizard_Mode.cpp" />
     <ClCompile Include="Match.cpp" />

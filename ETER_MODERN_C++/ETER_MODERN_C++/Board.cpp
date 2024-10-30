@@ -44,7 +44,7 @@ bool Board::CheckWinner(std::string color)
 {
 
 	for (int i = 0; i < size; i++) {
-		if ((board[i][0].getColor() == color && board[i][1].getColor() == color && board[i][2].getColor() == color ||
+		if ((board[i][0].getColor() == color && board[i][1].getColor() == color && board[i][2].getColor() == color) ||
 			(board[0][i].getColor() == color && board[1][i].getColor() == color && board[2][i].getColor() == color)) {
 			return true;
 		}

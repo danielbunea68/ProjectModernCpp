@@ -1,9 +1,5 @@
 #include "Game.h"
 
-void Game::give_cards()
-{
-
-}
 
 void Game::InitGame()
 {
