@@ -7,7 +7,6 @@ class Board
 private:
 	int size;
 
-
 	std::vector<std::vector<bool>> marked;
 	std::vector<std::vector<std::stack<Card>>> board;
 
@@ -24,5 +23,6 @@ public:
 	bool CanMakeMove(int row, int col, Card chosenCard);
 	void Remove(int row, int cols);
 	void Clear();
+
 	
 };
