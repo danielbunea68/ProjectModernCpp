@@ -13,8 +13,10 @@ bool Board::IsEmpty(int row, int col)
 
 void Board::Display()
 {
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
+	for (int i = 0; i < size; i++) 
+	{
+		for (int j = 0; j < size; j++) 
+		{
 			std::cout << board[i][j].getColor() << ' ' << board[i][j].getValue();
 			if (j < size - 1) std::cout << " | ";
 		}
