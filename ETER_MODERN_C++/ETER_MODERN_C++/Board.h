@@ -9,7 +9,7 @@ private:
 	// TODO 4: fa o matrice de stack de Card astfel incat un jucator sa poata puna o carte deasupra 
 	// altei carti fara sa o suprascrie
 	std::vector < std::vector < Card >> board = {};
-	std::vector<std::vector<bool>> marked;
+	std::vector<std::vector<bool>> marked; 
 
 
 
@@ -23,4 +23,6 @@ public:
 	bool IsDraw();
 	bool CanMakeMove(int row, int col, Card chosenCard);
 	void Clear();
+	/// rotire matrice 90 la dreapta 
+	
 };
