@@ -1,4 +1,4 @@
-﻿#include "Board.h"
+#include "Board.h"
 #include <iostream>
 
 void Board::UpdateMarked(int row, int col)
@@ -18,6 +18,7 @@ bool Board::IsEmpty(int row, int col)
 
 void Board::Display()
 {
+
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
 			std::cout << board[i][j].top().getColor() << ' ' << board[i][j].top().getValue();
