@@ -37,7 +37,7 @@ void Game::PlayGame()
 		board.Display();
 		currentPlayer->ShowHand();
 
-		
+
 
 		int cardIndex = -1;
 		while (!currentPlayer->HasCardAtIndex(cardIndex)) {
