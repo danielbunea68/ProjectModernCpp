@@ -36,7 +36,7 @@ void Game::PlayGame()
 		board.Display();
 		currentPlayer->ShowHand();
 
-		// TODO 3: sa poata jucatorul sa puna o bomba unde vrea el
+		if ( )
 
 		int cardIndex = -1;
 		while (!currentPlayer->HasCardAtIndex(cardIndex)) {
