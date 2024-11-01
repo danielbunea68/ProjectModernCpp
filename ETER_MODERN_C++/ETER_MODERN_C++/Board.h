@@ -23,4 +23,5 @@ public:
 	bool IsDraw();
 	bool CanMakeMove(int row, int col, Card chosenCard);
 	void Clear();
+    //TODO 3: rotire de matrice la 90 la dreapta
 };

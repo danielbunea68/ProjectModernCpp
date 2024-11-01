@@ -36,8 +36,6 @@ void Game::PlayGame()
 		board.Display();
 		currentPlayer->ShowHand();
 
-		// TODO 3: sa poata jucatorul sa puna o bomba unde vrea el
-
 		int cardIndex = -1;
 		while (!currentPlayer->HasCardAtIndex(cardIndex)) {
 			std::cout << currentPlayer->getName() << ", choose a card index to play: ";
@@ -51,7 +49,9 @@ void Game::PlayGame()
 			std::cin >> row >> col;
 			board.MakeMove(row, col, chosenCard);
 		}
-
+        //to do 2
+        //Verific daca este completa o linie si o coloana care se intersecteaza cu ajutorul matricei marked
+        //daca da, atunci trebuie sa exploda bomba
 		if (board.CheckWinner(chosenCard.getColor())) {
 			board.Display();
 			std::cout << currentPlayer->getName() << " wins!\n";
