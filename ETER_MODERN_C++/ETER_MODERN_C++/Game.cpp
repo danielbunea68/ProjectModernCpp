@@ -52,9 +52,7 @@ void Game::PlayGame()
 			std::cin >> row >> col;
 			board.MakeMove(row, col, chosenCard);
 		}
-		/// to do 2 
-		/// verifica daca este completa o linie si o coloana care se intersecteaza cu ajutorul matricei marked 
-		/// apelezi functia de bomba 
+		/// fac o functie in care sa retin pozitiile daca intorc mat la 90 de grade spre st si spre dr
 		if (board.CheckWinner(chosenCard.getColor())) {
 			board.Display();
 			std::cout << currentPlayer->getName() << " wins!\n";

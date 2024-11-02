@@ -17,12 +17,11 @@ public:
 	void UpdateUnMarked(int row, int col);
 	bool IsEmpty(int row, int col);
 	void Display();
+	bool PlaceCardFacedown(int row, int col);
 	bool MakeMove(int row, int col, Card card);
 	bool CheckWinner(std::string color);
 	bool IsDraw();
 	bool CanMakeMove(int row, int col, Card chosenCard);
 	void Remove(int row, int cols);
 	void Clear();
-
-	
 };

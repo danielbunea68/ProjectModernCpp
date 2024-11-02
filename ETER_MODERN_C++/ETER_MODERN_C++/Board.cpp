@@ -18,7 +18,6 @@ bool Board::IsEmpty(int row, int col)
 
 void Board::Display()
 {
-
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
 			std::cout << board[i][j].top().getColor() << ' ' << board[i][j].top().getValue();
@@ -35,6 +34,21 @@ bool Board::CanMakeMove(int row, int col, Card chosenCard)
 	return !marked[row][col] || board[row][col].top().getValue() < chosenCard.getValue();
 }
 
+bool Board::PlaceCardFacedown(int row, int col)
+{
+	if (row < 0 || row >= size || col < 0 || col >= size) {
+		throw std::out_of_range("Pozitia este in afara limitelor tablei!");
+	}
+	if (IsEmpty(row, col)) {
+		Card facedownCard;
+		facedownCard.setValue(-1);
+		board[row][col].push(facedownCard);
+		return true;
+	}
+	std::cout << "Pozitia este deja ocupata!" << std::endl;
+	return false;
+}
+
 bool Board::MakeMove(int row, int col, Card card)
 {
 	if (IsEmpty(row, col)) {
@@ -47,9 +61,7 @@ bool Board::MakeMove(int row, int col, Card card)
 		{
 			board[row][col].push(card);
 			return true;
-		}
-			
-
+		}	
 	return false;
 }
 

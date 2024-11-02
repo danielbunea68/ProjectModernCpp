@@ -15,17 +15,17 @@ private:
 	Card  m_wizard;
 	std::string m_name;
 	std::string m_color;
-	// TODO 2: bool daca playerul are o bomba
 
 public:
-
+	/// adauga o fcunctie de addCard
+	bool addCard(int card, int x, int y);
 	Player(const std::string& playerName, const Card& wizardCard);
 	std::string getColor() const;
 	void setColor(const std::string& color);
 	std::string getName() const;
 	void ShowHand();
 	void setName(const std::string& newName);
-	Card PlayCard(int cardIndex);/// ii updataeaza vectorul de carti 
+	Card PlayCard(int cardIndex);
 	bool HasCardAtIndex(int cardIndex);
 	void UseAbilty();
 	void AddCard(Card card);
