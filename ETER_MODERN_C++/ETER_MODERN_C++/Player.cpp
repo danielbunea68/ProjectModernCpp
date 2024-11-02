@@ -1,5 +1,12 @@
 #include "Player.h"
 
+void Player::AddInitialCards(std::vector<Card>& availableCards)
+{
+	for (size_t i = 0; i < m_cards.size(); ++i) {
+		m_cards.push_back(availableCards[i]);
+	}
+}
+
 Player::Player(const std::string& playerName, const Card& wizardCard) :
 	m_name(playerName), m_wizard(wizardCard), m_LifePoints(100) {}
 

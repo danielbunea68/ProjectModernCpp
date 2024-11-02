@@ -17,8 +17,7 @@ private:
 	std::string m_color;
 
 public:
-	/// adauga o fcunctie de addCard
-	bool addCard(int card, int x, int y);
+	void AddInitialCards(std::vector<Card>& availableCards);
 	Player(const std::string& playerName, const Card& wizardCard);
 	std::string getColor() const;
 	void setColor(const std::string& color);
