@@ -29,6 +29,16 @@ Player* Game::CurrentTurn() const
 	return currentPlayer;
 }
 
+void Game::rotateRight()
+{
+	board.rotateRight();
+}
+
+void Game::rotateLeft()
+{
+	board.rotateLeft();
+}
+
 void Game::PlayGame()
 {
 	bool gameOver = false;
@@ -36,8 +46,6 @@ void Game::PlayGame()
 	{
 		board.Display();
 		currentPlayer->ShowHand();
-
-
 
 		int cardIndex = -1;
 		while (!currentPlayer->HasCardAtIndex(cardIndex)) {

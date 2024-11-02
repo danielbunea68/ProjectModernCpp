@@ -14,7 +14,8 @@ private:
 public:
 	void InitGame();
 	Player* CurrentTurn() const;
+	void rotateRight();
+	void rotateLeft();
 	void PlayGame();
 	void ResetGame();
 };
-

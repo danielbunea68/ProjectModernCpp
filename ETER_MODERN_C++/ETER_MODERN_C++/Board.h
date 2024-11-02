@@ -6,18 +6,21 @@ class Board
 {
 private:
 	int size;
-
 	std::vector<std::vector<bool>> marked;
 	std::vector<std::vector<std::stack<Card>>> board;
 
 
 public:
+    int getSize() const;
+	void setBoard(int row, int col, const std::stack<Card>& newStack);
 	// TODO 5: sa poata exploda cu o bomba o carte si sa o scoata din stack
 	void UpdateMarked(int col, int row);
 	void UpdateUnMarked(int row, int col);
 	bool IsEmpty(int row, int col);
 	void Display();
 	bool PlaceCardFacedown(int row, int col);
+	void rotateRight();
+	void rotateLeft();
 	bool MakeMove(int row, int col, Card card);
 	bool CheckWinner(std::string color);
 	bool IsDraw();

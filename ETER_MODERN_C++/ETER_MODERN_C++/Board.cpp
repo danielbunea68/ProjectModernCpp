@@ -1,6 +1,18 @@
 #include "Board.h"
 #include <iostream>
 
+int Board::getSize() const
+{
+	return size;
+}
+
+void Board::setBoard(int row, int col, const std::stack<Card>& newStack)
+{
+	if (row >= 0 && row < size && col >= 0 && col < size) {
+		board[row][col] = newStack;
+	}
+}
+
 void Board::UpdateMarked(int row, int col)
 {
 	marked[row][col] = true;
@@ -47,6 +59,30 @@ bool Board::PlaceCardFacedown(int row, int col)
 	}
 	std::cout << "Pozitia este deja ocupata!" << std::endl;
 	return false;
+}
+
+void Board::rotateRight()
+{
+	std::vector<std::vector<std::stack<Card>>> newBoard(size, std::vector<std::stack<Card>>(size));
+
+	for (int r = 0; r < size; ++r) {
+		for (int c = 0; c < size; ++c) {
+			newBoard[c][size - 1 - r] = board[r][c];
+		}
+	}
+	board = newBoard;
+}
+
+void Board::rotateLeft()
+{
+	std::vector<std::vector<std::stack<Card>>> newBoard(size, std::vector<std::stack<Card>>(size));
+
+	for (int r = 0; r < size; ++r) {
+		for (int c = 0; c < size; ++c) {
+			newBoard[size - 1 - c][r] = board[r][c];
+		}
+	}
+	board = newBoard;
 }
 
 bool Board::MakeMove(int row, int col, Card card)
