@@ -38,6 +38,7 @@ bool Board::CanMakeMove(int row, int col, Card chosenCard)
 bool Board::MakeMove(int row, int col, Card card)
 {
 	if (IsEmpty(row, col)) {
+	
 		board[row][col].push(card);
 		UpdateMarked(row, col);
 		return true;

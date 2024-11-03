@@ -12,7 +12,7 @@ private:
 
 
 public:
-	// TODO 5: sa poata exploda cu o bomba o carte si sa o scoata din stack
+	
 	void UpdateMarked(int col, int row);
 	void UpdateUnMarked(int row, int col);
 	bool IsEmpty(int row, int col);
