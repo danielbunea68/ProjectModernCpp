@@ -154,7 +154,6 @@
     <ClCompile Include="Match.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Tournament_Mode.cpp" />
-    <ClCompile Include="Training_Mode.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

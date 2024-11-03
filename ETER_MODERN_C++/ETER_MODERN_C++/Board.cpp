@@ -1,4 +1,4 @@
-﻿#include "Board.h"
+#include "Board.h"
 #include <iostream>
 
 void Board::SetSize(int size)
@@ -75,6 +75,7 @@ bool Board::IsValidPosition(int row, int col) {
 bool Board::MakeMove(int row, int col, Card card)
 {
 	if (IsEmpty(row, col)) {
+	
 		board[row][col].push(card);
 		UpdateMarked(row, col);
 		return true;
