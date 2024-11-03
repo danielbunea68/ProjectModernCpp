@@ -1,11 +1,28 @@
 #include "Game.h"
+#include <iostream>
 
 int main() {
+	std::string name1, name2;
+	std::cout << "Please insert name for player 1 and player 2: \n";
+	std::cin >> name1 >> name2;
 
-	// TODO 1: Create a game loop here
-	// Se va creea un joc, se va initializa, se da start play
-	// totul intrun while astfel incat la final sa intrebi jucatorul daca mai doreste sa joace
-	// daca da, resetezi jocul, daca nu iesi din while
+	Game game;
+	game.InitGame(name1, name2);
+	bool keepPlaying = true;
+	while (keepPlaying) {
+		game.PlayGame();
+
+		char answer = 'n';
+		std::cout << "Do you want to play again? y/[n]\n";
+		std::cin >> answer;
+		if (answer == 'y') {
+			game.ResetGame();
+		}
+		else {
+			break;
+		}
+	}
+
+	std::cout << "Game over. Thanks for playing!\n";
 	return 0;
-	std::cout << "hello world";
 }

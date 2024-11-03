@@ -1,8 +1,18 @@
 #include "Game.h"
 
 
-void Game::InitGame()
+Game::Game()
 {
+
+	currentPlayer = NULL;
+
+}
+
+void Game::InitGame(std::string name1, std::string name2)
+{
+	player1.setName(name1);
+	player2.setName(name2);
+	board.SetSize(3);
 	std::vector<int> values = { 1, 1, 2, 2, 3, 3, 4 };
 	player1.setColor("red");
 	player2.setColor("blue");
@@ -10,6 +20,7 @@ void Game::InitGame()
 		player1.AddCard(Card(value, player1.getColor()));
 		player2.AddCard(Card(value, player2.getColor()));
 	}
+	currentPlayer = &player1;
 }
 
 void Game::SwitchTurn()
@@ -24,6 +35,7 @@ void Game::SwitchTurn()
 	}
 }
 
+
 Player* Game::CurrentTurn() const
 {
 	return currentPlayer;
@@ -37,7 +49,9 @@ void Game::PlayGame()
 		board.Display();
 		currentPlayer->ShowHand();
 
-
+		// TODO: Daca player-ul curent are o bomba
+		// Intreabal daca vrea sa o foloseasca si daca da, afiseaza un meniu in care sa ii spui ca poate roti bomba
+		// si apoi sa confirme si sa fie aplicate efectele
 
 		int cardIndex = -1;
 		while (!currentPlayer->HasCardAtIndex(cardIndex)) {
@@ -46,15 +60,30 @@ void Game::PlayGame()
 		}
 		Card chosenCard = currentPlayer->PlayCard(cardIndex);
 
+		if (currentPlayer->CanPlaceCardFaceDown()) {
+			char answer = 'n';
+			std::cout << "Do you want to play this card face down? y/[n]\n";
+			std::cin >> answer;
+			if (answer == 'y') {
+				currentPlayer->PlayedCardFaceDown();
+				chosenCard.setFaceDown(true);
+			}
+		}
+
 		int row = -1, col = -1;
-		while (!board.CanMakeMove(row, col, chosenCard)) {
+		int result = board.CanMakeMove(row, col, chosenCard);
+		while (result == 0) {
 			std::cout << "Enter row and column (0, 1, or 2) to place the card: ";
 			std::cin >> row >> col;
+			result = board.CanMakeMove(row, col, chosenCard);
+		}
+		if (result == 1) {
 			board.MakeMove(row, col, chosenCard);
 		}
-		/// to do 2 
-		/// verifica daca este completa o linie si o coloana care se intersecteaza cu ajutorul matricei marked 
-		/// apelezi functia de bomba 
+
+		// Todo: Daca ai completat o linie si o coloana chit ca nu e culoarea ta
+		// Primesti o bomba
+
 		if (board.CheckWinner(chosenCard.getColor())) {
 			board.Display();
 			std::cout << currentPlayer->getName() << " wins!\n";
@@ -76,5 +105,5 @@ void Game::ResetGame()
 	board.Clear();
 	player1.ClearCards();
 	player2.ClearCards();
-	InitGame();
+	InitGame(player1.getName(), player2.getName());
 }

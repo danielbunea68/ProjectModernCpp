@@ -1,6 +1,18 @@
 #include "Board.h"
 #include <iostream>
 
+void Board::SetSize(int size)
+{
+	m_size = size;
+	marked.resize(m_size, std::vector<bool>(m_size));
+	board.resize(m_size, std::vector<std::stack<Card>>(m_size));
+}
+
+int Board::GetSize() const
+{
+	return m_size;
+}
+
 void Board::UpdateMarked(int row, int col)
 {
 	marked[row][col] = true;
@@ -13,26 +25,51 @@ void Board::UpdateUnMarked(int row, int col)
 
 bool Board::IsEmpty(int row, int col)
 {
-	return row >= 0 && row < size && col >= 0 && col < size && !marked[row][col];
+	return row >= 0 && row < GetSize() && col >= 0 && col < GetSize() && !marked[row][col];
 }
 
 void Board::Display()
 {
+	for (int i = 0; i < GetSize(); i++) {
+		for (int j = 0; j < GetSize(); j++) {
+			if (board[i][j].empty()) {
+				std::cout << "     ";
+			}
+			else {
+				std::cout << board[i][j].top().getColor() << ' ';
 
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
-			std::cout << board[i][j].top().getColor() << ' ' << board[i][j].top().getValue();
-			if (j < size - 1) std::cout << " | ";
+				if (board[i][j].top().getIsFaceDown()) {
+					std::cout << "x";
+				}
+				else {
+					std::cout << board[i][j].top().getValue();
+				}
+			}
+			if (j < GetSize() - 1) std::cout << " | ";
 		}
 		std::cout << "\n";
-		if (i < size - 1) std::cout << "---------\n";
+		if (i < GetSize() - 1) std::cout << "----------------------\n";
 	}
 	std::cout << "\n";
 }
 
 bool Board::CanMakeMove(int row, int col, Card chosenCard)
 {
-	return !marked[row][col] || board[row][col].top().getValue() < chosenCard.getValue();
+	if (!IsValidPosition(row, col))
+		return 0;
+
+	if (board[row][col].empty())
+		return 1;
+
+	if (board[row][col].top().getValue() < chosenCard.getValue())
+		return 1;
+
+	if (board[row][col].top().getValue() >= chosenCard.getValue() && board[row][col].top().getIsFaceDown())
+		return -1;
+}
+
+bool Board::IsValidPosition(int row, int col) {
+	return row >= 0 && row < GetSize() && col >= 0 && col < GetSize();
 }
 
 bool Board::MakeMove(int row, int col, Card card)
@@ -49,7 +86,7 @@ bool Board::MakeMove(int row, int col, Card card)
 			board[row][col].push(card);
 			return true;
 		}
-			
+
 
 	return false;
 }
@@ -57,7 +94,10 @@ bool Board::MakeMove(int row, int col, Card card)
 bool Board::CheckWinner(std::string color)
 {
 
-	for (int i = 0; i < size; i++) {
+	for (int i = 0; i < GetSize(); i++) {
+		if (board[i][0].empty() || board[0][i].empty() || board[i][1].empty() || board[1][i].empty() || board[i][2].empty() || board[2][i].empty())
+			return false;
+
 		if ((board[i][0].top().getColor() == color && board[i][1].top().getColor() == color && board[i][2].top().getColor() == color) ||
 			(board[0][i].top().getColor() == color && board[1][i].top().getColor() == color && board[2][i].top().getColor() == color)) {
 			return true;
@@ -74,8 +114,8 @@ bool Board::CheckWinner(std::string color)
 
 bool Board::IsDraw()
 {
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
+	for (int i = 0; i < GetSize(); i++) {
+		for (int j = 0; j < GetSize(); j++) {
 			if (marked[i][j] == false) return false;
 		}
 	}
@@ -88,12 +128,12 @@ void Board::Clear()
 	board.clear();
 }
 
-void Board::Remove(int row , int col)
+void Board::Remove(int row, int col)
 {
 	board[row][col].pop();
 	if (board[row][col].empty())
 	{
 		UpdateUnMarked(row, col);
 	}
-	
+
 }
