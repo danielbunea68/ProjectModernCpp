@@ -1,6 +1,8 @@
 ﻿#include "Board.h"
 #include <iostream>
 
+Board::Board(int s) : size(s), board(s, std::vector<std::stack<Card>>(s)), marked(s, std::vector<bool>(s, false)) {}
+
 void Board::UpdateMarked(int row, int col)
 {
 	marked[row][col] = true;
@@ -72,4 +74,20 @@ bool Board::IsDraw()
 void Board::Clear()
 {
 	board.clear();
+}
+
+void Board::RotateRight90() {
+    int n = size;
+    std::vector<std::vector<std::stack<Card>>> rotatedBoard(n, std::vector<std::stack<Card>>(n));
+    std::vector<std::vector<bool>> rotatedMarked(n, std::vector<bool>(n, false));
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            rotatedBoard[j][n - 1 - i] = board[i][j];
+            rotatedMarked[j][n - 1 - i] = marked[i][j];
+        }
+    }
+
+    board = rotatedBoard;
+    marked = rotatedMarked;
 }

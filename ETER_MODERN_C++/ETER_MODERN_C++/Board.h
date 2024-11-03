@@ -15,6 +15,7 @@ private:
 
 public:
 	// TODO 5: sa poata exploda cu o bomba o carte si sa o scoata din stack
+    Board(int s = 3);
 	void UpdateMarked(int col, int row);
 	bool IsEmpty(int row, int col);
 	void Display();
@@ -23,5 +24,6 @@ public:
 	bool IsDraw();
 	bool CanMakeMove(int row, int col, Card chosenCard);
 	void Clear();
+    void RotateRight90();
     //TODO 3: rotire de matrice la 90 la dreapta
 };
