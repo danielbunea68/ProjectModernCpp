@@ -1,8 +1,18 @@
 #include "Game.h"
 
 
-void Game::InitGame()
+Game::Game()
 {
+
+	currentPlayer = NULL;
+
+}
+
+void Game::InitGame(std::string name1, std::string name2)
+{
+	player1.setName(name1);
+	player2.setName(name2);
+	board.SetSize(3);
 	std::vector<int> values = { 1, 1, 2, 2, 3, 3, 4 };
 	player1.setColor("red");
 	player2.setColor("blue");
@@ -10,6 +20,7 @@ void Game::InitGame()
 		player1.AddCard(Card(value, player1.getColor()));
 		player2.AddCard(Card(value, player2.getColor()));
 	}
+	currentPlayer = &player1;
 }
 
 void Game::SwitchTurn()
@@ -23,6 +34,7 @@ void Game::SwitchTurn()
 		currentPlayer = &player1;
 	}
 }
+
 
 Player* Game::CurrentTurn() const
 {
@@ -50,8 +62,9 @@ void Game::PlayGame()
 		while (!board.CanMakeMove(row, col, chosenCard)) {
 			std::cout << "Enter row and column (0, 1, or 2) to place the card: ";
 			std::cin >> row >> col;
-			board.MakeMove(row, col, chosenCard);
 		}
+		board.MakeMove(row, col, chosenCard);
+
 		/// to do 2 
 		/// verifica daca este completa o linie si o coloana care se intersecteaza cu ajutorul matricei marked 
 		/// apelezi functia de bomba 
@@ -76,5 +89,5 @@ void Game::ResetGame()
 	board.Clear();
 	player1.ClearCards();
 	player2.ClearCards();
-	InitGame();
+	InitGame(player1.getName(), player2.getName());
 }

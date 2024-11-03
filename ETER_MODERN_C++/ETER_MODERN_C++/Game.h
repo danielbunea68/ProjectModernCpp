@@ -12,7 +12,8 @@ private:
 	void SwitchTurn();
 
 public:
-	void InitGame();
+	Game();
+	void InitGame(std::string name1, std::string name2);
 	Player* CurrentTurn() const;
 	void PlayGame();
 	void ResetGame();

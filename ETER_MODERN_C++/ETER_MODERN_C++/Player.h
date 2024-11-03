@@ -18,13 +18,13 @@ private:
 	// TODO 2: bool daca playerul are o bomba
 
 public:
-
+	Player()=default;
 	Player(const std::string& playerName, const Card& wizardCard);
 	std::string getColor() const;
 	void setColor(const std::string& color);
 	std::string getName() const;
-	void ShowHand();
 	void setName(const std::string& newName);
+	void ShowHand();
 	Card PlayCard(int cardIndex);/// ii updataeaza vectorul de carti 
 	bool HasCardAtIndex(int cardIndex);
 	void UseAbilty();
