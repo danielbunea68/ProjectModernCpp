@@ -49,8 +49,6 @@ void Game::PlayGame()
 		board.Display();
 		currentPlayer->ShowHand();
 
-
-
 		int cardIndex = -1;
 		while (!currentPlayer->HasCardAtIndex(cardIndex)) {
 			std::cout << currentPlayer->getName() << ", choose a card index to play: ";
@@ -58,16 +56,30 @@ void Game::PlayGame()
 		}
 		Card chosenCard = currentPlayer->PlayCard(cardIndex);
 
+		if (currentPlayer->CanPlaceCardFaceDown()) {
+			char answer = 'n';
+			std::cout << "Do you want to play this card face down? y/[n]\n";
+			std::cin >> answer;
+			if (answer == 'y') {
+				currentPlayer->PlayedCardFaceDown();
+				chosenCard.setFaceDown(true);
+			}
+		}
+
 		int row = -1, col = -1;
-		while (!board.CanMakeMove(row, col, chosenCard)) {
+		int result = board.CanMakeMove(row, col, chosenCard);
+		while (result == 0) {
 			std::cout << "Enter row and column (0, 1, or 2) to place the card: ";
 			std::cin >> row >> col;
+			result = board.CanMakeMove(row, col, chosenCard);
 		}
-		board.MakeMove(row, col, chosenCard);
+		if (result == 1) {
+			board.MakeMove(row, col, chosenCard);
+		}
 
-		/// to do 2 
-		/// verifica daca este completa o linie si o coloana care se intersecteaza cu ajutorul matricei marked 
-		/// apelezi functia de bomba 
+		// Todo: Daca ai completat o linie si o coloana chit ca nu e culoarea ta
+		// Primesti o bomba
+
 		if (board.CheckWinner(chosenCard.getColor())) {
 			board.Display();
 			std::cout << currentPlayer->getName() << " wins!\n";

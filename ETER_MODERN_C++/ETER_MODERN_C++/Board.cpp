@@ -36,7 +36,14 @@ void Board::Display()
 				std::cout << "     ";
 			}
 			else {
-				std::cout << board[i][j].top().getColor() << ' ' << board[i][j].top().getValue();
+				std::cout << board[i][j].top().getColor() << ' ';
+
+				if (board[i][j].top().getIsFaceDown()) {
+					std::cout << "x";
+				}
+				else {
+					std::cout << board[i][j].top().getValue();
+				}
 			}
 			if (j < GetSize() - 1) std::cout << " | ";
 		}
@@ -48,7 +55,17 @@ void Board::Display()
 
 bool Board::CanMakeMove(int row, int col, Card chosenCard)
 {
-	return IsValidPosition(row, col) && (!marked[row][col] || board[row][col].empty() || board[row][col].top().getValue() < chosenCard.getValue());
+	if (!IsValidPosition(row, col))
+		return 0;
+
+	if (board[row][col].empty())
+		return 1;
+
+	if (board[row][col].top().getValue() < chosenCard.getValue())
+		return 1;
+
+	if (board[row][col].top().getValue() >= chosenCard.getValue() && board[row][col].top().getIsFaceDown())
+		return -1;
 }
 
 bool Board::IsValidPosition(int row, int col) {

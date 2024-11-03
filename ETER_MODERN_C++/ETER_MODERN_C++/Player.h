@@ -15,11 +15,15 @@ private:
 	Card  m_wizard;
 	std::string m_name;
 	std::string m_color;
+	bool m_placedCardFaceDown;
 	// TODO 2: bool daca playerul are o bomba
 
 public:
 	Player()=default;
 	Player(const std::string& playerName, const Card& wizardCard);
+
+	bool CanPlaceCardFaceDown();
+	void PlayedCardFaceDown();
 	std::string getColor() const;
 	void setColor(const std::string& color);
 	std::string getName() const;
