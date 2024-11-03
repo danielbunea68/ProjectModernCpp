@@ -49,6 +49,10 @@ void Game::PlayGame()
 		board.Display();
 		currentPlayer->ShowHand();
 
+		// TODO: Daca player-ul curent are o bomba
+		// Intreabal daca vrea sa o foloseasca si daca da, afiseaza un meniu in care sa ii spui ca poate roti bomba
+		// si apoi sa confirme si sa fie aplicate efectele
+
 		int cardIndex = -1;
 		while (!currentPlayer->HasCardAtIndex(cardIndex)) {
 			std::cout << currentPlayer->getName() << ", choose a card index to play: ";
