@@ -112,6 +112,46 @@ bool Board::CheckWinner(std::string color)
 
 }
 
+bool Board::CheckIsBomb()
+{
+	int nr = 0;
+		for (int i = 0; i < GetSize(); i++)
+		{
+			bool verif = true;
+			
+			for (int j = 0; j < GetSize(); j++)
+			{
+				if (board[i][j].empty())
+					verif = false;
+			}
+			if (verif)
+			{
+				
+				nr++;
+			}
+		}			
+	
+		for (int j = 0; j < GetSize(); j++)
+			{
+				bool verif = true;
+
+				for (int i = 0; i < GetSize(); i++)
+				{
+					if (board[i][j].empty())
+						verif = false;
+				}
+				if (verif)
+				{
+					nr++;
+				}
+			}
+
+		if (nr == 2)
+			return true;
+		else
+			return false;
+}
+
 bool Board::IsDraw()
 {
 	for (int i = 0; i < GetSize(); i++) {

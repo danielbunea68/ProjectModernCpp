@@ -21,6 +21,7 @@ public:
 	void Display();
 	bool MakeMove(int row, int col, Card card);
 	bool CheckWinner(std::string color);
+	bool CheckIsBomb();
 	bool IsDraw();
 	bool IsValidPosition(int row, int col);
 	bool CanMakeMove(int row, int col, Card chosenCard);

@@ -81,8 +81,10 @@ void Game::PlayGame()
 			board.MakeMove(row, col, chosenCard);
 		}
 
-		// Todo: Daca ai completat o linie si o coloana chit ca nu e culoarea ta
-		// Primesti o bomba
+		if (board.CheckIsBomb())
+		{
+			std::cout << " Aplica bomba";
+		}
 
 		if (board.CheckWinner(chosenCard.getColor())) {
 			board.Display();
