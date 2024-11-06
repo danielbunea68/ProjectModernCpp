@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include "Explosion_Card.h"
 
 Game::Game()
 {
@@ -40,6 +40,8 @@ Player* Game::CurrentTurn() const
 {
 	return currentPlayer;
 }
+
+
 
 void Game::PlayGame()
 {
@@ -83,7 +85,28 @@ void Game::PlayGame()
 
 		if (board.CheckIsBomb())
 		{
+			Explosion_Card explosion_card(board.GetSize());
+			explosion_card.activateExplosion();
+			std::vector<std::pair<char, std::pair<int, int>>> coords;
+			coords = explosion_card.AppliedPositions();
 			std::cout << " Aplica bomba";
+			std::cout << "Alege cum vrei sa aplici bomba ";
+			char c;
+			std::cin >> c;
+			/*if (c == 's')
+			{
+			/// noi coordonate
+			/// cout coordonate + efecte
+			/// introduca coordonate
+			/// te intrebi daca ce efect are
+			/// add card la player (depinde de efect )
+			/// stergere matrice
+			}
+			*/
+			/// captezi coordonatele ;
+			/// if (  dreapta )
+			/// board[x][y] - coordonate 90 grade  rotatie la dreapta , rotatie stanga 
+			/// aici faci o functie 1 
 		}
 
 		if (board.CheckWinner(chosenCard.getColor())) {

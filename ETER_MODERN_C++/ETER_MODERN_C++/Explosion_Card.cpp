@@ -35,7 +35,11 @@ void Explosion_Card::displayBoard() const
     }
 }
 
-Explosion_Card::Explosion_Card(int explosionSize): 
+Explosion_Card::Explosion_Card()
+{
+}
+
+Explosion_Card::Explosion_Card(int explosionSize):
     m_size(explosionSize), m_row(explosionSize), m_col(explosionSize) 
 {
     std::srand(std::time(0));
@@ -96,13 +100,19 @@ void Explosion_Card::activateExplosion()
     displayBoard(); 
 }
 
-void Explosion_Card::displayAppliedPositions() const 
+std::vector<std::pair<char, std::pair<int, int>>> Explosion_Card::AppliedPositions()
 {
-    std::cout << "Positions where effects were applied:\n";
-    for (const auto& pos : appliedPositions) 
+    std::vector<std::pair<char, std::pair<int, int>>> bombPositions;
+
+    for (const auto& pos : appliedPositions)
     {
-        std::cout << "(" << pos.first << ", " << pos.second << ")\n";
+        int row = pos.first;
+        int col = pos.second;
+        char bombType = board[row][col];  
+
+        bombPositions.push_back({ bombType, {row, col} });
     }
+    return bombPositions;
 }
 
 

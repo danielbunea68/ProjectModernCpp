@@ -26,8 +26,9 @@ private:
     void storeAppliedPosition(int row, int col);
 
 public:
+    Explosion_Card();
     Explosion_Card(int explosionSize);
     void activateExplosion();
-    void displayAppliedPositions() const;
+    std::vector<std::pair<char, std::pair<int, int>>> AppliedPositions();
 };
 
