@@ -65,13 +65,13 @@ void Game::ReturnCardToPlayer(int row, int col)//aici
 	}
 }
 
-void Game::CreatePit(int row, int col) 
+void Game::CreatePit(int row, int col)
 {
 	board.UpdateMarked(row, col);  // Mark the position as a pit
 
 	// Now, remove all cards from that position using the getter function to access the internal board
 	auto& boardGrid = board.GetBoard();  // Get a reference to the board
-	while (!boardGrid[row][col].empty()) 
+	while (!boardGrid[row][col].empty())
 	{
 		boardGrid[row][col].pop();  // Remove all cards from the stack at that position
 	}
@@ -92,7 +92,7 @@ void Game::PlayGame()
 		// si apoi sa confirme si sa fie aplicate efectele
 
 		int cardIndex = -1;
-		while (!currentPlayer->HasCardAtIndex(cardIndex)) 
+		while (!currentPlayer->HasCardAtIndex(cardIndex))
 		{
 			std::cout << currentPlayer->getName() << ", choose a card index to play: ";
 			std::cin >> cardIndex;
@@ -103,7 +103,7 @@ void Game::PlayGame()
 			char answer = 'n';
 			std::cout << "Do you want to play this card face down? y/[n]\n";
 			std::cin >> answer;
-			if (answer == 'y') 
+			if (answer == 'y')
 			{
 				currentPlayer->PlayedCardFaceDown();
 				chosenCard.setFaceDown(true);
@@ -117,7 +117,7 @@ void Game::PlayGame()
 			std::cin >> row >> col;
 			result = board.CanMakeMove(row, col, chosenCard);
 		}
-		if (result == 1) 
+		if (result == 1)
 		{
 			board.MakeMove(row, col, chosenCard);
 		}
@@ -135,7 +135,7 @@ void Game::PlayGame()
 				char bombType = pos.first;
 				int row = pos.second.first;
 				int col = pos.second.second;
-				
+
 				int right_r = col;
 				int right_c = board.GetSize() - 1 - row;
 				int left_r = board.GetSize() - 1 - col;
@@ -144,7 +144,23 @@ void Game::PlayGame()
 				right_coords.push_back({ bombType, {right_r, right_c} });
 				left_coords.push_back({ bombType, {left_r, left_c} });
 			}
-			
+			std::cout << "pozitile aplicate pt dreapta: \n";
+			for (const auto& pos : right_coords)
+			{
+				std::cout << pos.first << " " << pos.second.first << " " << pos.second.second << "\n";
+			}
+			std::cout << "pozitile aplicate pt stanga: \n";
+			for (const auto& pos : left_coords)
+			{
+				std::cout << pos.first << " " << pos.second.first << " " << pos.second.second << "\n";
+			}
+			std::cout << "pozitile aplicate normal: \n";
+			for (const auto& pos : coords)
+			{
+				std::cout << pos.first << " " << pos.second.first << " " << pos.second.second << "\n";
+			}
+
+			std::cout << " alege unde vrei sa pui : ";
 			char c;
 			std::cin >> c;
 
@@ -153,59 +169,78 @@ void Game::PlayGame()
 			case 'r':
 				for (const auto& pos : right_coords)
 				{
-					std::cout << pos.first<<" "<< pos.second.first << " " << pos.second.second<<"\n";
+					switch (pos.first)
+					{
+					case 'r':
+						std::cout << "Removing card at (" << pos.second.first << ", " << pos.second.second << ").\n";
+						RemoveCard(pos.second.first, pos.second.first);
+						break;
+					case 'u':
+						std::cout << "Returning card to player at (" << pos.second.first << ", " << pos.second.second << ").\n";
+						ReturnCardToPlayer(pos.second.first, pos.second.second);
+						break;
+					case 'p':
+						std::cout << "Creating pit at (" << pos.second.first << ", " << pos.second.second << ").\n";
+						CreatePit(pos.second.first, pos.second.second);
+						break;
+
+						break;
+					}
 				}
 				break;
 
 			case 's':
+
 				for (const auto& pos : left_coords)
 				{
-					std::cout << pos.first << " " << pos.second.first << " " << pos.second.second << "\n";
+					switch (pos.first)
+					{
+					case 'r':
+						std::cout << "Removing card at (" << pos.second.first << ", " << pos.second.second << ").\n";
+						RemoveCard(pos.second.first, pos.second.first);
+						break;
+					case 'u':
+						std::cout << "Returning card to player at (" << pos.second.first << ", " << pos.second.second << ").\n";
+						ReturnCardToPlayer(pos.second.first, pos.second.second);
+						break;
+					case 'p':
+						std::cout << "Creating pit at (" << pos.second.first << ", " << pos.second.second << ").\n";
+						CreatePit(pos.second.first, pos.second.second);
+						break;
+
+						break;
+					}
 				}
 				break;
 
 			case 'n':
 				for (const auto& pos : coords)
 				{
-					std::cout << pos.first << " " << pos.second.first << " " << pos.second.second << "\n";
+					switch (pos.first)
+					{
+					case 'r':
+						std::cout << "Removing card at (" << pos.second.first << ", " << pos.second.second << ").\n";
+						RemoveCard(pos.second.first, pos.second.first);
+						break;
+					case 'u':
+						std::cout << "Returning card to player at (" << pos.second.first << ", " << pos.second.second << ").\n";
+						ReturnCardToPlayer(pos.second.first, pos.second.second);
+						break;
+					case 'p':
+						std::cout << "Creating pit at (" << pos.second.first << ", " << pos.second.second << ").\n";
+						CreatePit(pos.second.first, pos.second.second);
+						break;
+
+						break;
+					}
 				}
 				break;
 
 			default:
-				std::cout << "No rotation applied.\n";
 				break;
 			}
 
-			std::cout << "Choose the position where you want to apply the bomb effect:\n";
-			int chosenRow, chosenCol;
-			char bomb_effect;
-			std::cout << "Enter the row: ";
-			std::cin >> chosenRow;
-			std::cout << "Enter the column: ";
-			std::cin >> chosenCol;
-			std::cin >> bomb_effect;
-			bool effectApplied = false;
-			
 
-
-				switch (bomb_effect)
-				{
-				case 'r':
-					std::cout << "Removing card at (" << chosenRow << ", " << chosenCol << ").\n";
-					RemoveCard(chosenRow, chosenCol);
-					break;
-				case 'u':
-					std::cout << "Returning card to player at (" << chosenRow << ", " << chosenCol << ").\n";
-					ReturnCardToPlayer(chosenRow, chosenCol);
-					break;
-				case 'p':
-					std::cout << "Creating pit at (" << chosenRow << ", " << chosenCol << ").\n";
-					CreatePit(chosenRow, chosenCol);
-					break;
-				default:
-					std::cout << "Unknown effect type at (" << chosenRow << ", " << chosenCol << ").\n";
-					break;
-				}
 
 		}
 
