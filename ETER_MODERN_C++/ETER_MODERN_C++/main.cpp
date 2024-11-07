@@ -25,4 +25,4 @@ int main() {
 
 	std::cout << "Game over. Thanks for playing!\n";
 	return 0;
-}
+}//
