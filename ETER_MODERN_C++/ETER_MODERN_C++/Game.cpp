@@ -127,7 +127,8 @@ void Game::PlayGame()
 			Explosion_Card explosion_card(board.GetSize());
 			explosion_card.activateExplosion();
 			std::vector<std::pair<char, std::pair<int, int>>> coords;
-			//right left coords
+			std::vector<std::pair<char, std::pair<int, int>>> left_coords;
+			std::vector<std::pair<char, std::pair<int, int>>> right_coords;
 
 			for (const auto& pos : coords)
 			{
@@ -135,44 +136,77 @@ void Game::PlayGame()
 				int row = pos.second.first;
 				int col = pos.second.second;
 				
-				//aplic
+				int right_r = col;
+				int right_c = board.GetSize() - 1 - row;
+				int left_r = board.GetSize() - 1 - col;
+				int left_c = row;
+
+				right_coords.push_back({ bombType, {right_r, right_c} });
+				left_coords.push_back({ bombType, {left_r, left_c} });
 			}
 			
-			//swich
+			char c;
+			std::cin >> c;
 
+			switch (c)
+			{
+			case 'r':
+				for (const auto& pos : right_coords)
+				{
+					std::cout << pos.first<<" "<< pos.second.first << " " << pos.second.second<<"\n";
+				}
+				break;
+
+			case 's':
+				for (const auto& pos : left_coords)
+				{
+					std::cout << pos.first << " " << pos.second.first << " " << pos.second.second << "\n";
+				}
+				break;
+
+			case 'n':
+				for (const auto& pos : coords)
+				{
+					std::cout << pos.first << " " << pos.second.first << " " << pos.second.second << "\n";
+				}
+				break;
+
+			default:
+				std::cout << "No rotation applied.\n";
+				break;
+			}
+
+			std::cout << "Choose the position where you want to apply the bomb effect:\n";
+			int chosenRow, chosenCol;
+			char bomb_effect;
+			std::cout << "Enter the row: ";
+			std::cin >> chosenRow;
+			std::cout << "Enter the column: ";
+			std::cin >> chosenCol;
+			std::cin >> bomb_effect;
 			bool effectApplied = false;
 			
-			for (const auto& pos : coords) 
-			{
-				char bombType = pos.first;  // Effect type: 'r', 'u', or 'p'
-				int row = pos.second.first;  // Row of the bomb effect
-				int col = pos.second.second; // Column of the bomb effect
 
-				switch (bombType)
+
+				switch (bomb_effect)
 				{
 				case 'r':
-					std::cout << "Removing card at (" << row << ", " << col << ").\n";
-					RemoveCard(row, col);
+					std::cout << "Removing card at (" << chosenRow << ", " << chosenCol << ").\n";
+					RemoveCard(chosenRow, chosenCol);
 					break;
 				case 'u':
-					std::cout << "Returning card to player at (" << row << ", " << col << ").\n";
-					ReturnCardToPlayer(row, col);
+					std::cout << "Returning card to player at (" << chosenRow << ", " << chosenCol << ").\n";
+					ReturnCardToPlayer(chosenRow, chosenCol);
 					break;
 				case 'p':
-					std::cout << "Creating pit at (" << row << ", " << col << ").\n";
-					CreatePit(row, col);
+					std::cout << "Creating pit at (" << chosenRow << ", " << chosenCol << ").\n";
+					CreatePit(chosenRow, chosenCol);
 					break;
 				default:
-					std::cout << "Unknown effect type at (" << row << ", " << col << ").\n";
+					std::cout << "Unknown effect type at (" << chosenRow << ", " << chosenCol << ").\n";
 					break;
 				}
 
-			}
-
-			/// captezi coordonatele ;
-			/// if (  dreapta )
-			/// board[x][y] - coordonate 90 grade  rotatie la dreapta , rotatie stanga 
-			/// aici faci o functie 1 
 		}
 
 		if (board.CheckWinner(chosenCard.getColor())) {
