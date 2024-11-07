@@ -1,7 +1,17 @@
 #include "Player.h"
 
 Player::Player(const std::string& playerName, const Card& wizardCard) :
-	m_name(playerName), m_wizard(wizardCard), m_LifePoints(100) {}
+	m_name(playerName), m_wizard(wizardCard), m_LifePoints(100), m_placedCardFaceDown(false){}
+
+bool Player::CanPlaceCardFaceDown()
+{
+	return !m_placedCardFaceDown;
+}
+
+void Player::PlayedCardFaceDown()
+{
+	m_placedCardFaceDown = true;
+}
 
 std::string Player::getColor() const
 {

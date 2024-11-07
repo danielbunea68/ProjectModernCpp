@@ -1,10 +1,11 @@
 #pragma once
-#include "Game_Mode.h"
+#include "Board.h"
+#include "Player.h"
+
 class Game
 {
 
 private:
-	Game_Mode gameMode;
 	Board board;
 	Player player1, player2;
 	Player* currentPlayer;
@@ -12,7 +13,11 @@ private:
 	void SwitchTurn();
 
 public:
-	void InitGame();
+	Game();
+	void RemoveCard(int row, int col);//aici
+	void ReturnCardToPlayer(int row, int col);//aici
+	void CreatePit(int row, int col);//aici
+	void InitGame(std::string name1, std::string name2);
 	Player* CurrentTurn() const;
 	void PlayGame();
 	void ResetGame();

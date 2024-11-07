@@ -1,29 +1,33 @@
 #pragma once
 #include <vector>
 #include"Card.h"
+#include <stack>
 class Board
 {
 private:
-	int size;
+	int m_size;
 
-	// TODO 4: fa o matrice de stack de Card astfel incat un jucator sa poata puna o carte deasupra 
-	// altei carti fara sa o suprascrie
-	std::vector < std::vector < Card >> board = {};
 	std::vector<std::vector<bool>> marked;
-
+	std::vector<std::vector<std::stack<Card>>> board;
 
 
 public:
-	// TODO 5: sa poata exploda cu o bomba o carte si sa o scoata din stack
-    Board(int s = 3);
+	void SetSize(int size);
+	int  GetSize() const;
+	std::vector<std::vector<std::stack<Card>>>& GetBoard();
+	Card TopCard(int row, int col) const;//aici am lucrat
 	void UpdateMarked(int col, int row);
+	void UpdateUnMarked(int row, int col);
 	bool IsEmpty(int row, int col);
 	void Display();
 	bool MakeMove(int row, int col, Card card);
 	bool CheckWinner(std::string color);
+	bool CheckIsBomb();
 	bool IsDraw();
+	bool IsValidPosition(int row, int col);
 	bool CanMakeMove(int row, int col, Card chosenCard);
+	void Remove(int row, int cols);//aici am lucrat
 	void Clear();
-    void RotateRight90();
-    //TODO 3: rotire de matrice la 90 la dreapta
+
+	
 };
