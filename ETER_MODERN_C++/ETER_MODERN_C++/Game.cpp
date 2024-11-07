@@ -41,7 +41,43 @@ Player* Game::CurrentTurn() const
 	return currentPlayer;
 }
 
+void Game::RemoveCard(int row, int col) //aici
+{
+	board.Remove(row, col);  // Use the board's Remove function
+}
 
+void Game::ReturnCardToPlayer(int row, int col)//aici
+{
+	if (!board.IsEmpty(row, col))  // Check if there's a card to return
+	{
+		// Get the card from the board
+		Card card = board.TopCard(row, col);
+		board.Remove(row, col);  // Remove the card from the board
+
+		// Return the card to the other player's hand
+		Player* otherPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+		otherPlayer->AddCard(card);  // Add the card to the other player's hand
+		std::cout << "Card returned to " << otherPlayer->getName() << "'s hand.\n";
+	}
+	else
+	{
+		std::cout << "No card to return at position (" << row << ", " << col << ").\n";
+	}
+}
+
+void Game::CreatePit(int row, int col) 
+{
+	board.UpdateMarked(row, col);  // Mark the position as a pit
+
+	// Now, remove all cards from that position using the getter function to access the internal board
+	auto& boardGrid = board.GetBoard();  // Get a reference to the board
+	while (!boardGrid[row][col].empty()) 
+	{
+		boardGrid[row][col].pop();  // Remove all cards from the stack at that position
+	}
+
+	std::cout << "Pit created at position (" << row << ", " << col << "). All cards removed.\n";
+}
 
 void Game::PlayGame()
 {
@@ -56,7 +92,8 @@ void Game::PlayGame()
 		// si apoi sa confirme si sa fie aplicate efectele
 
 		int cardIndex = -1;
-		while (!currentPlayer->HasCardAtIndex(cardIndex)) {
+		while (!currentPlayer->HasCardAtIndex(cardIndex)) 
+		{
 			std::cout << currentPlayer->getName() << ", choose a card index to play: ";
 			std::cin >> cardIndex;
 		}
@@ -66,7 +103,8 @@ void Game::PlayGame()
 			char answer = 'n';
 			std::cout << "Do you want to play this card face down? y/[n]\n";
 			std::cin >> answer;
-			if (answer == 'y') {
+			if (answer == 'y') 
+			{
 				currentPlayer->PlayedCardFaceDown();
 				chosenCard.setFaceDown(true);
 			}
@@ -79,30 +117,58 @@ void Game::PlayGame()
 			std::cin >> row >> col;
 			result = board.CanMakeMove(row, col, chosenCard);
 		}
-		if (result == 1) {
+		if (result == 1) 
+		{
 			board.MakeMove(row, col, chosenCard);
 		}
 
-		if (board.CheckIsBomb())
+		if (board.CheckIsBomb())//aici
 		{
 			Explosion_Card explosion_card(board.GetSize());
 			explosion_card.activateExplosion();
 			std::vector<std::pair<char, std::pair<int, int>>> coords;
-			coords = explosion_card.AppliedPositions();
-			std::cout << " Aplica bomba";
-			std::cout << "Alege cum vrei sa aplici bomba ";
-			char c;
-			std::cin >> c;
-			/*if (c == 's')
+			//right left coords
+
+			for (const auto& pos : coords)
 			{
-			/// noi coordonate
-			/// cout coordonate + efecte
-			/// introduca coordonate
-			/// te intrebi daca ce efect are
-			/// add card la player (depinde de efect )
-			/// stergere matrice
+				char bombType = pos.first;
+				int row = pos.second.first;
+				int col = pos.second.second;
+				
+				//aplic
 			}
-			*/
+			
+			//swich
+
+			bool effectApplied = false;
+			
+			for (const auto& pos : coords) 
+			{
+				char bombType = pos.first;  // Effect type: 'r', 'u', or 'p'
+				int row = pos.second.first;  // Row of the bomb effect
+				int col = pos.second.second; // Column of the bomb effect
+
+				switch (bombType)
+				{
+				case 'r':
+					std::cout << "Removing card at (" << row << ", " << col << ").\n";
+					RemoveCard(row, col);
+					break;
+				case 'u':
+					std::cout << "Returning card to player at (" << row << ", " << col << ").\n";
+					ReturnCardToPlayer(row, col);
+					break;
+				case 'p':
+					std::cout << "Creating pit at (" << row << ", " << col << ").\n";
+					CreatePit(row, col);
+					break;
+				default:
+					std::cout << "Unknown effect type at (" << row << ", " << col << ").\n";
+					break;
+				}
+
+			}
+
 			/// captezi coordonatele ;
 			/// if (  dreapta )
 			/// board[x][y] - coordonate 90 grade  rotatie la dreapta , rotatie stanga 
