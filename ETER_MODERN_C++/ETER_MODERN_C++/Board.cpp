@@ -1,4 +1,5 @@
 #include "Board.h"
+#include "Game.h"
 #include <iostream>
 
 void Board::SetSize(int size)
@@ -13,15 +14,27 @@ int Board::GetSize() const
 	return m_size;
 }
 
+Card Board::TopCard(int row, int col) const 
+{
+	return board[row][col].top(); // Assuming board[row][col] is a stack of Cards
+}
+
 void Board::UpdateMarked(int row, int col)
 {
 	marked[row][col] = true;
+}
+
+std::vector<std::vector<std::stack<Card>>>& Board::GetBoard()
+{
+	return board;
 }
 
 void Board::UpdateUnMarked(int row, int col)
 {
 	marked[row][col] = false;
 }
+
+
 
 bool Board::IsEmpty(int row, int col)
 {
@@ -170,10 +183,17 @@ void Board::Clear()
 
 void Board::Remove(int row, int col)
 {
-	board[row][col].pop();
-	if (board[row][col].empty())
+	if (IsValidPosition(row, col) && !IsEmpty(row, col))
 	{
-		UpdateUnMarked(row, col);
-	}
+		// Pop the top card from the stack at the specified position
+		board[row][col].pop();
+		std::cout << "Card removed from position (" << row << ", " << col << ").\n";
 
+		// After removing the card, unmark the position (assuming the pit is no longer relevant after the card is removed)
+		UpdateUnMarked(row, col);  // Unmark the position where the card was removed
+	}
+	else
+	{
+		std::cout << "Invalid position or no card to remove at (" << row << ", " << col << ").\n";
+	}
 }

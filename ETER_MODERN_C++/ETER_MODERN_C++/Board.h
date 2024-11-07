@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include"Card.h"
+#include"Game.h"
 #include <stack>
 class Board
 {
@@ -14,7 +15,8 @@ private:
 public:
 	void SetSize(int size);
 	int  GetSize() const;
-
+	std::vector<std::vector<std::stack<Card>>>& GetBoard();
+	Card TopCard(int row, int col) const;//aici am lucrat
 	void UpdateMarked(int col, int row);
 	void UpdateUnMarked(int row, int col);
 	bool IsEmpty(int row, int col);
@@ -25,7 +27,7 @@ public:
 	bool IsDraw();
 	bool IsValidPosition(int row, int col);
 	bool CanMakeMove(int row, int col, Card chosenCard);
-	void Remove(int row, int cols);
+	void Remove(int row, int cols);//aici am lucrat
 	void Clear();
 
 	
