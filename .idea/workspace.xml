@@ -13,11 +13,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6190488d-63b6-4d23-b371-58dc6b1cc2e3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ETER_MODERN_C++/ETER_MODERN_C++/Board.h" beforeDir="false" afterPath="$PROJECT_DIR$/ETER_MODERN_C++/ETER_MODERN_C++/Board.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ETER_MODERN_C++/ETER_MODERN_C++/Game.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ETER_MODERN_C++/ETER_MODERN_C++/Game.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ETER_MODERN_C++/ETER_MODERN_C++/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ETER_MODERN_C++/ETER_MODERN_C++/main.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="6190488d-63b6-4d23-b371-58dc6b1cc2e3" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,6 +75,7 @@
       <workItem from="1730357905082" duration="52000" />
       <workItem from="1730359325738" duration="1127000" />
       <workItem from="1730381722613" duration="2333000" />
+      <workItem from="1730483050115" duration="5371000" />
     </task>
     <servers />
   </component>
@@ -95,5 +92,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/ETER_MODERN_C++/ETER_MODERN_C++/Game.cpp</url>
+          <line>14</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
