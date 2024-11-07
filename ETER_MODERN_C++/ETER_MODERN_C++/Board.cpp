@@ -94,7 +94,7 @@ bool Board::MakeMove(int row, int col, Card card)
 		return true;
 	}
 	else
-		if (board[row][col].top().getValue() < card.getValue())
+		if (!board[row][col].empty() && board[row][col].top().getValue() < card.getValue())
 		{
 			board[row][col].push(card);
 			return true;

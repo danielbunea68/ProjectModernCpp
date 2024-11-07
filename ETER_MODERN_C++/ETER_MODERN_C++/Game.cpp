@@ -54,10 +54,16 @@ void Game::ReturnCardToPlayer(int row, int col)//aici
 		Card card = board.TopCard(row, col);
 		board.Remove(row, col);  // Remove the card from the board
 
-		// Return the card to the other player's hand
-		Player* otherPlayer = (currentPlayer == &player1) ? &player2 : &player1;
-		otherPlayer->AddCard(card);  // Add the card to the other player's hand
-		std::cout << "Card returned to " << otherPlayer->getName() << "'s hand.\n";
+		if (card.getColor() == currentPlayer->getColor()) {
+			currentPlayer->AddCard(card);
+			std::cout << "Card returned to " << currentPlayer->getName() << "'s hand.\n";
+		}
+		else {
+			// Return the card to the other player's hand
+			Player* otherPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+			otherPlayer->AddCard(card);  // Add the card to the other player's hand
+			std::cout << "Card returned to " << otherPlayer->getName() << "'s hand.\n";
+		}
 	}
 	else
 	{
@@ -129,6 +135,8 @@ void Game::PlayGame()
 			std::vector<std::pair<char, std::pair<int, int>>> coords;
 			std::vector<std::pair<char, std::pair<int, int>>> left_coords;
 			std::vector<std::pair<char, std::pair<int, int>>> right_coords;
+
+			coords = explosion_card.AppliedPositions();
 
 			for (const auto& pos : coords)
 			{
