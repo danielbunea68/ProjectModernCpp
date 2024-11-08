@@ -100,6 +100,7 @@ void Explosion_Card::activateExplosion()
     displayBoard(); 
 }
 
+// Methoda care returneaza pozitiile si tipul efectelor ce vor fi aplicate de cartea explozie
 std::vector<std::pair<char, std::pair<int, int>>> Explosion_Card::AppliedPositions()
 {
     std::vector<std::pair<char, std::pair<int, int>>> bombPositions;
