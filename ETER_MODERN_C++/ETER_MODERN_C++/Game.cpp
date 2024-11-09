@@ -1,4 +1,4 @@
-#include "Game.h"
+﻿#include "Game.h"
 #include "Explosion_Card.h"
 
 Game::Game()
@@ -85,6 +85,24 @@ void Game::CreatePit(int row, int col)
 	std::cout << "Pit created at position (" << row << ", " << col << "). All cards removed.\n";
 }
 
+void Game::DestroyLastOpponentCard()//aici
+{
+	auto opponentLastCardPos = (currentPlayer == &player1) ? lastCardPositionPlayer2 : lastCardPositionPlayer1;
+
+	int row = opponentLastCardPos.first;
+	int col = opponentLastCardPos.second;
+
+	// Verifică dacă există o carte la acea poziție și elimin-o
+	if (!board.IsEmpty(row, col)) 
+	{
+		board.Remove(row, col);
+		std::cout << "Ultima carte a adversarului a fost eliminată de la (" << row << ", " << col << ").\n";
+	}
+	else {
+		std::cout << "Nu există o carte a adversarului de eliminat.\n";
+	}
+}
+
 void Game::PlayGame()
 {
 	bool gameOver = false;
@@ -116,6 +134,8 @@ void Game::PlayGame()
 			}
 		}
 
+
+
 		int row = -1, col = -1;
 		int result = board.CanMakeMove(row, col, chosenCard);
 		while (result == 0) {
@@ -126,6 +146,14 @@ void Game::PlayGame()
 		if (result == 1)
 		{
 			board.MakeMove(row, col, chosenCard);
+			if (currentPlayer == &player1) //aici 
+			{
+				lastCardPositionPlayer1 = { row, col };
+			}
+			else 
+			{
+				lastCardPositionPlayer2 = { row, col };
+			}
 		}
 
 		if (board.CheckIsBomb())//aici
