@@ -103,6 +103,42 @@ void Game::DestroyLastOpponentCard()//aici
 	}
 }
 
+void Game::ReturnVisibleOpponentCard()
+{
+	// Determină care este oponentul
+	Player* opponentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+
+	// Caută o carte vizibilă pe tablă
+	bool foundCard = false;
+	int row = -1, col = -1;
+	for (int i = 0; i < board.GetSize(); ++i) {
+		for (int j = 0; j < board.GetSize(); ++j) {
+			if (!board.IsEmpty(i, j)) {
+				Card topCard = board.TopCard(i, j);
+				if (topCard.getColor() == opponentPlayer->getColor() && !topCard.getIsFaceDown()) {
+					// Cartea este vizibilă și aparține oponentului
+					foundCard = true;
+					row = i;
+					col = j;
+					break;
+				}
+			}
+		}
+		if (foundCard) break;
+	}
+	// Dacă am găsit o carte vizibilă a oponentului, o returnăm în mâna sa
+	if (foundCard) {
+		Card cardToReturn = board.TopCard(row, col);
+		board.Remove(row, col);
+		opponentPlayer->AddCard(cardToReturn);
+
+		std::cout << "Cartea vizibilă a oponentului a fost întoarsă în mâna sa de la (" << row << ", " << col << ").\n";
+	}
+	else {
+		std::cout << "Nu există o carte vizibilă a oponentului de întors.\n";
+	}
+}
+
 void Game::PlayGame()
 {
 	bool gameOver = false;

@@ -1,4 +1,4 @@
-#include "Element_Card.h"
+﻿#include "Element_Card.h"
 #include "Element_Card.h"
 #include "Game.h"
 
@@ -42,7 +42,7 @@ void Element_Card::ActivatePower(Game* gameInstance) const
         break;
     case Power::Blizzard:
         std::cout << "Activated: Blizzard - Returns an opponent's visible card to their hand.\n";
-        // Logica pentru Vifor
+        gameInstance->ReturnVisibleOpponentCard();  // Apelarea funcției pentru Vifor
         break;
     case Power::Gale:
         std::cout << "Activated: Gale - Uncovers all cards beneath other cards.\n";

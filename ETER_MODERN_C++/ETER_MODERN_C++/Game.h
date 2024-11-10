@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Board.h"
 #include "Player.h"
 
@@ -20,6 +20,7 @@ public:
 	void ReturnCardToPlayer(int row, int col);//aici
 	void CreatePit(int row, int col);//aici
 	void DestroyLastOpponentCard();
+	void ReturnVisibleOpponentCard();  // Funcția pentru întoarcerea cărții vizibile
 	void InitGame(std::string name1, std::string name2);
 	Player* CurrentTurn() const;
 	void PlayGame();
