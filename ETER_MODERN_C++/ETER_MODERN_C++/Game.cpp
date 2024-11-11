@@ -1,4 +1,4 @@
-#include "Game.h"
+﻿#include "Game.h"
 #include "Explosion_Card.h"
 
 Game::Game()
@@ -91,6 +91,60 @@ void Game::CreatePit(int row, int col)
 	std::cout << "Pit created at position (" << row << ", " << col << "). All cards removed.\n";
 }
 
+void Game::DestroyLastOpponentCard()//aici
+{
+	auto opponentLastCardPos = (currentPlayer == &player1) ? lastCardPositionPlayer2 : lastCardPositionPlayer1;
+
+	int row = opponentLastCardPos.first;
+	int col = opponentLastCardPos.second;
+
+	// Verifică dacă există o carte la acea poziție și elimin-o
+	if (!board.IsEmpty(row, col)) 
+	{
+		board.Remove(row, col);
+		std::cout << "Ultima carte a adversarului a fost eliminată de la (" << row << ", " << col << ").\n";
+	}
+	else {
+		std::cout << "Nu există o carte a adversarului de eliminat.\n";
+	}
+}
+
+void Game::ReturnVisibleOpponentCard()
+{
+	// Determină care este oponentul
+	Player* opponentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+
+	// Caută o carte vizibilă pe tablă
+	bool foundCard = false;
+	int row = -1, col = -1;
+	for (int i = 0; i < board.GetSize(); ++i) {
+		for (int j = 0; j < board.GetSize(); ++j) {
+			if (!board.IsEmpty(i, j)) {
+				Card topCard = board.TopCard(i, j);
+				if (topCard.getColor() == opponentPlayer->getColor() && !topCard.getIsFaceDown()) {
+					// Cartea este vizibilă și aparține oponentului
+					foundCard = true;
+					row = i;
+					col = j;
+					break;
+				}
+			}
+		}
+		if (foundCard) break;
+	}
+	// Dacă am găsit o carte vizibilă a oponentului, o returnăm în mâna sa
+	if (foundCard) {
+		Card cardToReturn = board.TopCard(row, col);
+		board.Remove(row, col);
+		opponentPlayer->AddCard(cardToReturn);
+
+		std::cout << "Cartea vizibilă a oponentului a fost întoarsă în mâna sa de la (" << row << ", " << col << ").\n";
+	}
+	else {
+		std::cout << "Nu există o carte vizibilă a oponentului de întors.\n";
+	}
+}
+
 void Game::PlayGame()
 {
 	bool gameOver = false;
@@ -122,6 +176,7 @@ void Game::PlayGame()
 			}
 		}
 
+
 		// Poti sa creezi o metoda hook si pentru a alege alte puteri;
 		// int AnotherFunction();
 		//int value = AnotherFunction();
@@ -143,6 +198,14 @@ void Game::PlayGame()
 		if (result == 1)
 		{
 			board.MakeMove(row, col, chosenCard);
+			if (currentPlayer == &player1) //aici 
+			{
+				lastCardPositionPlayer1 = { row, col };
+			}
+			else 
+			{
+				lastCardPositionPlayer2 = { row, col };
+			}
 		}
 
 		if (board.CheckIsBomb())//aici
