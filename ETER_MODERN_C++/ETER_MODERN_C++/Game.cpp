@@ -21,7 +21,13 @@ void Game::InitGame(std::string name1, std::string name2)
 		player2.AddCard(Card(value, player2.getColor()));
 	}
 	currentPlayer = &player1;
+	AfterInitialization();
 }
+
+void Game::AfterInitialization() {
+	// Ramane gol
+}
+
 
 void Game::SwitchTurn()
 {
@@ -171,6 +177,16 @@ void Game::PlayGame()
 		}
 
 
+		// Poti sa creezi o metoda hook si pentru a alege alte puteri;
+		// int AnotherFunction();
+		//int value = AnotherFunction();
+
+		//if (value == 0) {
+		//	// nu faci nimic
+		//}
+		//else if (value == 1) {
+		//	continue; // Skip turn, a folosit o putere
+		//}
 
 		int row = -1, col = -1;
 		int result = board.CanMakeMove(row, col, chosenCard);
@@ -338,4 +354,10 @@ void Game::ResetGame()
 	player1.ClearCards();
 	player2.ClearCards();
 	InitGame(player1.getName(), player2.getName());
+	AfterReset();
+}
+
+// Metoda hook care va fi override in clasa copil
+void Game::AfterReset() {
+	// Lasi gol
 }

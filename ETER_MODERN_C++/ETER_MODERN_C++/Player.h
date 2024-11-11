@@ -16,6 +16,8 @@ private:
 	std::string m_name;
 	std::string m_color;
 	bool m_placedCardFaceDown;
+public:
+	bool powerUsed;
 	// TODO 2: bool daca playerul are o bomba
 
 public:

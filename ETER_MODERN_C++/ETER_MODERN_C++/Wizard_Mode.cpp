@@ -1,6 +1,9 @@
 #include "Wizard_Mode.h"
+#include "Board.h"
 #include <iostream>
 
+
+// Dai override doar la metoda AfterInitialization
 
 void Wizard_Mode::removeOpponentCard(int row, int col) {
     if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() != currentPlayer->getColor()) {

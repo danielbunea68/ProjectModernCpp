@@ -1,6 +1,7 @@
 #pragma once
 #include "Game.h"
 #include "Player.h"
+#include "Board.h"
 
 enum class WizardPower {
     RemoveOpponentCard,
@@ -15,6 +16,7 @@ enum class WizardPower {
 
 class Wizard_Mode : public Game {
 private:
+    Board board;
     void removeOpponentCard(int row, int col);
     void removeRow(int row);
     void coverOpponentCard(int row, int col);
