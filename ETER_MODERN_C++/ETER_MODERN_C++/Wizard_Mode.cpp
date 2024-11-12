@@ -169,3 +169,16 @@ void Wizard_Mode::InitGame(std::string name1, std::string name2)
     }
     currentPlayer = &player1;
 }
+
+void Wizard_Mode::SwitchTurn()
+{
+    if (currentPlayer->getName() == player1.getName())
+    {
+        currentPlayer = &player2;
+    }
+    else
+    {
+        currentPlayer = &player1;
+    }
+}
+
