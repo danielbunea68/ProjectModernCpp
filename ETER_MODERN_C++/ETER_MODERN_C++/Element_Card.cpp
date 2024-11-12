@@ -1,4 +1,5 @@
-﻿#include "Element_Card.h"
+﻿/*
+#include "Element_Card.h"
 #include "Element_Card.h"
 #include "Game.h"
 
@@ -114,3 +115,4 @@ void Element_Card::ActivatePower(Game* gameInstance) const
         break;
     }
 }
+*/

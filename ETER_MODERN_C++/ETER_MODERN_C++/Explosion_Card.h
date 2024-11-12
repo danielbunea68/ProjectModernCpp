@@ -28,7 +28,7 @@ private:
 public:
     Explosion_Card();
     Explosion_Card(int explosionSize);
-    void activateExplosion();
+      void activateExplosion();
     std::vector<std::pair<char, std::pair<int, int>>> AppliedPositions();
 };
 

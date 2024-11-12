@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿/*
+
+#pragma once
 #include <iostream>
 #include "Game.h"
 
@@ -46,3 +48,4 @@ public:
     // Metoda pentru activarea puterii elementare
     void ActivatePower(Game* gameInstance) const;
 };
+*/

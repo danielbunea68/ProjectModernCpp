@@ -10,7 +10,7 @@ class Player
 {
 private:
 	std::vector<Card> m_cards;
-	std::vector<Element_Card> m_ElementCards;
+	//std::vector<Element_Card> m_ElementCards;
 	int m_LifePoints;
 	Card  m_wizard;
 	std::string m_name;

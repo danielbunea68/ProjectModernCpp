@@ -1,3 +1,5 @@
+/*
+
 #include "Wizard_Mode.h"
 #include "Board.h"
 #include <iostream>
@@ -151,3 +153,4 @@ void Wizard_Mode::activatePower(WizardPower power, int row, int col) {
     currentPlayer->powerUsed = true;
     std::cout << "Wizard power activated!\n";
 }
+*/

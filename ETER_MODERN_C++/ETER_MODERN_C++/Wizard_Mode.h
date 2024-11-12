@@ -1,3 +1,4 @@
+/*
 #pragma once
 #include "Game.h"
 #include "Player.h"
@@ -29,3 +30,4 @@ private:
 public:
     void activatePower(WizardPower power, int row = -1, int col = -1);
 };
+*/
