@@ -221,6 +221,16 @@ void Wizard_Mode::ReturnCardToPlayer(int row, int col)
 
 void Wizard_Mode::CreatePit(int row, int col)
 {
+    board.UpdateMarked(row, col);  // Mark the position as a pit
+
+    // Now, remove all cards from that position using the getter function to access the internal board
+    auto& boardGrid = board.GetBoard();  // Get a reference to the board
+    while (!boardGrid[row][col].empty())
+    {
+        boardGrid[row][col].pop();  // Remove all cards from the stack at that position
+    }
+
+    std::cout << "Pit created at position (" << row << ", " << col << "). All cards removed.\n";
 }
 
 void Wizard_Mode::PlayGame()
