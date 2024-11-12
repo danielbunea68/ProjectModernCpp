@@ -134,6 +134,7 @@
     <ClInclude Include="Explosion_Card.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game_Mode.h" />
+    <ClInclude Include="IGame.h" />
     <ClInclude Include="Wizard_Mode.h" />
     <ClInclude Include="Match.h" />
     <ClInclude Include="Player.h" />
@@ -148,6 +149,7 @@
     <ClCompile Include="Explosion_Card.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game_Mode.cpp" />
+    <ClCompile Include="IGame.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Wizard_Card.cpp" />
     <ClCompile Include="Wizard_Mode.cpp" />

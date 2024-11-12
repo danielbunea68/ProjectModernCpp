@@ -1,10 +1,8 @@
-﻿
-
-#pragma once
+﻿#pragma once
 #include "Board.h"
 #include "Player.h"
-
-class Game
+#include "IGame.h"
+class Game :public IGame
 {
 
 private:
@@ -16,13 +14,18 @@ private:
 
 public:
 	Game();
-	void RemoveCard(int row, int col);//aici
-	void ReturnCardToPlayer(int row, int col);//aici
-	void CreatePit(int row, int col);//aici
-	void InitGame(std::string name1, std::string name2);
+	void RemoveCard(int row, int col) override;
+
+	void ReturnCardToPlayer(int row, int col)override;
+
+	void CreatePit(int row, int col)override;
+
+	void InitGame(std::string name1, std::string name2)override;
+
 	Player* CurrentTurn() const;
-	void PlayGame();
-	void ResetGame();
+
+	void PlayGame()override;
+	void ResetGame()override;
 };
 
 

@@ -1,9 +1,10 @@
-/*
+
 #pragma once
 #include "Game.h"
 #include "Player.h"
 #include "Board.h"
 
+#include "IGame.h"
 enum class WizardPower {
     RemoveOpponentCard,
     RemoveRow,
@@ -15,7 +16,7 @@ enum class WizardPower {
     MoveEdgeRow
 };
 
-class Wizard_Mode : public Game {
+class Wizard_Mode : public IGame {
 private:
     Board board;
     void removeOpponentCard(int row, int col);
