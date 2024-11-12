@@ -1,0 +1,40 @@
+Index: ETER_MODERN_C++/ETER_MODERN_C++/Wizard_Card.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ETER_MODERN_C++/ETER_MODERN_C++/Wizard_Card.h b/ETER_MODERN_C++/ETER_MODERN_C++/Wizard_Card.h
+new file mode 100644
+--- /dev/null	(date 1731437145431)
++++ b/ETER_MODERN_C++/ETER_MODERN_C++/Wizard_Card.h	(date 1731437145431)
+@@ -0,0 +1,29 @@
++#pragma once
++#include <iostream>
++#include "Game.h"
++
++enum class WizardAbility {
++    RemoveOpponentCard,
++    RemoveRow,
++    CoverOpponentCard,
++    CreatePit,
++    MoveOwnStack,
++    ExtraEterCard,
++    MoveOpponentStack,
++    MoveEdgeRow
++};
++
++class Wizard_Card {
++private:
++    WizardAbility ability;
++    bool isUsed;
++
++public:
++    Wizard_Card(WizardAbility abilityType);
++
++    WizardAbility GetAbilityType() const;
++
++    void ActivateAbility(Game* gameInstance, int row = -1, int col = -1);
++
++    bool IsUsed() const;
++};
+\ No newline at end of file
