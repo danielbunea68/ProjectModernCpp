@@ -1,7 +1,7 @@
 #include "Player.h"
 
-Player::Player(const std::string& playerName, const Card& wizardCard) :
-	m_name(playerName), m_wizard(wizardCard), m_LifePoints(100), m_placedCardFaceDown(false){}
+Player::Player(const std::string& playerName) :
+	m_name(playerName), m_LifePoints(100), m_placedCardFaceDown(false){}
 
 bool Player::CanPlaceCardFaceDown()
 {
@@ -28,6 +28,12 @@ std::string Player::getName() const
 	return m_name;
 }
 
+void Player::setRandomWizardPower()
+{
+	int randomIndex = std::rand() % static_cast<int>(WizardPower::MoveEdgeRow) + 1;
+	m_wizard_power = static_cast<WizardPower>(randomIndex);
+}
+
 void Player::ShowHand()
 {
 	for (const auto& card : m_cards) {
@@ -39,6 +45,11 @@ void Player::ShowHand()
 void Player::setName(const std::string& name)
 {
 	m_name = name;
+}
+
+WizardPower Player::getWizardPower() const
+{
+	return m_wizard_power;
 }
 
 Card Player::PlayCard(int cardIndex)

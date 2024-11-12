@@ -5,16 +5,6 @@
 #include "Board.h"
 
 #include "IGame.h"
-enum class WizardPower {
-    RemoveOpponentCard,
-    RemoveRow,
-    CoverOpponentCard,
-    CreatePit,
-    MoveOwnStack,
-    ExtraEterCard,
-    MoveOpponentStack,
-    MoveEdgeRow
-};
 
 class Wizard_Mode : public IGame {
 private :
@@ -33,6 +23,7 @@ private :
 
     void SwitchTurn();
 public :
+    Wizard_Mode();
     void RemoveCard(int row, int col) override;
 
     void ReturnCardToPlayer(int row, int col)override;
@@ -44,6 +35,7 @@ public :
     Player* CurrentTurn() const;
 
     void PlayGame()override;
+
     void ResetGame()override;
 
     void activatePower(WizardPower power, int row = -1, int col = -1);
