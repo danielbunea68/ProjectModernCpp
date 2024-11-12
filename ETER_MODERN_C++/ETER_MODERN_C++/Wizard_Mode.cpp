@@ -170,6 +170,13 @@ void Wizard_Mode::InitGame(std::string name1, std::string name2)
     currentPlayer = &player1;
 }
 
+Player* Wizard_Mode::CurrentTurn() const
+{
+    return currentPlayer;
+}
+
+
+
 void Wizard_Mode::SwitchTurn()
 {
     if (currentPlayer->getName() == player1.getName())
@@ -182,3 +189,44 @@ void Wizard_Mode::SwitchTurn()
     }
 }
 
+void Wizard_Mode::RemoveCard(int row, int col)
+{
+    board.Remove(row, col);
+}
+
+void Wizard_Mode::ReturnCardToPlayer(int row, int col)
+{
+    if (!board.IsEmpty(row, col))  // Check if there's a card to return
+    {
+        // Get the card from the board
+        Card card = board.TopCard(row, col);
+        board.Remove(row, col);  // Remove the card from the board
+
+        if (card.getColor() == currentPlayer->getColor()) {
+            currentPlayer->AddCard(card);
+            std::cout << "Card returned to " << currentPlayer->getName() << "'s hand.\n";
+        }
+        else {
+            // Return the card to the other player's hand
+            Player* otherPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+            otherPlayer->AddCard(card);  // Add the card to the other player's hand
+            std::cout << "Card returned to " << otherPlayer->getName() << "'s hand.\n";
+        }
+    }
+    else
+    {
+        std::cout << "No card to return at position (" << row << ", " << col << ").\n";
+    }
+}
+
+void Wizard_Mode::CreatePit(int row, int col)
+{
+}
+
+void Wizard_Mode::PlayGame()
+{
+}
+
+void Wizard_Mode::ResetGame()
+{
+}
