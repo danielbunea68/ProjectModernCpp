@@ -1,118 +1,120 @@
-﻿/*
-#include "Element_Card.h"
-#include "Element_Card.h"
-#include "Game.h"
+﻿#include "Element_Card.h"
+#include "Explosion_Card.h"
 
-// Constructor
-Element_Card::Element_Card(Power power) : powerType(power) {}
+Element_Card::Element_Card(Putere putere) : tipPutere(putere){}
 
-// Getter pentru tipul de putere
-Element_Card::Power Element_Card::GetPowerType() const {
-    return powerType;
+Element_Card::Putere Element_Card::GetTipPutere() const 
+{
+    return tipPutere;
 }
 
-// Metoda pentru activarea puterii elementare
-void Element_Card::ActivatePower(Game* gameInstance) const 
+void Element_Card::ActivatePower() const
 {
-    switch (powerType) 
-    {
-    case Power::ControlledExplosion:
-        std::cout << "Activated: Controlled Explosion - The board explodes!\n";
-        // Logica specifica pentru Explozie controlata
+    switch (tipPutere) {
+    case Putere::ExplozieControlata:
+        std::cout << "Activating Explozie Controlata: Tabla explodează!" << std::endl;
+        ActivateControlledExplosion();
         break;
-    case Power::Destruction:
-        std::cout << "Activated: Destruction - Removes the last card played by the opponent.\n";
-        gameInstance->DestroyLastOpponentCard();
-        // Logica pentru Distrugere
+    case Putere::Distrugere:
+        std::cout << "Activating Distrugere: Elimină ultima carte jucată de adversar." << std::endl;
+        // Logic for Distrugere goes here
         break;
-    case Power::Flames:
-        std::cout << "Activated: Flames - Reveals the opponent's illusion and allows an extra play.\n";
-        // Logica pentru Flacari
+    case Putere::Flacari:
+        std::cout << "Activating Flacari: Întoarce iluzia adversarului și joacă o carte." << std::endl;
+        // Logic for Flacari goes here
         break;
-    case Power::Lava:
-        std::cout << "Activated: Lava - Returns visible cards of a chosen number to their owners.\n";
-        // Logica pentru Lava
+    case Putere::Lava:
+        std::cout << "Activating Lava: Toate cărțile vizibile cu un anumit număr se întorc la proprietari." << std::endl;
+        // Logic for Lava goes here
         break;
-    case Power::FromAshes:
-        std::cout << "Activated: From Ashes - Plays a previously removed card.\n";
-        // Logica pentru Din cenusa
+    case Putere::DinCenusa:
+        std::cout << "Activating Din Cenusa: Joacă imediat o carte eliminată." << std::endl;
+        // Logic for Din Cenusa goes here
         break;
-    case Power::Sparks:
-        std::cout << "Activated: Sparks - Plays a covered card on a different position.\n";
-        // Logica pentru Scantei
+    case Putere::Scantei:
+        std::cout << "Activating Scantei: Joacă o carte acoperită de adversar pe o altă poziție." << std::endl;
+        // Logic for Scantei goes here
         break;
-    case Power::Blizzard:
-        std::cout << "Activated: Blizzard - Returns an opponent's visible card to their hand.\n";
-        gameInstance->ReturnVisibleOpponentCard();  // Apelarea funcției pentru Vifor
+    case Putere::Viscol:
+        std::cout << "Activating Viscol: Întoarce o carte vizibilă a oponentului în mâna sa." << std::endl;
+        // Logic for Viscol goes here
         break;
-    case Power::Gale:
-        std::cout << "Activated: Gale - Uncovers all cards beneath other cards.\n";
-        // Logica pentru Vijelie
+    case Putere::Vijelie:
+        std::cout << "Activating Vijelie: Toate cărțile acoperite se întorc la proprietari." << std::endl;
+        // Logic for Vijelie goes here
         break;
-    case Power::Hurricane:
-        std::cout << "Activated: Hurricane - Shifts a full row by one position.\n";
-        // Logica pentru Uragan
+    case Putere::Uragan:
+        std::cout << "Activating Uragan: Shiftează un rând complet ocupat." << std::endl;
+        // Logic for Uragan goes here
         break;
-    case Power::Gust:
-        std::cout << "Activated: Gust - Moves a visible card to an adjacent position with a smaller card.\n";
-        // Logica pentru Rafala
+    case Putere::Rafala:
+        std::cout << "Activating Rafala: Mută o carte vizibilă adiacent unei cărți cu număr mai mic." << std::endl;
+        // Logic for Rafala goes here
         break;
-    case Power::Mirage:
-        std::cout << "Activated: Mirage - Replaces the illusion with another.\n";
-        // Logica pentru Miraj
+    case Putere::Miraj:
+        std::cout << "Activating Miraj: Înlocuiește propria iluzie plasată cu o altă iluzie." << std::endl;
+        // Logic for Miraj goes here
         break;
-    case Power::Storm:
-        std::cout << "Activated: Storm - Removes any stack of cards with 2 or more cards.\n";
-        // Logica pentru Furtuna
+    case Putere::Furtuna:
+        std::cout << "Activating Furtuna: Elimină din joc un teanc de cărți cu 2 sau mai multe cărți." << std::endl;
+        // Logic for Furtuna goes here
         break;
-    case Power::Tide:
-        std::cout << "Activated: Tide - Swaps two stacks of cards.\n";
-        // Logica pentru Maree
+    case Putere::Maree:
+        std::cout << "Activating Maree: Interschimbă pozițiile a două teancuri de cărți." << std::endl;
+        // Logic for Maree goes here
         break;
-    case Power::Mist:
-        std::cout << "Activated: Mist - Allows another illusion.\n";
-        // Logica pentru Ceata
+    case Putere::Ceata:
+        std::cout << "Activating Ceata: Joacă încă o iluzie." << std::endl;
+        // Logic for Ceata goes here
         break;
-    case Power::Wave:
-        std::cout << "Activated: Wave - Moves a stack to an empty adjacent position.\n";
-        // Logica pentru Val
+    case Putere::Val:
+        std::cout << "Activating Val: Mută un teanc pe o poziție adiacentă goală și joacă o carte pe noua poziție goală." << std::endl;
+        // Logic for Val goes here
         break;
-    case Power::WaterSwirl:
-        std::cout << "Activated: Water Swirl - Moves two cards across an empty space.\n";
-        // Logica pentru Vartej de apa
+    case Putere::VartejDeApa:
+        std::cout << "Activating Vartej De Apa: Mută 2 cărți despărțite de un spațiu gol pe acel spațiu." << std::endl;
+        // Logic for Vartej De Apa goes here
         break;
-    case Power::Tsunami:
-        std::cout << "Activated: Tsunami - Restricts the opponent from playing on a chosen row.\n";
-        // Logica pentru Tsunami
+    case Putere::Tsunami:
+        std::cout << "Activating Tsunami: Blochează un rând pentru adversar în următoarea tură." << std::endl;
+        // Logic for Tsunami goes here
         break;
-    case Power::Cascade:
-        std::cout << "Activated: Cascade - Causes stacks to fall toward the edge, forming a new stack.\n";
-        // Logica pentru Cascada
+    case Putere::Cascada:
+        std::cout << "Activating Cascade: Teancurile de pe un rând cad spre o margine și formează un nou teanc." << std::endl;
+        // Logic for Cascade goes here
         break;
-    case Power::Support:
-        std::cout << "Activated: Support - Increases a card's value by 1.\n";
-        // Logica pentru Sprijin
+    case Putere::Sprijin:
+        std::cout << "Activating Sprijin: Valoarea unei cărți proprii 1/2/3 crește cu 1." << std::endl;
+        // Logic for Sprijin goes here
         break;
-    case Power::Earthquake:
-        std::cout << "Activated: Earthquake - Removes all visible cards with the number 1.\n";
-        // Logica pentru Cutremur
+    case Putere::Cutremur:
+        std::cout << "Activating Cutremur: Elimină de pe tablă toate cărțile vizibile cu numărul 1." << std::endl;
+        // Logic for Cutremur goes here
         break;
-    case Power::Shatter:
-        std::cout << "Activated: Shatter - Decreases an opponent card's value by 1.\n";
-        // Logica pentru Sfarama
+    case Putere::Sfaramare:
+        std::cout << "Activating Sfaramare: Valoarea unei cărți a adversarului 2/3/4 scade cu 1." << std::endl;
+        // Logic for Sfaramare goes here
         break;
-    case Power::Borders:
-        std::cout << "Activated: Borders - Places a neutral card on the board as a boundary.\n";
-        // Logica pentru Granite
+    case Putere::Granite:
+        std::cout << "Activating Granite: Plasează o carte neutră care definește o graniță." << std::endl;
+        // Logic for Granite goes here
         break;
-    case Power::Avalanche:
-        std::cout << "Activated: Avalanche - Shifts two adjacent stacks.\n";
-        // Logica pentru Avalansa
+    case Putere::Avalansa:
+        std::cout << "Activating Avalansa: Shiftează două teancuri adiacente pe o poziție goală." << std::endl;
+        // Logic for Avalansa goes here
         break;
-    case Power::Boulder:
-        std::cout << "Activated: Boulder - Covers an illusion without revealing it.\n";
-        // Logica pentru Bolovan
+    case Putere::Bolovan:
+        std::cout << "Activating Bolovan: Acoperă o iluzie cu o carte fără a o întoarce." << std::endl;
+        // Logic for Bolovan goes here
+        break;
+    default:
+        std::cout << "Unknown power!" << std::endl;
         break;
     }
 }
-*/
+
+void Element_Card::ActivateControlledExplosion() const
+{
+    Explosion_Card explosionCard(4); 
+    explosionCard.activateExplosion();
+}

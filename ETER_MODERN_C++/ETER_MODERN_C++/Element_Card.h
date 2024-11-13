@@ -1,51 +1,44 @@
-﻿/*
-
-#pragma once
+﻿#pragma once
 #include <iostream>
-#include "Game.h"
 
-class Element_Card
+class Element_Card 
 {
 public:
-    // Enum pentru a reprezenta toate puterile elementare
-    enum class Power {
-        ControlledExplosion,
-        Destruction,
-        Flames,
+    enum class Putere 
+    {
+        ExplozieControlata,
+        Distrugere,
+        Flacari,
         Lava,
-        FromAshes,
-        Sparks,
-        Blizzard,
-        Gale,
-        Hurricane,
-        Gust,
-        Mirage,
-        Storm,
-        Tide,
-        Mist,
-        Wave,
-        WaterSwirl,
+        DinCenusa,
+        Scantei,
+        Viscol,
+        Vijelie,
+        Uragan,
+        Rafala,
+        Miraj,
+        Furtuna,
+        Maree,
+        Ceata,
+        Val,
+        VartejDeApa,
         Tsunami,
-        Cascade,
-        Support,
-        Earthquake,
-        Shatter,
-        Borders,
-        Avalanche,
-        Boulder
+        Cascada,
+        Sprijin,
+        Cutremur,
+        Sfaramare,
+        Granite,
+        Avalansa,
+        Bolovan
     };
 
 private:
-    Power powerType;  // Tipul de putere asociat cu această carte
+    Putere tipPutere;
 
 public:
-    // Constructor
-    Element_Card(Power power);
 
-    // Getter pentru tipul de putere
-    Power GetPowerType() const;
-
-    // Metoda pentru activarea puterii elementare
-    void ActivatePower(Game* gameInstance) const;
+    Element_Card(Putere putere);
+    Putere GetTipPutere() const;
+    void ActivatePower() const;
+    void ActivateControlledExplosion() const;
 };
-*/
