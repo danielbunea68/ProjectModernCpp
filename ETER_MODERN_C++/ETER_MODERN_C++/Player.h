@@ -1,7 +1,7 @@
 #pragma once
 #include "Card.h"
 #include "Card.h"
-#include "Element_Card.h"
+#include "Element_Mode.h"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -29,6 +29,7 @@ private:
 	std::string m_name;
 	std::string m_color;
 	bool m_placedCardFaceDown;
+	std::pair<int, int> m_last_move;
 public:
 	bool powerUsed;
 	// TODO 2: bool daca playerul are o bomba
@@ -42,7 +43,8 @@ public:
 	std::string getColor() const;
 	void setColor(const std::string& color);
 	std::string getName() const;
-
+	void setLastMove(int row , int col);
+	std::pair<int, int> getLastMove();
 	void setName(const std::string& newName);
 	WizardPower getWizardPower() const;
 	void setRandomWizardPower();

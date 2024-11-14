@@ -57,4 +57,6 @@ public:
     Putere GetTipPutere() const;
     void ActivatePower() const;
     void ActivateControlledExplosion() const;
+    void  DestroyLastOpponentCard();
+      
 };

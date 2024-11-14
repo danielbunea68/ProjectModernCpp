@@ -19,14 +19,18 @@ void Element_Mode::InitGame(std::string name1, std::string name2)
 {
     player1.setName(name1);
     player2.setName(name2);
-    board.SetSize(3);
-    std::vector<int> values = { 1, 1, 2, 2, 3, 3, 4 };
+    board.SetSize(4);
+    std::vector<int> values = { 1, 1, 2,2, 2, 3, 3 ,3, 4 };
     player1.setColor("red");
     player2.setColor("blue");
     for (const auto& value : values) {
         player1.AddCard(Card(value, player1.getColor()));
         player2.AddCard(Card(value, player2.getColor()));
     }
+    player1.AddCard(Card(5, player1.getColor(), "Eter"));
+
+    player2.AddCard(Card(5, player2.getColor(), "Eter"));
+
     currentPlayer = &player1;
 }
 
@@ -69,7 +73,8 @@ void Element_Mode::PlayGame()
             result = board.CanMakeMove(row, col, chosenCard);
         }
         if (result == 1)
-        {
+        {   
+            currentPlayer->setLastMove(row, col);
             board.MakeMove(row, col, chosenCard);
         }
 
@@ -249,6 +254,22 @@ void Element_Mode::ReturnCardToPlayer(int row, int col)
     {
         std::cout << "No card to return at position (" << row << ", " << col << ").\n";
     }
+}
+
+void Element_Mode::DestroyLastOpponentCard() {
+    // Identify the opponent
+    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+    std::pair<int, int> move = opponent->getLastMove();
+
+    int row = move.first;
+    int col = move.second;
+    // Locate and remove the card from the board if present
+    bool cardFound = false;
+
+    Card card1 = board.TopCard(row, col);
+    if ( card1.getColor()==opponent->getColor())
+        board.Remove(row, col);
+
 }
 
 void Element_Mode::CreatePit(int row, int col)
