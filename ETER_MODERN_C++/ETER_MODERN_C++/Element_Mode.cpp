@@ -646,3 +646,31 @@ void Element_Mode::Scantei()
 	}
 }
 
+void Element_Mode::ActivateRafala(int row, int col, int targetRow, int targetCol) {
+    if (!board.IsValidPosition(row, col) || !board.IsValidPosition(targetRow, targetCol)) {
+        std::cout << "Invalid positions for Rafala.\n";
+        return;
+    }
+
+    if (board.IsEmpty(row, col)) {
+        std::cout << "No card at the selected position to move.\n";
+        return;
+    }
+
+    if (board.IsEmpty(targetRow, targetCol)) {
+        std::cout << "Target position is empty. Rafala cannot be applied.\n";
+        return;
+    }
+
+    Card sourceCard = board.TopCard(row, col);
+    Card targetCard = board.TopCard(targetRow, targetCol);
+
+    if (sourceCard.getValue() < targetCard.getValue() && !targetCard.getIsFaceDown()) {
+        board.Remove(row, col);
+        board.AddCard(targetRow, targetCol, sourceCard);
+        std::cout << "Rafala applied: Moved card " << sourceCard.getValue() << " to (" << targetRow << ", " << targetCol << ").\n";
+    } else {
+        std::cout << "Target card must have a higher value, and it must be visible for Rafala to be applied.\n";
+    }
+}
+
