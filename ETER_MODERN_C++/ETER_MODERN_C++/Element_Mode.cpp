@@ -19,6 +19,11 @@ void Element_Mode::SwitchTurn()
 
 Element_Mode::Element_Mode()
 {
+    currentPlayer = NULL;
+}
+
+Element_Mode::Element_Mode()
+{
 }
 
 void Element_Mode::InitGame(std::string name1, std::string name2)
@@ -261,15 +266,17 @@ void Element_Mode::ReturnCardToPlayer(int row, int col)
     }
 }
 
-void Element_Mode::DestroyLastOpponentCard()
+
+void Element_Mode::DestroyLastOpponentCard() 
 {
-    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
-    std::pair<int, int> move = opponent->getLastMove();
+	// Identify the opponent
+	Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+	std::pair<int, int> move = opponent->getLastMove();
 
-    int row = move.first;
-    int col = move.second;
-
-    bool cardFound = false;
+	int row = move.first;
+	int col = move.second;
+	// Locate and remove the card from the board if present
+	bool cardFound = false;
 
 	Card card1 = board.TopCard(row, col);
 	if (card1.getColor() == opponent->getColor())
@@ -286,16 +293,25 @@ void Element_Mode::CreatePit(int row, int col)
     {
         boardGrid[row][col].pop();  
     }
+	board.UpdateMarked(row, col);  // Mark the position as a pit
+
+	// Now, remove all cards from that position using the getter function to access the internal board
+	auto& boardGrid = board.GetBoard();  // Get a reference to the board
+	while (!boardGrid[row][col].empty())
+	{
+		boardGrid[row][col].pop();  // Remove all cards from the stack at that position
+	}
 
 	std::cout << "Pit created at position (" << row << ", " << col << "). All cards removed.\n";
 }
 
+ 
+Element_Mode::Element_Mode(Putere putere) : tipPutere(putere) {}
 
-Element_Mode::Putere Element_Mode::GetTipPutere() 
+Element_Mode::Putere Element_Mode::GetTipPutere()
 {
 	return tipPutere;
 }
-/*
 
 void Element_Mode::ActivatePower() 
 {
@@ -409,62 +425,62 @@ void Element_Mode::ActivateControlledExplosion()
 	explosionCard.activateExplosion();
 }
 
-void Element_Mode::Flacari() 
+void Element_Mode::Flacari()
 {
-    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
-    bool cardRevealed = false;
+	Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+	bool cardRevealed = false;
 
-    for (int row = 0; row < board.GetSize(); ++row) 
-    {
-        for (int col = 0; col < board.GetSize(); ++col) 
-        {
-            if (!board.IsEmpty(row, col)) 
-            {
-                Card topCard = board.TopCard(row, col);
+	for (int row = 0; row < board.GetSize(); ++row)
+	{
+		for (int col = 0; col < board.GetSize(); ++col)
+		{
+			if (!board.IsEmpty(row, col))
+			{
+				Card topCard = board.TopCard(row, col);
 
-                if (topCard.getColor() == opponent->getColor() && topCard.getIsFaceDown()) 
-                {
-                    topCard.setFaceDown(false);
-                    board.UpdateCard(row, col, topCard); 
-                    std::cout << "Flăcări activated: Card at (" << row << ", " << col
-                        << ") belonging to " << opponent->getName()
-                        << " is now face-up.\n";
-                    cardRevealed = true;
-                    break;
-                }
-            }
-        }
-        if (cardRevealed) break;
-    }
+				if (topCard.getColor() == opponent->getColor() && topCard.getIsFaceDown())
+				{
+					topCard.setFaceDown(false);
+					board.UpdateCard(row, col, topCard);
+					std::cout << "Flăcări activated: Card at (" << row << ", " << col
+						<< ") belonging to " << opponent->getName()
+						<< " is now face-up.\n";
+					cardRevealed = true;
+					break;
+				}
+			}
+		}
+		if (cardRevealed) break;
+	}
 
-    if (!cardRevealed) 
-    {
-        std::cout << "No face-down cards belonging to the opponent were found.\n";
-    }
+	if (!cardRevealed)
+	{
+		std::cout << "No face-down cards belonging to the opponent were found.\n";
+	}
 
-    currentPlayer->ShowHand();
-    int cardIndex = -1;
-    while (!currentPlayer->HasCardAtIndex(cardIndex)) 
-    {
-        std::cout << currentPlayer->getName() << ", choose a card index to play: ";
-        std::cin >> cardIndex;
-    }
-    Card chosenCard = currentPlayer->PlayCard(cardIndex);
+	currentPlayer->ShowHand();
+	int cardIndex = -1;
+	while (!currentPlayer->HasCardAtIndex(cardIndex))
+	{
+		std::cout << currentPlayer->getName() << ", choose a card index to play: ";
+		std::cin >> cardIndex;
+	}
+	Card chosenCard = currentPlayer->PlayCard(cardIndex);
 
-    int row = -1, col = -1;
-    int result = board.CanMakeMove(row, col, chosenCard);
-    while (result == 0) 
-    {
-        std::cout << "Enter row and column (0, 1, 2, or 3) to place the card: ";
-        std::cin >> row >> col;
-        result = board.CanMakeMove(row, col, chosenCard);
-    }
+	int row = -1, col = -1;
+	int result = board.CanMakeMove(row, col, chosenCard);
+	while (result == 0)
+	{
+		std::cout << "Enter row and column (0, 1, 2, or 3) to place the card: ";
+		std::cin >> row >> col;
+		result = board.CanMakeMove(row, col, chosenCard);
+	}
 
-    if (result == 1) 
-    {
-        currentPlayer->setLastMove(row, col);
-        board.MakeMove(row, col, chosenCard);
-        std::cout << currentPlayer->getName() << " placed card with value "
-            << chosenCard.getValue() << " at (" << row << ", " << col << ").\n";
-    }
+	if (result == 1)
+	{
+		currentPlayer->setLastMove(row, col);
+		board.MakeMove(row, col, chosenCard);
+		std::cout << currentPlayer->getName() << " placed card with value "
+			<< chosenCard.getValue() << " at (" << row << ", " << col << ").\n";
+	}
 }
