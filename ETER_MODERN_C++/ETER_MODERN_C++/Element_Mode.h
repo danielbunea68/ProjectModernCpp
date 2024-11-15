@@ -48,6 +48,12 @@ private:
 
 public:
 
+	Element_Mode();
+	void InitGame(std::string name1, std::string name2) = 0;
+	void PlayGame() = 0;
+	void ResetGame() = 0;
+
+
 	void InitGame(std::string name1, std::string name2) = 0;
 	void PlayGame() = 0;
 	void ResetGame() = 0;
@@ -58,10 +64,11 @@ public:
 
 
 	Element_Mode(Putere putere);
-	Putere GetTipPutere() const;
-	void ActivatePower() const;
-	void ActivateControlledExplosion() const;
+	Putere GetTipPutere();
+	void ActivatePower();
+	void ActivateControlledExplosion();
 	void  DestroyLastOpponentCard();
+	void Flacari();
 
 	// Metoda pentru activarea puterii elementare
 

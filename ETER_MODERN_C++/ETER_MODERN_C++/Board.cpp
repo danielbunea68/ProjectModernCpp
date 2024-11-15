@@ -202,3 +202,23 @@ void Board::Remove(int row, int col)
 		std::cout << "Invalid position or no card to remove at (" << row << ", " << col << ").\n";
 	}
 }
+
+void Board::UpdateCard(int row, int col, const Card& card)
+{
+	if (!IsValidPosition(row, col)) 
+	{
+		std::cerr << "Invalid position (" << row << ", " << col << ").\n";
+		return;
+	}
+
+	if (board[row][col].empty()) 
+	{
+		std::cerr << "No cards at position (" << row << ", " << col << ") to update.\n";
+		return;
+	}
+
+	board[row][col].pop();    
+	board[row][col].push(card);
+
+	std::cout << "Updated the top card at position (" << row << ", " << col << ").\n";
+}
