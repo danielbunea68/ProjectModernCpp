@@ -700,3 +700,18 @@ void Element_Mode::ActivateMiraj(int row, int col, int cardIndex) {
     }
 }
 
+void Element_Mode::ActivateFurtuna() {
+    for (int row = 0; row < board.GetSize(); ++row) {
+        for (int col = 0; col < board.GetSize(); ++col) {
+            if (!board.IsEmpty(row, col)) {
+                std::stack<Card>& stack = board.GetBoard()[row][col];
+                if (stack.size() >= 2) {
+                    std::cout << "Furtuna applied: Removed stack at (" << row << ", " << col << ").\n";
+                    while (!stack.empty()) {
+                        stack.pop();
+                    }
+                }
+            }
+        }
+    }
+}
