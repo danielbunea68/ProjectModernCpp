@@ -715,3 +715,43 @@ void Element_Mode::ActivateFurtuna() {
         }
     }
 }
+
+void Element_Mode::Uragan(int row) {
+    if (row < 0 || row >= board.GetSize()) {
+        std::cout << "Invalid row for Uragan.\n";
+        return;
+    }
+
+    std::vector<Card> rowCards;
+    for (int col = 0; col < board.GetSize(); ++col) {
+        if (!board.IsEmpty(row, col)) {
+            while (!board.GetBoard()[row][col].empty()) {
+                rowCards.push_back(board.GetBoard()[row][col].top());
+                board.GetBoard()[row][col].pop();
+            }
+        }
+    }
+
+    if (rowCards.empty()) {
+        std::cout << "No cards to move in row " << row << ".\n";
+        return;
+    }
+
+    int newRow;
+    std::cout << "Enter the new row to move the cards: ";
+    std::cin >> newRow;
+
+    if (newRow < 0 || newRow >= board.GetSize() || newRow == row) {
+        std::cout << "Invalid row or same row for Uragan.\n";
+        return;
+    }
+
+    for (int col = 0; col < board.GetSize() && !rowCards.empty(); ++col) {
+        if (board.IsEmpty(newRow, col)) {
+            board.AddCard(newRow, col, rowCards.back());
+            rowCards.pop_back();
+        }
+    }
+
+    std::cout << "Uragan activated: Moved cards from row " << row << " to row " << newRow << ".\n";
+}

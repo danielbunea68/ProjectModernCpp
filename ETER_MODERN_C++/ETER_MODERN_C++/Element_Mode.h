@@ -71,4 +71,5 @@ public:
     void ActivateRafala(int row, int col, int targetRow, int targetCol);
     void ActivateMiraj(int row, int col, int cardIndex);
     void ActivateFurtuna();
+    void Uragan(int row);
 };
