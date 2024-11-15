@@ -331,7 +331,7 @@ void Element_Mode::ActivatePower()
         break;
     case Putere::Lava:
         std::cout << "Activating Lava: Toate cărțile vizibile cu un anumit număr se întorc la proprietari." << std::endl;
-        // Logic for Lava goes here
+		Lava();
         break;
     case Putere::DinCenusa:
         std::cout << "Activating Din Cenusa: Joacă imediat o carte eliminată." << std::endl;
@@ -484,3 +484,65 @@ void Element_Mode::Flacari()
 			<< chosenCard.getValue() << " at (" << row << ", " << col << ").\n";
 	}
 }
+
+void Element_Mode::Lava()
+{
+	std::unordered_map<int, int> visibleCardCount;
+
+	for (int row = 0; row < board.GetSize(); ++row) 
+	{
+		for (int col = 0; col < board.GetSize(); ++col) 
+		{
+			if (!board.IsEmpty(row, col)) 
+			{
+				Card topCard = board.TopCard(row, col);
+				if (!topCard.getIsFaceDown()) {
+					visibleCardCount[topCard.getValue()]++;
+				}
+			}
+		}
+	}
+
+
+	std::vector<int> eligibleNumbers;
+	for (const auto& pair : visibleCardCount) 
+	{
+		if (pair.second >= 2) 
+		{
+			eligibleNumbers.push_back(pair.first);
+		}
+	}
+
+	if (eligibleNumbers.empty()) 
+	{
+		std::cout << "No number has at least two visible cards.\n";
+		return;
+	}
+
+	std::cout << "Choose a number from the following visible numbers with at least two cards:\n";
+	for (int number : eligibleNumbers) 
+	{
+		std::cout << number << " ";
+	}
+	std::cout << "\nYour choice: ";
+	int chosenNumber;
+	std::cin >> chosenNumber;
+
+	for (int row = 0; row < board.GetSize(); ++row) 
+	{
+		for (int col = 0; col < board.GetSize(); ++col) 
+		{
+			if (!board.IsEmpty(row, col)) 
+			{
+				Card topCard = board.TopCard(row, col);
+				if (!topCard.getIsFaceDown() && topCard.getValue() == chosenNumber) 
+				{
+					std::cout << "Returning card with value " << chosenNumber
+						<< " at position (" << row << ", " << col << ").\n";
+					ReturnCardToPlayer(row, col);
+				}
+			}
+		}
+	}
+}
+
