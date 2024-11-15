@@ -1,6 +1,8 @@
-﻿#include "Elements_Mode.h"
-#include "Explosion_Card.h"
+﻿
+#pragma once
 #include "Element_Mode.h"
+#include "Explosion_Card.h"
+
 #include "Board.h"
 
 void Element_Mode::SwitchTurn()

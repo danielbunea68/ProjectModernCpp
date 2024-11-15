@@ -48,6 +48,11 @@ private:
 
 public:
 
+	Element_Mode();
+	void InitGame(std::string name1, std::string name2) = 0;
+	void PlayGame() = 0;
+	void ResetGame() = 0;
+
 	void InitGame(std::string name1, std::string name2) = 0;
 	void PlayGame() = 0;
 	void ResetGame() = 0;
