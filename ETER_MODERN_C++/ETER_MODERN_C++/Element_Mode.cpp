@@ -331,11 +331,11 @@ void Element_Mode::ActivatePower()
         break;
     case Putere::DinCenusa:
         std::cout << "Activating Din Cenusa: Joacă imediat o carte eliminată." << std::endl;
-        // Logic for Din Cenusa goes here
+		DinCenusa();
         break;
     case Putere::Scantei:
         std::cout << "Activating Scantei: Joacă o carte acoperită de adversar pe o altă poziție." << std::endl;
-        // Logic for Scantei goes here
+		Scantei();
         break;
     case Putere::Viscol:
         std::cout << "Activating Viscol: Întoarce o carte vizibilă a oponentului în mâna sa." << std::endl;
@@ -589,6 +589,60 @@ void Element_Mode::DinCenusa()
 	else 
 	{
 		std::cout << "Unable to play the card.\n";
+	}
+}
+
+
+void Element_Mode::Scantei() 
+{
+	int row, col;
+	bool coveredCardFound = false;
+
+	for (int r = 0; r < board.GetSize(); ++r) 
+	{
+		for (int c = 0; c < board.GetSize(); ++c) 
+		{
+			if (board.HasCoveredCard(r, c, currentPlayer->getColor())) 
+			{
+				row = r;
+				col = c;
+				coveredCardFound = true;
+				break;
+			}
+		}
+		if (coveredCardFound) 
+			break;
+	}
+
+	if (!coveredCardFound) 
+	{
+		std::cout << "No covered card found.\n";
+		return;
+	}
+
+	std::cout << "Covered card found at position (" << row << ", " << col << ").\n";
+
+	int newRow, newCol;
+	std::cout << "Enter new row and column to place the card: ";
+	std::cin >> newRow >> newCol;
+
+	while (!board.IsValidPosition(newRow, newCol) || !board.IsEmpty(newRow, newCol)) 
+	{
+		std::cout << "Invalid position. Enter new row and column: ";
+		std::cin >> newRow >> newCol;
+	}
+
+	Card card = board.TopCard(row, col);
+
+	board.Remove(row, col);
+
+	if (board.MakeMove(newRow, newCol, card)) 
+	{
+		std::cout << "Card moved to new position (" << newRow << ", " << newCol << ").\n";
+	}
+	else 
+	{
+		std::cout << "Failed to place card at the new position.\n";
 	}
 }
 
