@@ -222,3 +222,30 @@ void Board::UpdateCard(int row, int col, const Card& card)
 
 	std::cout << "Updated the top card at position (" << row << ", " << col << ").\n";
 }
+
+bool Board::HasCoveredCard(int row, int col, const std::string& color) 
+{
+	if (IsValidPosition(row, col) && !IsEmpty(row, col)) 
+	{
+		std::stack<Card>& cardStack = board[row][col];
+		if (cardStack.size() > 1) 
+		{
+
+			Card topCard = cardStack.top();
+
+			cardStack.pop();
+			Card secondCard = cardStack.top();
+			
+			cardStack.push(topCard);
+			
+			if (secondCard.getColor() == color && secondCard.getIsFaceDown()) 
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+
+

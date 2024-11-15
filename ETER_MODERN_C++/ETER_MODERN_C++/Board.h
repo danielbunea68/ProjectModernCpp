@@ -32,6 +32,7 @@ public:
 	void AddCard(int row , int col ,Card card );
 	void Remove(int row, int cols);//aici am lucrat
 	void UpdateCard(int row, int col, const Card& card);
+	bool HasCoveredCard(int row, int col, const std::string& color);
 	void Clear();
 
 	

@@ -67,4 +67,5 @@ public:
 	void Flacari();
 	void Lava();
 	void DinCenusa();
+	void Scantei();
 };
