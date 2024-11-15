@@ -674,3 +674,29 @@ void Element_Mode::ActivateRafala(int row, int col, int targetRow, int targetCol
     }
 }
 
+void Element_Mode::ActivateMiraj(int row, int col, int cardIndex) {
+    if (!board.IsValidPosition(row, col) || board.IsEmpty(row, col)) {
+        std::cout << "Invalid position or no illusion card found.\n";
+        return;
+    }
+
+    Card topCard = board.TopCard(row, col);
+
+    if (topCard.getIsFaceDown() && topCard.getColor() == currentPlayer->getColor()) {
+        if (!currentPlayer->HasCardAtIndex(cardIndex)) {
+            std::cout << "Invalid card index in hand for Miraj.\n";
+            return;
+        }
+
+        Card replacementCard = currentPlayer->PlayCard(cardIndex);
+        replacementCard.setFaceDown(true);  // Keep the new card as an illusion
+
+        board.Remove(row, col);
+        board.AddCard(row, col, replacementCard);
+
+        std::cout << "Miraj applied: Replaced illusion at (" << row << ", " << col << ") with a new card.\n";
+    } else {
+        std::cout << "No illusion card found at the specified position.\n";
+    }
+}
+
