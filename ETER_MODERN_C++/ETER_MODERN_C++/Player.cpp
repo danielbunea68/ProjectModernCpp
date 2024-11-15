@@ -89,6 +89,25 @@ void Player::AddCard(Card card)
 	m_cards.push_back(card);
 }
 
+void Player::AddToRemovedCards(const Card& card)
+{
+	removedCards.push_back(card);
+}
+
+void Player::RemoveFromRemovedCards(const Card& card)
+{
+	auto it = std::find(removedCards.begin(), removedCards.end(), card);
+	if (it != removedCards.end()) 
+	{
+		removedCards.erase(it);
+	}
+}
+
+const std::vector<Card>& Player::GetRemovedCards() const
+{
+	return removedCards;
+}
+
 void Player::ClearCards()
 {
 	m_cards.clear();

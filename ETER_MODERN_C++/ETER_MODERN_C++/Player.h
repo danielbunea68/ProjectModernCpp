@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cstdlib>   
 #include <ctime> 
+#include <algorithm>
 
 #include "Card.h"
 
@@ -31,6 +32,7 @@ private:
 	std::string m_color;
 	bool m_placedCardFaceDown;
 	std::pair<int, int> m_last_move;
+	std::vector<Card> removedCards;
 public:
 	bool powerUsed= false ;
 	
@@ -57,6 +59,9 @@ public:
 	bool HasCardAtIndex(int cardIndex);
 	void UseAbilty();
 	void AddCard(Card card);
+	void AddToRemovedCards(const Card& card);
+	void RemoveFromRemovedCards(const Card& card);
+	const std::vector<Card>& GetRemovedCards() const;
 	void ClearCards();
 };
 

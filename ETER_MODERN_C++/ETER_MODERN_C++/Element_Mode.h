@@ -54,11 +54,6 @@ public:
 	void PlayGame() = 0;
 	void ResetGame() = 0;
 
-
-	void InitGame(std::string name1, std::string name2) = 0;
-	void PlayGame() = 0;
-	void ResetGame() = 0;
-
 	void RemoveCard(int row, int col) = 0;
 	void ReturnCardToPlayer(int row, int col) = 0;
 	void CreatePit(int row, int col) = 0;
@@ -71,4 +66,5 @@ public:
 	void  DestroyLastOpponentCard();
 	void Flacari();
 	void Lava();
+	void DinCenusa();
 };
