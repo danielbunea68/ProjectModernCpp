@@ -13,3 +13,4 @@ public:
     virtual void ReturnCardToPlayer(int row, int col) = 0;
     virtual void CreatePit(int row, int col) = 0;
 };
+    

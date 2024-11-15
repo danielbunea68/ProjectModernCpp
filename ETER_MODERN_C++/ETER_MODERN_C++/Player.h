@@ -1,12 +1,13 @@
 #pragma once
-#include "Card.h"
-#include "Card.h"
-#include "Element_Card.h"
+
 #include <string>
 #include <vector>
 #include <iostream>
 #include <cstdlib>   
 #include <ctime> 
+
+#include "Card.h"
+
 enum class WizardPower {
 	RemoveOpponentCard,
 	RemoveRow,
@@ -29,9 +30,10 @@ private:
 	std::string m_name;
 	std::string m_color;
 	bool m_placedCardFaceDown;
+	std::pair<int, int> m_last_move;
 public:
-	bool powerUsed;
-	// TODO 2: bool daca playerul are o bomba
+	bool powerUsed= false ;
+	
 
 public:
 	Player()=default;
@@ -42,10 +44,14 @@ public:
 	std::string getColor() const;
 	void setColor(const std::string& color);
 	std::string getName() const;
-
+	void setLastMove(int row , int col);
+	std::pair<int, int> getLastMove();
 	void setName(const std::string& newName);
 	WizardPower getWizardPower() const;
 	void setRandomWizardPower();
+	bool getPowerUsed();
+
+	void setPowerUsed();
 	void ShowHand();
 	Card PlayCard(int cardIndex);/// ii updataeaza vectorul de carti 
 	bool HasCardAtIndex(int cardIndex);
