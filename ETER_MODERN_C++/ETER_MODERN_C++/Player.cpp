@@ -28,6 +28,11 @@ std::string Player::getName() const
 	return m_name;
 }
 
+void Player::setLastMove(int row , int col)
+{
+	m_last_move= { row,col };
+}
+
 void Player::setRandomWizardPower()
 {
 	int randomIndex = std::rand() % static_cast<int>(WizardPower::MoveEdgeRow) + 1;
@@ -40,6 +45,11 @@ void Player::ShowHand()
 		std::cout << card.getValue() << ' ';
 	}
 	std::cout << "\n";
+}
+
+std::pair<int, int> Player::getLastMove()
+{
+	return m_last_move;
 }
 
 void Player::setName(const std::string& name)

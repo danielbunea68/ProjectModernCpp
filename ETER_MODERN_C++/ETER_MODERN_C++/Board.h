@@ -1,7 +1,9 @@
 #pragma once
 #include <vector>
-#include"Card.h"
 #include <stack>
+
+#include "Card.h"
+
 class Board
 {
 private:

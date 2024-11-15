@@ -1,51 +1,68 @@
-﻿/*
+﻿#pragma once
 
-#pragma once
 #include <iostream>
-#include "Game.h"
+#include "IGame.h"
+#include "Board.h"
+#include "Player.h"
 
-class Element_Card
+
+
+class Element_Mode :public IGame
 {
 public:
-    // Enum pentru a reprezenta toate puterile elementare
-    enum class Power {
-        ControlledExplosion,
-        Destruction,
-        Flames,
-        Lava,
-        FromAshes,
-        Sparks,
-        Blizzard,
-        Gale,
-        Hurricane,
-        Gust,
-        Mirage,
-        Storm,
-        Tide,
-        Mist,
-        Wave,
-        WaterSwirl,
-        Tsunami,
-        Cascade,
-        Support,
-        Earthquake,
-        Shatter,
-        Borders,
-        Avalanche,
-        Boulder
-    };
+	enum class Putere
+	{
+		ExplozieControlata,
+		Distrugere,
+		Flacari,
+		Lava,
+		DinCenusa,
+		Scantei,
+		Viscol,
+		Vijelie,
+		Uragan,
+		Rafala,
+		Miraj,
+		Furtuna,
+		Maree,
+		Ceata,
+		Val,
+		VartejDeApa,
+		Tsunami,
+		Cascada,
+		Sprijin,
+		Cutremur,
+		Sfaramare,
+		Granite,
+		Avalansa,
+		Bolovan
+	};
 
 private:
-    Power powerType;  // Tipul de putere asociat cu această carte
+	Putere tipPutere;
+	Board board;
+	Player player1, player2;
+	Player* currentPlayer;
+
+	void SwitchTurn();
 
 public:
-    // Constructor
-    Element_Card(Power power);
 
-    // Getter pentru tipul de putere
-    Power GetPowerType() const;
+	void InitGame(std::string name1, std::string name2) = 0;
+	void PlayGame() = 0;
+	void ResetGame() = 0;
 
-    // Metoda pentru activarea puterii elementare
-    void ActivatePower(Game* gameInstance) const;
+	void RemoveCard(int row, int col) = 0;
+	void ReturnCardToPlayer(int row, int col) = 0;
+	void CreatePit(int row, int col) = 0;
+
+
+	Element_Mode(Putere putere);
+	Putere GetTipPutere() const;
+	void ActivatePower() const;
+	void ActivateControlledExplosion() const;
+	void  DestroyLastOpponentCard();
+
+	// Metoda pentru activarea puterii elementare
+
 };
-*/
