@@ -5,16 +5,23 @@
 #include <iostream>
 
 
-/*
+
 // Dai override doar la metoda AfterInitialization
 
 void Wizard_Mode::removeOpponentCard(int row, int col) {
     if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() != currentPlayer->getColor()) {
+
+        Card card = board.TopCard(row, col);
         RemoveCard(row, col);
-        std::cout << "Opponent's card removed from (" << row << ", " << col << ").\n";
+        if (board.TopCard(row, col).getColor() != currentPlayer->getColor())
+        {
+            board.AddCard(row, col, card);
+            std::cout << "incearca alte coordonate";
+            return;
+        }
     }
 }
-
+/*
 
 void Wizard_Mode::removeRow(int row) {
     if (board.GetSize() > row) {
@@ -117,12 +124,9 @@ void Wizard_Mode::moveEdgeRow(int row) {
         std::cout << "Moved row " << row << " to edge row " << newRow << ".\n";
     }
 }
-
+*/
 void Wizard_Mode::activatePower(WizardPower power, int row, int col) {
-    if (currentPlayer->powerUsed) {
-        std::cout << "Wizard power has already been used.\n";
-        return;
-    }
+   
 
     switch (power) {
         case WizardPower::RemoveOpponentCard:
@@ -151,10 +155,9 @@ void Wizard_Mode::activatePower(WizardPower power, int row, int col) {
             break;
     }
 
-    currentPlayer->powerUsed = true;
     std::cout << "Wizard power activated!\n";
 }
-*/
+
 
 void Wizard_Mode::InitGame(std::string name1, std::string name2)
 {
@@ -250,180 +253,201 @@ void Wizard_Mode::PlayGame()
     while (!gameOver)
     {
         board.Display();
-        currentPlayer->ShowHand();
 
-        // TODO: Daca player-ul curent are o bomba
-        // Intreabal daca vrea sa o foloseasca si daca da, afiseaza un meniu in care sa ii spui ca poate roti bomba
-        // si apoi sa confirme si sa fie aplicate efectele
-
-        int cardIndex = -1;
-        while (!currentPlayer->HasCardAtIndex(cardIndex))
+        std::cout << "Joaca carte sau putere ";
+        char choice;
+        std::cin >> choice;
+        if (choice == 'p' && currentPlayer->getPowerUsed()== true )
         {
-            std::cout << currentPlayer->getName() << ", choose a card index to play: ";
-            std::cin >> cardIndex;
-        }
-        Card chosenCard = currentPlayer->PlayCard(cardIndex);
+            int row, col;
+            std::cout<<"introducet randul si coloana unde vreti sa activati puterea ";
+            std::cin >> row>> col;
+            WizardPower power = currentPlayer->getWizardPower();
+            activatePower(power , row ,col);
 
-        if (currentPlayer->CanPlaceCardFaceDown()) {
-            char answer = 'n';
-            std::cout << "Do you want to play this card face down? y/[n]\n";
-            std::cin >> answer;
-            if (answer == 'y')
-            {
-                currentPlayer->PlayedCardFaceDown();
-                chosenCard.setFaceDown(true);
-            }
-        }
+           currentPlayer->setPowerUsed();
 
-        int row = -1, col = -1;
-        int result = board.CanMakeMove(row, col, chosenCard);
-        while (result == 0) {
-            std::cout << "Enter row and column (0, 1, or 2) to place the card: ";
-            std::cin >> row >> col;
-            result = board.CanMakeMove(row, col, chosenCard);
+            SwitchTurn();
+
         }
-        if (result == 1)
+        else if(choice=='c')
         {
-            board.MakeMove(row, col, chosenCard);
-        }
 
-        if (board.CheckIsBomb())//aici
-        {
-            Explosion_Card explosion_card(board.GetSize());
-            explosion_card.activateExplosion();
-            std::vector<std::pair<char, std::pair<int, int>>> coords;
-            std::vector<std::pair<char, std::pair<int, int>>> left_coords;
-            std::vector<std::pair<char, std::pair<int, int>>> right_coords;
 
-            coords = explosion_card.AppliedPositions();
+            currentPlayer->ShowHand();
 
-            for (const auto& pos : coords)
+
+
+            int cardIndex = -1;
+            while (!currentPlayer->HasCardAtIndex(cardIndex))
             {
-                char bombType = pos.first;
-                int row = pos.second.first;
-                int col = pos.second.second;
-
-                int right_r = col;
-                int right_c = board.GetSize() - 1 - row;
-                int left_r = board.GetSize() - 1 - col;
-                int left_c = row;
-
-                right_coords.push_back({ bombType, {right_r, right_c} });
-                left_coords.push_back({ bombType, {left_r, left_c} });
+                std::cout << currentPlayer->getName() << ", choose a card index to play: ";
+                std::cin >> cardIndex;
             }
-            std::cout << "pozitile aplicate pt dreapta: \n";
-            for (const auto& pos : right_coords)
-            {
-                std::cout << pos.first << " " << pos.second.first << " " << pos.second.second << "\n";
-            }
-            std::cout << "pozitile aplicate pt stanga: \n";
-            for (const auto& pos : left_coords)
-            {
-                std::cout << pos.first << " " << pos.second.first << " " << pos.second.second << "\n";
-            }
-            std::cout << "pozitile aplicate normal: \n";
-            for (const auto& pos : coords)
-            {
-                std::cout << pos.first << " " << pos.second.first << " " << pos.second.second << "\n";
-            }
+            Card chosenCard = currentPlayer->PlayCard(cardIndex);
 
-            std::cout << " alege unde vrei sa pui : ";
-            char c;
-            std::cin >> c;
-
-            switch (c)
-            {
-            case 'r':
-                for (const auto& pos : right_coords)
+            if (currentPlayer->CanPlaceCardFaceDown()) {
+                char answer = 'n';
+                std::cout << "Do you want to play this card face down? y/[n]\n";
+                std::cin >> answer;
+                if (answer == 'y')
                 {
-                    switch (pos.first)
-                    {
-                    case 'r':
-                        std::cout << "Removing card at (" << pos.second.first << ", " << pos.second.second << ").\n";
-                        RemoveCard(pos.second.first, pos.second.first);
-                        break;
-                    case 'u':
-                        std::cout << "Returning card to player at (" << pos.second.first << ", " << pos.second.second << ").\n";
-                        ReturnCardToPlayer(pos.second.first, pos.second.second);
-                        break;
-                    case 'p':
-                        std::cout << "Creating pit at (" << pos.second.first << ", " << pos.second.second << ").\n";
-                        CreatePit(pos.second.first, pos.second.second);
-                        break;
-
-                        break;
-                    }
+                    currentPlayer->PlayedCardFaceDown();
+                    chosenCard.setFaceDown(true);
                 }
-                break;
+            }
 
-            case 's':
+            int row = -1, col = -1;
+            int result = board.CanMakeMove(row, col, chosenCard);
+            while (result == 0) {
+                std::cout << "Enter row and column (0, 1, or 2) to place the card: ";
+                std::cin >> row >> col;
+                result = board.CanMakeMove(row, col, chosenCard);
+            }
+            if (result == 1)
+            {
+                board.MakeMove(row, col, chosenCard);
+            }
 
-                for (const auto& pos : left_coords)
-                {
-                    switch (pos.first)
-                    {
-                    case 'r':
-                        std::cout << "Removing card at (" << pos.second.first << ", " << pos.second.second << ").\n";
-                        RemoveCard(pos.second.first, pos.second.first);
-                        break;
-                    case 'u':
-                        std::cout << "Returning card to player at (" << pos.second.first << ", " << pos.second.second << ").\n";
-                        ReturnCardToPlayer(pos.second.first, pos.second.second);
-                        break;
-                    case 'p':
-                        std::cout << "Creating pit at (" << pos.second.first << ", " << pos.second.second << ").\n";
-                        CreatePit(pos.second.first, pos.second.second);
-                        break;
+            if (board.CheckIsBomb())//aici
+            {
+                Explosion_Card explosion_card(board.GetSize());
+                explosion_card.activateExplosion();
+                std::vector<std::pair<char, std::pair<int, int>>> coords;
+                std::vector<std::pair<char, std::pair<int, int>>> left_coords;
+                std::vector<std::pair<char, std::pair<int, int>>> right_coords;
 
-                        break;
-                    }
-                }
-                break;
+                coords = explosion_card.AppliedPositions();
 
-            case 'n':
                 for (const auto& pos : coords)
                 {
-                    switch (pos.first)
-                    {
-                    case 'r':
-                        std::cout << "Removing card at (" << pos.second.first << ", " << pos.second.second << ").\n";
-                        RemoveCard(pos.second.first, pos.second.first);
-                        break;
-                    case 'u':
-                        std::cout << "Returning card to player at (" << pos.second.first << ", " << pos.second.second << ").\n";
-                        ReturnCardToPlayer(pos.second.first, pos.second.second);
-                        break;
-                    case 'p':
-                        std::cout << "Creating pit at (" << pos.second.first << ", " << pos.second.second << ").\n";
-                        CreatePit(pos.second.first, pos.second.second);
-                        break;
+                    char bombType = pos.first;
+                    int row = pos.second.first;
+                    int col = pos.second.second;
 
-                        break;
-                    }
+                    int right_r = col;
+                    int right_c = board.GetSize() - 1 - row;
+                    int left_r = board.GetSize() - 1 - col;
+                    int left_c = row;
+
+                    right_coords.push_back({ bombType, {right_r, right_c} });
+                    left_coords.push_back({ bombType, {left_r, left_c} });
                 }
-                break;
+                std::cout << "pozitile aplicate pt dreapta: \n";
+                for (const auto& pos : right_coords)
+                {
+                    std::cout << pos.first << " " << pos.second.first << " " << pos.second.second << "\n";
+                }
+                std::cout << "pozitile aplicate pt stanga: \n";
+                for (const auto& pos : left_coords)
+                {
+                    std::cout << pos.first << " " << pos.second.first << " " << pos.second.second << "\n";
+                }
+                std::cout << "pozitile aplicate normal: \n";
+                for (const auto& pos : coords)
+                {
+                    std::cout << pos.first << " " << pos.second.first << " " << pos.second.second << "\n";
+                }
 
-            default:
-                break;
+                std::cout << " alege unde vrei sa pui : ";
+                char c;
+                std::cin >> c;
+
+                switch (c)
+                {
+                case 'r':
+                    for (const auto& pos : right_coords)
+                    {
+                        switch (pos.first)
+                        {
+                        case 'r':
+                            std::cout << "Removing card at (" << pos.second.first << ", " << pos.second.second << ").\n";
+                            RemoveCard(pos.second.first, pos.second.first);
+                            break;
+                        case 'u':
+                            std::cout << "Returning card to player at (" << pos.second.first << ", " << pos.second.second << ").\n";
+                            ReturnCardToPlayer(pos.second.first, pos.second.second);
+                            break;
+                        case 'p':
+                            std::cout << "Creating pit at (" << pos.second.first << ", " << pos.second.second << ").\n";
+                            CreatePit(pos.second.first, pos.second.second);
+                            break;
+
+                            break;
+                        }
+                    }
+                    break;
+
+                case 's':
+
+                    for (const auto& pos : left_coords)
+                    {
+                        switch (pos.first)
+                        {
+                        case 'r':
+                            std::cout << "Removing card at (" << pos.second.first << ", " << pos.second.second << ").\n";
+                            RemoveCard(pos.second.first, pos.second.first);
+                            break;
+                        case 'u':
+                            std::cout << "Returning card to player at (" << pos.second.first << ", " << pos.second.second << ").\n";
+                            ReturnCardToPlayer(pos.second.first, pos.second.second);
+                            break;
+                        case 'p':
+                            std::cout << "Creating pit at (" << pos.second.first << ", " << pos.second.second << ").\n";
+                            CreatePit(pos.second.first, pos.second.second);
+                            break;
+
+                            break;
+                        }
+                    }
+                    break;
+
+                case 'n':
+                    for (const auto& pos : coords)
+                    {
+                        switch (pos.first)
+                        {
+                        case 'r':
+                            std::cout << "Removing card at (" << pos.second.first << ", " << pos.second.second << ").\n";
+                            RemoveCard(pos.second.first, pos.second.first);
+                            break;
+                        case 'u':
+                            std::cout << "Returning card to player at (" << pos.second.first << ", " << pos.second.second << ").\n";
+                            ReturnCardToPlayer(pos.second.first, pos.second.second);
+                            break;
+                        case 'p':
+                            std::cout << "Creating pit at (" << pos.second.first << ", " << pos.second.second << ").\n";
+                            CreatePit(pos.second.first, pos.second.second);
+                            break;
+
+                            break;
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
+                }
+
+
+
             }
 
-
-
+            if (board.CheckWinner(chosenCard.getColor())) {
+                board.Display();
+                std::cout << currentPlayer->getName() << " wins!\n";
+                gameOver = true;
+            }
+            else if (board.IsDraw()) {
+                board.Display();
+                std::cout << "It's a draw!\n";
+                gameOver = true;
+            }
+            else {
+                SwitchTurn();
+            }
         }
 
-        if (board.CheckWinner(chosenCard.getColor())) {
-            board.Display();
-            std::cout << currentPlayer->getName() << " wins!\n";
-            gameOver = true;
-        }
-        else if (board.IsDraw()) {
-            board.Display();
-            std::cout << "It's a draw!\n";
-            gameOver = true;
-        }
-        else {
-            SwitchTurn();
-        }
     }
 }
 

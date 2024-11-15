@@ -39,6 +39,16 @@ void Player::setRandomWizardPower()
 	m_wizard_power = static_cast<WizardPower>(randomIndex);
 }
 
+bool Player::getPowerUsed()
+{
+	return powerUsed;
+}
+
+void Player::setPowerUsed()
+{
+	powerUsed = true;
+}
+
 void Player::ShowHand()
 {
 	for (const auto& card : m_cards) {

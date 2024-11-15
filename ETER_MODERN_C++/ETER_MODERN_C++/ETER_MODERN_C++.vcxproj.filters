@@ -30,7 +30,7 @@
     <ClInclude Include="Explosion_Card.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Element_Card.h">
+    <ClInclude Include="Element_Mode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Training_Mode.h">
@@ -43,9 +43,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tournament_Mode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements_Mode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Board.h">
@@ -74,7 +71,7 @@
     <ClCompile Include="Wizard_Card.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Element_Card.cpp">
+    <ClCompile Include="Element_Mode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Game_Mode.cpp">
@@ -84,9 +81,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tournament_Mode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements_Mode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Board.cpp">
