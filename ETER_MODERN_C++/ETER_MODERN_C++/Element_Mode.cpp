@@ -22,10 +22,6 @@ Element_Mode::Element_Mode()
     currentPlayer = NULL;
 }
 
-Element_Mode::Element_Mode()
-{
-}
-
 void Element_Mode::InitGame(std::string name1, std::string name2)
 {
 	player1.setName(name1);
@@ -543,6 +539,56 @@ void Element_Mode::Lava()
 				}
 			}
 		}
+	}
+}
+
+void Element_Mode::DinCenusa()
+{
+	const auto& removedCards = currentPlayer->GetRemovedCards();
+
+	if (removedCards.empty()) {
+		std::cout << "No removed cards available to play.\n";
+		return;
+	}
+
+	
+	std::cout << "Removed cards:\n";
+	for (size_t i = 0; i < removedCards.size(); ++i) 
+	{
+		const Card& card = removedCards[i];
+		std::cout << i << ": Value " << card.getValue()<< ", Color " << card.getColor()<<"\n";
+	}
+
+	
+	int cardIndex = -1;
+	while (cardIndex < 0 || cardIndex >= static_cast<int>(removedCards.size())) 
+	{
+		std::cout << "Choose a card index to play: ";
+		std::cin >> cardIndex;
+	}
+
+	Card chosenCard = removedCards[cardIndex];
+	currentPlayer->RemoveFromRemovedCards(chosenCard);
+
+	
+	int row = -1, col = -1;
+	int result = board.CanMakeMove(row, col, chosenCard);
+	while (result == 0) 
+	{
+		std::cout << "Enter row and column (0-" << (board.GetSize() - 1) << ") to place the card: ";
+		std::cin >> row >> col;
+		result = board.CanMakeMove(row, col, chosenCard);
+	}
+
+	if (result == 1) 
+	{
+		currentPlayer->setLastMove(row, col);
+		board.MakeMove(row, col, chosenCard);
+		std::cout << "Card played successfully!\n";
+	}
+	else 
+	{
+		std::cout << "Unable to play the card.\n";
 	}
 }
 
