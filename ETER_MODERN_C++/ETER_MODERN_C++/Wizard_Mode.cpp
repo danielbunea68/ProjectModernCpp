@@ -2,11 +2,12 @@
 #include "Board.h"
 #include "IGame.h"
 #include "Explosion_Card.h"
+#include <queue>
 #include <iostream>
 
 
 
-// Dai override doar la metoda AfterInitialization
+
 
 void Wizard_Mode::removeOpponentCard(int row, int col) {
     if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() != currentPlayer->getColor()) {
@@ -21,7 +22,7 @@ void Wizard_Mode::removeOpponentCard(int row, int col) {
         }
     }
 }
-/*
+
 
 void Wizard_Mode::removeRow(int row) {
     if (board.GetSize() > row) {
@@ -34,7 +35,7 @@ void Wizard_Mode::removeRow(int row) {
         }
         if (hasPlayerCard) {
             for (int col = 0; col < board.GetSize(); ++col) {
-                if (!board.IsEmpty(row, col)) {
+                while (!board.IsEmpty(row, col)) {
                     RemoveCard(row, col);
                 }
             }
@@ -48,12 +49,16 @@ void Wizard_Mode::coverOpponentCard(int row, int col) {
     if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() != currentPlayer->getColor()) {
         int cardIndex = -1;
         std::cout << "Choose a lower card from hand to cover opponent's card: ";
-        while (!currentPlayer->HasCardAtIndex(cardIndex)) {
+        currentPlayer->ShowHand();
+
+        while (!currentPlayer->HasCardAtIndex(cardIndex))
+        {
+           
             std::cin >> cardIndex;
         }
         Card chosenCard = currentPlayer->PlayCard(cardIndex);
         if (chosenCard.getValue() < board.TopCard(row, col).getValue()) {
-            board.MakeMove(row, col, chosenCard);
+            board.AddCard(row, col, chosenCard);
             std::cout << "Covered opponent's card with " << chosenCard.getValue() << ".\n";
         }
     }
@@ -74,15 +79,27 @@ void Wizard_Mode::moveOwnStack(int row, int col) {
         std::cout << "Enter new row and column to move stack: ";
         std::cin >> newRow >> newCol;
         if (board.IsEmpty(newRow, newCol)) {
-            Card topCard = board.TopCard(row, col);
-            RemoveCard(row, col);
-            board.MakeMove(newRow, newCol, topCard);
+            std::deque<Card> coada;
+            while (!board.IsEmpty(row, col))
+            {
+                Card topCard = board.TopCard(row, col);
+                RemoveCard(row, col);
+                coada.push_back(topCard);
+                
+
+            }
+            while (!coada.empty())
+            {
+                board.AddCard(newRow, newCol, coada.back());
+                coada.pop_back();
+            }
+          
             std::cout << "Moved stack to (" << newRow << ", " << newCol << ").\n";
         }
     }
 }
 
-
+/* 
 void Wizard_Mode::grantExtraEterCard() {
     Card extraCard(5, currentPlayer->getColor(), "Eter");
     currentPlayer->AddCard(extraCard);
