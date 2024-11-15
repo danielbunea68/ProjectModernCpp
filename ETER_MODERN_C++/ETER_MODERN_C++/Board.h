@@ -27,6 +27,7 @@ public:
 	bool IsValidPosition(int row, int col);
 	bool CanMakeMove(int row, int col, Card chosenCard);
 	void Remove(int row, int cols);//aici am lucrat
+	void UpdateCard(int row, int col, const Card& card);
 	void Clear();
 
 	

@@ -17,6 +17,10 @@ void Element_Mode::SwitchTurn()
     }
 }
 
+Element_Mode::Element_Mode()
+{
+}
+
 void Element_Mode::InitGame(std::string name1, std::string name2)
 {
     player1.setName(name1);
@@ -235,20 +239,19 @@ void Element_Mode::RemoveCard(int row, int col)
 
 void Element_Mode::ReturnCardToPlayer(int row, int col)
 {
-    if (!board.IsEmpty(row, col))  // Check if there's a card to return
+    if (!board.IsEmpty(row, col))  
     {
-        // Get the card from the board
+        
         Card card = board.TopCard(row, col);
-        board.Remove(row, col);  // Remove the card from the board
+        board.Remove(row, col); 
 
         if (card.getColor() == currentPlayer->getColor()) {
             currentPlayer->AddCard(card);
             std::cout << "Card returned to " << currentPlayer->getName() << "'s hand.\n";
         }
         else {
-            // Return the card to the other player's hand
             Player* otherPlayer = (currentPlayer == &player1) ? &player2 : &player1;
-            otherPlayer->AddCard(card);  // Add the card to the other player's hand
+            otherPlayer->AddCard(card);  
             std::cout << "Card returned to " << otherPlayer->getName() << "'s hand.\n";
         }
     }
@@ -258,14 +261,14 @@ void Element_Mode::ReturnCardToPlayer(int row, int col)
     }
 }
 
-void Element_Mode::DestroyLastOpponentCard() {
-    // Identify the opponent
+void Element_Mode::DestroyLastOpponentCard()
+{
     Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
     std::pair<int, int> move = opponent->getLastMove();
 
     int row = move.first;
     int col = move.second;
-    // Locate and remove the card from the board if present
+
     bool cardFound = false;
 
     Card card1 = board.TopCard(row, col);
@@ -276,13 +279,12 @@ void Element_Mode::DestroyLastOpponentCard() {
 
 void Element_Mode::CreatePit(int row, int col)
 {
-    board.UpdateMarked(row, col);  // Mark the position as a pit
+    board.UpdateMarked(row, col);  
 
-    // Now, remove all cards from that position using the getter function to access the internal board
-    auto& boardGrid = board.GetBoard();  // Get a reference to the board
+    auto& boardGrid = board.GetBoard(); 
     while (!boardGrid[row][col].empty())
     {
-        boardGrid[row][col].pop();  // Remove all cards from the stack at that position
+        boardGrid[row][col].pop();  
     }
 
     std::cout << "Pit created at position (" << row << ", " << col << "). All cards removed.\n";
@@ -290,24 +292,26 @@ void Element_Mode::CreatePit(int row, int col)
 
 Element_Mode::Element_Mode(Putere putere) : tipPutere(putere){}
 
-Element_Mode::Putere Element_Mode::GetTipPutere() const 
+Element_Mode::Putere Element_Mode::GetTipPutere() 
 {
     return tipPutere;
 }
 
-void Element_Mode::ActivatePower() const
+void Element_Mode::ActivatePower() 
 {
-    switch (tipPutere) {
+    switch (tipPutere) 
+    {
     case Putere::ExplozieControlata:
         std::cout << "Activating Explozie Controlata: Tabla explodează!" << std::endl;
         ActivateControlledExplosion();
         break;
     case Putere::Distrugere:
         std::cout << "Activating Distrugere: Elimină ultima carte jucată de adversar." << std::endl;
+        DestroyLastOpponentCard();
         break;
     case Putere::Flacari:
         std::cout << "Activating Flacari: Întoarce iluzia adversarului și joacă o carte." << std::endl;
-        // Logic for Flacari goes here
+        Flacari();
         break;
     case Putere::Lava:
         std::cout << "Activating Lava: Toate cărțile vizibile cu un anumit număr se întorc la proprietari." << std::endl;
@@ -399,9 +403,68 @@ void Element_Mode::ActivatePower() const
     }
 }
 
-void Element_Mode::ActivateControlledExplosion() const
+void Element_Mode::ActivateControlledExplosion()
 {
 	Explosion_Card explosionCard(4);
 	explosionCard.activateExplosion();
 }
-*/
+
+void Element_Mode::Flacari() 
+{
+    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+    bool cardRevealed = false;
+
+    for (int row = 0; row < board.GetSize(); ++row) 
+    {
+        for (int col = 0; col < board.GetSize(); ++col) 
+        {
+            if (!board.IsEmpty(row, col)) 
+            {
+                Card topCard = board.TopCard(row, col);
+
+                if (topCard.getColor() == opponent->getColor() && topCard.getIsFaceDown()) 
+                {
+                    topCard.setFaceDown(false);
+                    board.UpdateCard(row, col, topCard); 
+                    std::cout << "Flăcări activated: Card at (" << row << ", " << col
+                        << ") belonging to " << opponent->getName()
+                        << " is now face-up.\n";
+                    cardRevealed = true;
+                    break;
+                }
+            }
+        }
+        if (cardRevealed) break;
+    }
+
+    if (!cardRevealed) 
+    {
+        std::cout << "No face-down cards belonging to the opponent were found.\n";
+    }
+
+    currentPlayer->ShowHand();
+    int cardIndex = -1;
+    while (!currentPlayer->HasCardAtIndex(cardIndex)) 
+    {
+        std::cout << currentPlayer->getName() << ", choose a card index to play: ";
+        std::cin >> cardIndex;
+    }
+    Card chosenCard = currentPlayer->PlayCard(cardIndex);
+
+    int row = -1, col = -1;
+    int result = board.CanMakeMove(row, col, chosenCard);
+    while (result == 0) 
+    {
+        std::cout << "Enter row and column (0, 1, 2, or 3) to place the card: ";
+        std::cin >> row >> col;
+        result = board.CanMakeMove(row, col, chosenCard);
+    }
+
+    if (result == 1) 
+    {
+        currentPlayer->setLastMove(row, col);
+        board.MakeMove(row, col, chosenCard);
+        std::cout << currentPlayer->getName() << " placed card with value "
+            << chosenCard.getValue() << " at (" << row << ", " << col << ").\n";
+    }
+}
