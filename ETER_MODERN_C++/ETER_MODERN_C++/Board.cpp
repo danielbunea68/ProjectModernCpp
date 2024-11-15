@@ -181,6 +181,11 @@ void Board::Clear()
 	board.clear();
 }
 
+void Board::AddCard(int row, int col, Card card)
+{
+	board[row][col].push(card);
+}
+
 void Board::Remove(int row, int col)
 {
 	if (IsValidPosition(row, col) && !IsEmpty(row, col))
