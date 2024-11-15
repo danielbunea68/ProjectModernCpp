@@ -28,6 +28,8 @@ public:
 	bool IsDraw();
 	bool IsValidPosition(int row, int col);
 	bool CanMakeMove(int row, int col, Card chosenCard);
+
+	void AddCard(int row , int col ,Card card );
 	void Remove(int row, int cols);//aici am lucrat
 	void Clear();
 
