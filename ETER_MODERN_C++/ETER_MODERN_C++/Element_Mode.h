@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <iostream>
+#include <unordered_map>
 #include "IGame.h"
 #include "Board.h"
 #include "Player.h"
@@ -69,7 +70,5 @@ public:
 	void ActivateControlledExplosion();
 	void  DestroyLastOpponentCard();
 	void Flacari();
-
-	// Metoda pentru activarea puterii elementare
-
+	void Lava();
 };
