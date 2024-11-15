@@ -41,12 +41,10 @@ private:
     void SwitchTurn();
 
 public:
-
-
-
-    void InitGame(std::string name1, std::string name2) = 0;
-    void PlayGame() = 0;
-    void ResetGame() = 0;
+	Element_Mode();
+	void InitGame(std::string name1, std::string name2) = 0;
+	void PlayGame() = 0;
+	void ResetGame() = 0;
 
     void RemoveCard(int row, int col) = 0;
     void ReturnCardToPlayer(int row, int col) = 0;

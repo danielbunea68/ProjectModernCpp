@@ -1,6 +1,8 @@
-﻿#include "Elements_Mode.h"
-#include "Explosion_Card.h"
+﻿
+#pragma once
 #include "Element_Mode.h"
+#include "Explosion_Card.h"
+
 #include "Board.h"
 
 void Element_Mode::SwitchTurn()
@@ -399,6 +401,7 @@ void Element_Mode::ActivatePower() const
 
 void Element_Mode::ActivateControlledExplosion() const
 {
-    Explosion_Card explosionCard(4); 
-    explosionCard.activateExplosion();
+	Explosion_Card explosionCard(4);
+	explosionCard.activateExplosion();
 }
+*/
