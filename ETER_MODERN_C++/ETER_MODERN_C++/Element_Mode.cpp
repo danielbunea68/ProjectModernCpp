@@ -646,6 +646,58 @@ void Element_Mode::Scantei()
 	}
 }
 
+
+void Element_Mode::Viscol()
+{
+	Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+	std::vector<std::pair<int, int>> visibleCards;
+
+	for (int row = 0; row < board.GetSize(); ++row)
+	{
+		for (int col = 0; col < board.GetSize(); ++col)
+		{
+			if (!board.IsEmpty(row, col))
+			{
+				Card topCard = board.TopCard(row, col);
+				if (topCard.getColor() == opponent->getColor() && !topCard.getIsFaceDown())
+				{
+					visibleCards.emplace_back(row, col);
+				}
+			}
+		}
+	}
+
+	if (visibleCards.empty())
+	{
+		std::cout << "No visible cards belonging to the opponent are available to return.\n";
+		return;
+	}
+
+	std::cout << "Choose a card to return to the opponent's hand:\n";
+	for (size_t i = 0; i < visibleCards.size(); ++i)
+	{
+		int row = visibleCards[i].first;
+		int col = visibleCards[i].second;
+		Card card = board.TopCard(row, col);
+		std::cout << i << ": Card at (" << row << ", " << col << ") - Value: "
+			<< card.getValue() << ", Color: " << card.getColor() << "\n";
+	}
+
+	int choice = -1;
+	while (choice < 0 || choice >= static_cast<int>(visibleCards.size()))
+	{
+		std::cout << "Enter the index of the card to return: ";
+		std::cin >> choice;
+	}
+
+	int row = visibleCards[choice].first;
+	int col = visibleCards[choice].second;
+	ReturnCardToPlayer(row, col);
+	std::cout << "Card at (" << row << ", " << col << ") returned to the opponent's hand.\n";
+}
+
+
+
 void Element_Mode::ActivateRafala(int row, int col, int targetRow, int targetCol) {
     if (!board.IsValidPosition(row, col) || !board.IsValidPosition(targetRow, targetCol)) {
         std::cout << "Invalid positions for Rafala.\n";
