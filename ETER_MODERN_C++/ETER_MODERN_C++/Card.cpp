@@ -49,9 +49,19 @@ void Card::flip()
 	m_IsFaceDown = !m_IsFaceDown;
 }
 
-bool Card::isPlayable() const//
+bool Card::isPlayable() const
 {
 	return !m_IsFaceDown;
+}
+
+bool Card::operator!=(const Card& other) const
+{
+	return !(*this == other);
+}
+
+bool Card::operator==(const Card& other) const
+{
+	return m_color == other.getColor() && m_value == other.getValue();
 }
 
 

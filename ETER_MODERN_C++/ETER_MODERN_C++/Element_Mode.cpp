@@ -282,20 +282,10 @@ void Element_Mode::DestroyLastOpponentCard()
 
 void Element_Mode::CreatePit(int row, int col)
 {
-    board.UpdateMarked(row, col);  
-
-    auto& boardGrid = board.GetBoard(); 
-    while (!boardGrid[row][col].empty())
-    {
-        boardGrid[row][col].pop();  
-    }
-	board.UpdateMarked(row, col);  // Mark the position as a pit
-
-	// Now, remove all cards from that position using the getter function to access the internal board
-	auto& boardGrid = board.GetBoard();  // Get a reference to the board
-	while (!boardGrid[row][col].empty())
+    
+	while (!board.IsEmpty(row,col))
 	{
-		boardGrid[row][col].pop();  // Remove all cards from the stack at that position
+		board.Remove(row,col);  
 	}
 
 	std::cout << "Pit created at position (" << row << ", " << col << "). All cards removed.\n";

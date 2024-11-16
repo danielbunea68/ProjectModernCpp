@@ -99,14 +99,10 @@ void Wizard_Mode::moveOwnStack(int row, int col) {
     }
 }
 
-/* 
-void Wizard_Mode::grantExtraEterCard() {
+
+void Wizard_Mode::grantExtraEterCard(int row ,int col) {
     Card extraCard(5, currentPlayer->getColor(), "Eter");
     currentPlayer->AddCard(extraCard);
-    std::cout << "Extra Eter card added.\n";
-    int row, col;
-    std::cout << "Place the extra Eter card. Enter row and column: ";
-    std::cin >> row >> col;
     board.MakeMove(row, col, extraCard);
 }
 
@@ -114,13 +110,25 @@ void Wizard_Mode::grantExtraEterCard() {
 void Wizard_Mode::moveOpponentStack(int row, int col) {
     if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() != currentPlayer->getColor()) {
         int newRow, newCol;
-        std::cout << "Enter new row and column to move opponent's stack: ";
+        std::cout << "Enter new row and column to move stack: ";
         std::cin >> newRow >> newCol;
         if (board.IsEmpty(newRow, newCol)) {
-            Card topCard = board.TopCard(row, col);
-            RemoveCard(row, col);
-            board.MakeMove(newRow, newCol, topCard);
-            std::cout << "Moved opponent's stack to (" << newRow << ", " << newCol << ").\n";
+            std::deque<Card> coada;
+            while (!board.IsEmpty(row, col))
+            {
+                Card topCard = board.TopCard(row, col);
+                RemoveCard(row, col);
+                coada.push_back(topCard);
+                
+
+            }
+            while (!coada.empty())
+            {
+                board.AddCard(newRow, newCol, coada.back());
+                coada.pop_back();
+            }
+          
+            std::cout << "Moved stack to (" << newRow << ", " << newCol << ").\n";
         }
     }
 }
@@ -141,7 +149,7 @@ void Wizard_Mode::moveEdgeRow(int row) {
         std::cout << "Moved row " << row << " to edge row " << newRow << ".\n";
     }
 }
-*/
+
 void Wizard_Mode::activatePower(WizardPower power, int row, int col) {
    
 
@@ -162,7 +170,7 @@ void Wizard_Mode::activatePower(WizardPower power, int row, int col) {
             moveOwnStack(row, col);
             break;
         case WizardPower::ExtraEterCard:
-            grantExtraEterCard();
+            grantExtraEterCard(row,col);
             break;
         case WizardPower::MoveOpponentStack:
             moveOpponentStack(row, col);

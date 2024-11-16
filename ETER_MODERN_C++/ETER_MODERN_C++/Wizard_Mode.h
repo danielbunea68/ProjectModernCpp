@@ -17,7 +17,7 @@ private :
     void coverOpponentCard(int row, int col);
     void createPit(int row, int col);
     void moveOwnStack(int row, int col);
-    void grantExtraEterCard();
+    void grantExtraEterCard(int row ,int col);
     void moveOpponentStack(int row, int col);
     void moveEdgeRow(int row);
 

@@ -89,6 +89,7 @@ void Player::AddCard(Card card)
 	m_cards.push_back(card);
 }
 
+
 void Player::AddToRemovedCards(const Card& card)
 {
 	removedCards.push_back(card);

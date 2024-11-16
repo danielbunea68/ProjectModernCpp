@@ -59,9 +59,15 @@ public:
 	bool HasCardAtIndex(int cardIndex);
 	void UseAbilty();
 	void AddCard(Card card);
+
+	/// 
+	
+
 	void AddToRemovedCards(const Card& card);
 	void RemoveFromRemovedCards(const Card& card);
 	const std::vector<Card>& GetRemovedCards() const;
+
+	/// 
 	void ClearCards();
 };
 

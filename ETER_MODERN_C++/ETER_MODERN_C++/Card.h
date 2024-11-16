@@ -20,6 +20,8 @@ public:
 	void setColor(const std::string& color);
 	void flip();
 	bool isPlayable() const;
+	bool operator!=(const Card& other) const;
+	bool operator==(const Card& other) const;
 };
 
 
