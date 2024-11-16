@@ -339,11 +339,11 @@ void Element_Mode::ActivatePower()
         break;
     case Putere::Viscol:
         std::cout << "Activating Viscol: Întoarce o carte vizibilă a oponentului în mâna sa." << std::endl;
-        // Logic for Viscol goes here
+		Viscol();
         break;
     case Putere::Vijelie:
         std::cout << "Activating Vijelie: Toate cărțile acoperite se întorc la proprietari." << std::endl;
-        // Logic for Vijelie goes here
+		Vijelie();
         break;
     case Putere::Uragan:
         std::cout << "Activating Uragan: Shiftează un rând complet ocupat." << std::endl;
@@ -696,7 +696,34 @@ void Element_Mode::Viscol()
 	std::cout << "Card at (" << row << ", " << col << ") returned to the opponent's hand.\n";
 }
 
+void Element_Mode::Vijelie()
+{
+	for (int row = 0; row < board.GetSize(); row++)
+	{
+		for (int col = 0; col < board.GetSize(); col++)
+		{
+			if (!board.IsEmpty(row, col) && board.GetStackSize(row, col) > 1)
+			{
+				while (board.GetStackSize(row, col) > 1)
+				{
+					Card card = board.TopCard(row, col);
+					board.Remove(row, col);
 
+					if (card.getColor() == player1.getColor())
+					{
+						player1.AddCard(card);
+						std::cout << "Card returned to " << player1.getName() << "'s hand.\n";
+					}
+					else if (card.getColor() == player2.getColor())
+					{
+						player2.AddCard(card);
+						std::cout << "Card returned to " << player2.getName() << "'s hand.\n";
+					}
+				}
+			}
+		}
+	}
+}
 
 void Element_Mode::ActivateRafala(int row, int col, int targetRow, int targetCol) {
     if (!board.IsValidPosition(row, col) || !board.IsValidPosition(targetRow, targetCol)) {

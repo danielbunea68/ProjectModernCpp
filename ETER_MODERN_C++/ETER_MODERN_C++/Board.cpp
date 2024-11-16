@@ -181,6 +181,20 @@ void Board::Clear()
 	board.clear();
 }
 
+int Board::GetStackSize(int row, int col)
+{
+	if (IsValidPosition(row, col))
+	{
+		return board[row][col].size();
+	}
+	else
+	{
+		std::cerr << "Invalid position (" << row << ", " << col << ") on the board.\n";
+		return 0;
+	}
+}
+
+
 void Board::AddCard(int row, int col, Card card)
 {
 	board[row][col].push(card);
