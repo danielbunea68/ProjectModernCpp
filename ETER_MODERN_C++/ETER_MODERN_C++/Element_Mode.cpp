@@ -329,11 +329,11 @@ void Element_Mode::ActivatePower()
         break;
     case Putere::Viscol:
         std::cout << "Activating Viscol: Întoarce o carte vizibilă a oponentului în mâna sa." << std::endl;
-        // Logic for Viscol goes here
+		Viscol();
         break;
     case Putere::Vijelie:
         std::cout << "Activating Vijelie: Toate cărțile acoperite se întorc la proprietari." << std::endl;
-        // Logic for Vijelie goes here
+		Vijelie();
         break;
     case Putere::Uragan:
         std::cout << "Activating Uragan: Shiftează un rând complet ocupat." << std::endl;
@@ -636,6 +636,85 @@ void Element_Mode::Scantei()
 	}
 }
 
+
+void Element_Mode::Viscol()
+{
+	Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+	std::vector<std::pair<int, int>> visibleCards;
+
+	for (int row = 0; row < board.GetSize(); ++row)
+	{
+		for (int col = 0; col < board.GetSize(); ++col)
+		{
+			if (!board.IsEmpty(row, col))
+			{
+				Card topCard = board.TopCard(row, col);
+				if (topCard.getColor() == opponent->getColor() && !topCard.getIsFaceDown())
+				{
+					visibleCards.emplace_back(row, col);
+				}
+			}
+		}
+	}
+
+	if (visibleCards.empty())
+	{
+		std::cout << "No visible cards belonging to the opponent are available to return.\n";
+		return;
+	}
+
+	std::cout << "Choose a card to return to the opponent's hand:\n";
+	for (size_t i = 0; i < visibleCards.size(); ++i)
+	{
+		int row = visibleCards[i].first;
+		int col = visibleCards[i].second;
+		Card card = board.TopCard(row, col);
+		std::cout << i << ": Card at (" << row << ", " << col << ") - Value: "
+			<< card.getValue() << ", Color: " << card.getColor() << "\n";
+	}
+
+	int choice = -1;
+	while (choice < 0 || choice >= static_cast<int>(visibleCards.size()))
+	{
+		std::cout << "Enter the index of the card to return: ";
+		std::cin >> choice;
+	}
+
+	int row = visibleCards[choice].first;
+	int col = visibleCards[choice].second;
+	ReturnCardToPlayer(row, col);
+	std::cout << "Card at (" << row << ", " << col << ") returned to the opponent's hand.\n";
+}
+
+void Element_Mode::Vijelie()
+{
+	for (int row = 0; row < board.GetSize(); row++)
+	{
+		for (int col = 0; col < board.GetSize(); col++)
+		{
+			if (!board.IsEmpty(row, col) && board.GetStackSize(row, col) > 1)
+			{
+				while (board.GetStackSize(row, col) > 1)
+				{
+					Card card = board.TopCard(row, col);
+					board.Remove(row, col);
+
+					if (card.getColor() == player1.getColor())
+					{
+						player1.AddCard(card);
+						std::cout << "Card returned to " << player1.getName() << "'s hand.\n";
+					}
+					else if (card.getColor() == player2.getColor())
+					{
+						player2.AddCard(card);
+						std::cout << "Card returned to " << player2.getName() << "'s hand.\n";
+					}
+				}
+			}
+		}
+	}
+}
+
 void Element_Mode::ActivateRafala(int row, int col, int targetRow, int targetCol) {
     if (!board.IsValidPosition(row, col) || !board.IsValidPosition(targetRow, targetCol)) {
         std::cout << "Invalid positions for Rafala.\n";
@@ -704,4 +783,44 @@ void Element_Mode::ActivateFurtuna() {
             }
         }
     }
+}
+
+void Element_Mode::Uragan(int row) {
+    if (row < 0 || row >= board.GetSize()) {
+        std::cout << "Invalid row for Uragan.\n";
+        return;
+    }
+
+    std::vector<Card> rowCards;
+    for (int col = 0; col < board.GetSize(); ++col) {
+        if (!board.IsEmpty(row, col)) {
+            while (!board.GetBoard()[row][col].empty()) {
+                rowCards.push_back(board.GetBoard()[row][col].top());
+                board.GetBoard()[row][col].pop();
+            }
+        }
+    }
+
+    if (rowCards.empty()) {
+        std::cout << "No cards to move in row " << row << ".\n";
+        return;
+    }
+
+    int newRow;
+    std::cout << "Enter the new row to move the cards: ";
+    std::cin >> newRow;
+
+    if (newRow < 0 || newRow >= board.GetSize() || newRow == row) {
+        std::cout << "Invalid row or same row for Uragan.\n";
+        return;
+    }
+
+    for (int col = 0; col < board.GetSize() && !rowCards.empty(); ++col) {
+        if (board.IsEmpty(newRow, col)) {
+            board.AddCard(newRow, col, rowCards.back());
+            rowCards.pop_back();
+        }
+    }
+
+    std::cout << "Uragan activated: Moved cards from row " << row << " to row " << newRow << ".\n";
 }
