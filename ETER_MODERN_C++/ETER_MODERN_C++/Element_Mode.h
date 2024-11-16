@@ -69,6 +69,7 @@ public:
 	void DinCenusa();
 	void Scantei();
 	void Viscol();
+	void Vijelie();
     void ActivateRafala(int row, int col, int targetRow, int targetCol);
     void ActivateMiraj(int row, int col, int cardIndex);
     void ActivateFurtuna();
