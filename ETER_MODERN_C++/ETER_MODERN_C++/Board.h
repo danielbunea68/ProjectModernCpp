@@ -30,6 +30,7 @@ public:
 	bool CanMakeMove(int row, int col, Card chosenCard);
 	int GetStackSize(int row, int col);
 	void AddCard(int row , int col ,Card card );
+	void SwapStacks(int row1, int col1, int row2, int col2);
 	void Remove(int row, int cols);//aici am lucrat
 	void UpdateCard(int row, int col, const Card& card);
 	bool HasCoveredCard(int row, int col, const std::string& color);

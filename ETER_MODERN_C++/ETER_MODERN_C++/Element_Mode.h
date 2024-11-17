@@ -74,4 +74,5 @@ public:
     void ActivateMiraj(int row, int col, int cardIndex);
     void ActivateFurtuna();
     void Uragan(int row);
+	void SwapStacks();
 };

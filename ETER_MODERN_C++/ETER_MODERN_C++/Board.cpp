@@ -200,6 +200,20 @@ void Board::AddCard(int row, int col, Card card)
 	board[row][col].push(card);
 }
 
+void Board::SwapStacks(int row1, int col1, int row2, int col2)
+{
+	if (!IsValidPosition(row1, col1) || !IsValidPosition(row2, col2)) {
+		std::cout << "Invalid positions for swapping stacks.\n";
+		return;
+	}
+	std::stack<Card> tempStack = board[row1][col1];
+	board[row1][col1] = board[row2][col2];
+	board[row2][col2] = tempStack;
+
+	std::cout << "Stacks at (" << row1 << ", " << col1 << ") and ("
+		<< row2 << ", " << col2 << ") have been swapped.\n";
+}
+
 void Board::Remove(int row, int col)
 {
 	if (IsValidPosition(row, col) && !IsEmpty(row, col))

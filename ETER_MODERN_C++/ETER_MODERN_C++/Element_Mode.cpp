@@ -1,5 +1,4 @@
-﻿
-#pragma once
+﻿#pragma once
 #include "Element_Mode.h"
 #include "Explosion_Card.h"
 
@@ -353,7 +352,7 @@ void Element_Mode::ActivatePower()
         break;
     case Putere::Maree:
         std::cout << "Activating Maree: Interschimbă pozițiile a două teancuri de cărți." << std::endl;
-        // Logic for Maree goes here
+		SwapStacks();
         break;
     case Putere::Ceata:
         std::cout << "Activating Ceata: Joacă încă o iluzie." << std::endl;
@@ -823,4 +822,15 @@ void Element_Mode::Uragan(int row) {
     }
 
     std::cout << "Uragan activated: Moved cards from row " << row << " to row " << newRow << ".\n";
+}
+
+void Element_Mode::SwapStacks() {
+	int row1, col1, row2, col2;
+
+	std::cout << "Enter the row and column of the first stack to swap: ";
+	std::cin >> row1 >> col1;
+	std::cout << "Enter the row and column of the second stack to swap: ";
+	std::cin >> row2 >> col2;
+
+	board.SwapStacks(row1, col1, row2, col2);
 }
