@@ -214,6 +214,45 @@ void Board::SwapStacks(int row1, int col1, int row2, int col2)
 		<< row2 << ", " << col2 << ") have been swapped.\n";
 }
 
+void Board::MoveStack(int srcRow, int srcCol, int destRow, int destCol)
+{
+	if (!IsValidPosition(srcRow, srcCol) || !IsValidPosition(destRow, destCol)) {
+		std::cerr << "Invalid positions. Source or destination out of bounds.\n";
+		return;
+	}
+
+	if (IsEmpty(srcRow, srcCol)) {
+		std::cerr << "Source position (" << srcRow << ", " << srcCol << ") is empty. Nothing to move.\n";
+		return;
+	}
+
+	if (!IsEmpty(destRow, destCol)) {
+		std::cerr << "Destination position (" << destRow << ", " << destCol << ") is not empty.\n";
+		return;
+	}
+
+	board[destRow][destCol] = board[srcRow][srcCol];
+
+	while (!board[srcRow][srcCol].empty()) {
+		board[srcRow][srcCol].pop();
+	}
+
+	UpdateUnMarked(srcRow, srcCol);
+	UpdateMarked(destRow, destCol);
+
+	std::cout << "Moved stack from (" << srcRow << ", " << srcCol << ") to (" << destRow << ", " << destCol << ").\n";
+}
+
+bool Board::AreAdjacent(int row1, int col1, int row2, int col2)
+{
+	if (!IsValidPosition(row1, col1) || !IsValidPosition(row2, col2)) {
+		std::cerr << "Invalid positions. Either one or both positions are out of bounds.\n";
+		return false;
+	}
+
+	return (std::abs(row1 - row2) + std::abs(col1 - col2)) == 1;
+}
+
 void Board::Remove(int row, int col)
 {
 	if (IsValidPosition(row, col) && !IsEmpty(row, col))
