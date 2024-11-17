@@ -356,7 +356,7 @@ void Element_Mode::ActivatePower()
         break;
     case Putere::Ceata:
         std::cout << "Activating Ceata: Joacă încă o iluzie." << std::endl;
-        // Logic for Ceata goes here
+		Ceata();
         break;
     case Putere::Val:
         std::cout << "Activating Val: Mută un teanc pe o poziție adiacentă goală și joacă o carte pe noua poziție goală." << std::endl;
@@ -833,4 +833,44 @@ void Element_Mode::SwapStacks() {
 	std::cin >> row2 >> col2;
 
 	board.SwapStacks(row1, col1, row2, col2);
+}
+
+void Element_Mode::Ceata() {
+	for (int row = 0; row < board.GetSize(); ++row) {
+		for (int col = 0; col < board.GetSize(); ++col) {
+			if (board.HasCoveredCard(row, col, currentPlayer->getColor())) {
+				std::cout << currentPlayer->getName() << " already has an active illusion on the board!\n";
+				return;
+			}
+		}
+	}
+
+	currentPlayer->ShowHand();
+
+	int cardIndex = -1;
+	while (!currentPlayer->HasCardAtIndex(cardIndex)) {
+		std::cout << currentPlayer->getName() << ", choose a card index to play as an illusion: ";
+		std::cin >> cardIndex;
+	}
+
+	Card chosenCard = currentPlayer->PlayCard(cardIndex);
+
+	chosenCard.setFaceDown(true);
+
+	int row = -1, col = -1;
+	int result = board.CanMakeMove(row, col, chosenCard);
+	while (result == 0) {
+		std::cout << "Enter row and column (0, 1, 2, ...) to place the illusion: ";
+		std::cin >> row >> col;
+		result = board.CanMakeMove(row, col, chosenCard);
+	}
+
+	if (result == 1) {
+		currentPlayer->setLastMove(row, col);
+		board.MakeMove(row, col, chosenCard);
+		std::cout << currentPlayer->getName() << " played an illusion at position (" << row << ", " << col << ").\n";
+	}
+	else {
+		std::cout << "Failed to play the illusion. Invalid move.\n";
+	}
 }
