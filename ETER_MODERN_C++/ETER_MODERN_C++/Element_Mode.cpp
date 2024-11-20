@@ -360,7 +360,7 @@ void Element_Mode::ActivatePower()
         break;
     case Putere::Val:
         std::cout << "Activating Val: Mută un teanc pe o poziție adiacentă goală și joacă o carte pe noua poziție goală." << std::endl;
-        // Logic for Val goes here
+		Val();
         break;
     case Putere::VartejDeApa:
         std::cout << "Activating Vartej De Apa: Mută 2 cărți despărțite de un spațiu gol pe acel spațiu." << std::endl;
@@ -874,3 +874,62 @@ void Element_Mode::Ceata() {
 		std::cout << "Failed to play the illusion. Invalid move.\n";
 	}
 }
+
+void Element_Mode::Val() 
+{
+	board.Display();
+
+	std::cout << currentPlayer->getName() << ", choose the source row and column: ";
+	int srcRow, srcCol;
+	std::cin >> srcRow >> srcCol;
+
+	if (!board.IsValidPosition(srcRow, srcCol) || board.IsEmpty(srcRow, srcCol)) 
+	{
+		std::cout << "Invalid source position. Try again.\n";
+		return;
+	}
+
+	std::cout << "Choose the destination row and column: ";
+	int destRow, destCol;
+	std::cin >> destRow >> destCol;
+
+	if (!board.IsValidPosition(destRow, destCol) || !board.IsEmpty(destRow, destCol)) 
+	{
+		std::cout << "Invalid destination position. Try again.\n";
+		return;
+	}
+
+	if (!board.AreAdjacent(srcRow, srcCol, destRow, destCol)) 
+	{
+		std::cout << "The destination position must be adjacent to the source position. Try again.\n";
+		return;
+	}
+
+	board.MoveStack(srcRow, srcCol, destRow, destCol);
+	std::cout << "Moved stack from (" << srcRow << ", " << srcCol << ") to (" << destRow << ", " << destCol << ").\n";
+
+	currentPlayer->ShowHand();
+	std::cout << "Choose a card index to play on the new empty position: ";
+	int cardIndex;
+	std::cin >> cardIndex;
+
+	if (!currentPlayer->HasCardAtIndex(cardIndex)) 
+	{
+		std::cout << "Invalid card index. Try again.\n";
+		return;
+	}
+
+	Card cardToPlay = currentPlayer->PlayCard(cardIndex);
+	if (board.CanMakeMove(srcRow, srcCol, cardToPlay)) 
+	{
+		board.MakeMove(srcRow, srcCol, cardToPlay);
+		std::cout << "Played card on the new empty position at (" << srcRow << ", " << srcCol << ").\n";
+	}
+	else 
+	{
+		std::cout << "Cannot place the card on the new empty position. Returning card to your hand.\n";
+		currentPlayer->AddCard(cardToPlay);
+	}
+}
+
+

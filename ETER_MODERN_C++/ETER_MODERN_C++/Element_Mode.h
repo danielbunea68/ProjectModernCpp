@@ -76,4 +76,5 @@ public:
     void Uragan(int row);
 	void SwapStacks();
 	void Ceata();
+	void Val();
 };
