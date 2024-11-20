@@ -380,7 +380,7 @@ void Element_Mode::ActivatePower()
         break;
     case Putere::Cutremur:
         std::cout << "Activating Cutremur: Elimină de pe tablă toate cărțile vizibile cu numărul 1." << std::endl;
-        // Logic for Cutremur goes here
+		Cutremur();
         break;
     case Putere::Sfaramare:
         std::cout << "Activating Sfaramare: Valoarea unei cărți a adversarului 2/3/4 scade cu 1." << std::endl;
@@ -1005,6 +1005,26 @@ void Element_Mode::VartejDeApa()
 	board.MakeMove(row, emptyCol, topCard);
 
 	std::cout << "Cards moved to position (" << row << "," << emptyCol << ").\n";
+}
+
+void Element_Mode::Cutremur()
+{
+	int boardSize = board.GetSize();
+	for (int row = 0; row < boardSize; ++row)
+	{
+		for (int col = 0; col < boardSize; ++col)
+		{
+			if (!board.IsEmpty(row, col))
+			{
+				Card card = board.TopCard(row, col);
+				if (card.getValue() == 1 && !card.getIsFaceDown())
+				{
+					std::cout << "Removing card with value 1 at (" << row << ", " << col << ").\n";
+					board.Remove(row, col);
+				}
+			}
+		}
+	}
 }
 
 

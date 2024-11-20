@@ -78,4 +78,5 @@ public:
 	void Ceata();
 	void Val();
 	void VartejDeApa();
+	void Cutremur();
 };
