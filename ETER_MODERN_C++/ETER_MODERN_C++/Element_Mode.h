@@ -77,4 +77,5 @@ public:
 	void SwapStacks();
 	void Ceata();
 	void Val();
+	void VartejDeApa();
 };

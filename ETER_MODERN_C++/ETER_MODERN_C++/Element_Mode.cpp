@@ -364,7 +364,7 @@ void Element_Mode::ActivatePower()
         break;
     case Putere::VartejDeApa:
         std::cout << "Activating Vartej De Apa: Mută 2 cărți despărțite de un spațiu gol pe acel spațiu." << std::endl;
-        // Logic for Vartej De Apa goes here
+		VartejDeApa();
         break;
     case Putere::Tsunami:
         std::cout << "Activating Tsunami: Blochează un rând pentru adversar în următoarea tură." << std::endl;
@@ -931,5 +931,81 @@ void Element_Mode::Val()
 		currentPlayer->AddCard(cardToPlay);
 	}
 }
+
+void Element_Mode::VartejDeApa()
+{
+	int row, col1, col2;
+	std::cout << "Enter the row number (0, 1, 2, or 3): ";
+	std::cin >> row;
+
+	std::cout << "Enter the column number for the first card: ";
+	std::cin >> col1;
+
+	std::cout << "Enter the column number for the second card: ";
+	std::cin >> col2;
+
+	if (col1 == col2 || abs(col1 - col2) != 2) 
+	{
+		std::cout << "Invalid positions. The two cards must be separated by exactly one empty space.\n";
+		return;
+	}
+
+	int emptyCol = (col1 + col2) / 2;
+
+	if (board.IsEmpty(row, col1) || board.IsEmpty(row, col2) || !board.IsEmpty(row, emptyCol)) 
+	{
+		std::cout << "Invalid move. Make sure the chosen positions meet the criteria.\n";
+		return;
+	}
+
+	Card card1 = board.TopCard(row, col1);
+	Card card2 = board.TopCard(row, col2);
+
+	Card topCard, bottomCard;
+	if (card1.getValue() > card2.getValue()) 
+	{
+		topCard = card1;
+		bottomCard = card2;
+	}
+	else if (card1.getValue() < card2.getValue()) 
+	{
+		topCard = card2;
+		bottomCard = card1;
+	}
+	else 
+	{
+		int choice = 0;
+		while (choice != 1 && choice != 2) 
+		{
+			std::cout << "Both cards have the same value.\n";
+			std::cout << "Choose which card goes on top (1 for card at (" << row << "," << col1
+				<< "), 2 for card at (" << row << "," << col2 << ")): ";
+			std::cin >> choice;
+
+			if (choice == 1) 
+			{
+				topCard = card1;
+				bottomCard = card2;
+			}
+			else if (choice == 2) 
+			{
+				topCard = card2;
+				bottomCard = card1;
+			}
+			else 
+			{
+				std::cout << "Invalid choice. Please choose 1 or 2.\n";
+			}
+		}
+	}
+
+	board.Remove(row, col1);
+	board.Remove(row, col2);
+	board.MakeMove(row, emptyCol, bottomCard);
+	board.MakeMove(row, emptyCol, topCard);
+
+	std::cout << "Cards moved to position (" << row << "," << emptyCol << ").\n";
+}
+
 
 
