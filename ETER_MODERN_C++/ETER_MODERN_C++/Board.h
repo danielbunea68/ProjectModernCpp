@@ -11,6 +11,7 @@ private:
 
 	std::vector<std::vector<bool>> marked;
 	std::vector<std::vector<std::stack<Card>>> board;
+	int blockedRow = -1;
 
 
 public:

@@ -14,6 +14,13 @@ void Element_Mode::SwitchTurn()
 	{
 		currentPlayer = &player1;
 	}
+
+	if (blockedRowForNextTurn != -1) 
+	{
+		std::cout << "The opponent cannot play on row " << blockedRowForNextTurn << " in this turn.\n";
+	}
+
+	blockedRowForNextTurn = -1;
 }
 
 Element_Mode::Element_Mode()
@@ -368,7 +375,7 @@ void Element_Mode::ActivatePower()
         break;
     case Putere::Tsunami:
         std::cout << "Activating Tsunami: Blochează un rând pentru adversar în următoarea tură." << std::endl;
-        // Logic for Tsunami goes here
+		ActivateTsunami();
         break;
     case Putere::Cascada:
         std::cout << "Activating Cascade: Teancurile de pe un rând cad spre o margine și formează un nou teanc." << std::endl;
@@ -1005,6 +1012,40 @@ void Element_Mode::VartejDeApa()
 	board.MakeMove(row, emptyCol, topCard);
 
 	std::cout << "Cards moved to position (" << row << "," << emptyCol << ").\n";
+}
+
+void Element_Mode::ActivateTsunami()
+{
+	std::cout << "Activating Tsunami: Select a row to block for the opponent's next turn.\n";
+
+	int blockedRow = -1;
+	for (int row = 0; row < board.GetSize(); ++row) 
+	{
+		bool hasEmptySpace = false;
+		for (int col = 0; col < board.GetSize(); ++col) 
+		{
+			if (board.IsEmpty(row, col)) 
+			{
+				hasEmptySpace = true;
+				break;
+			}
+		}
+		if (hasEmptySpace) 
+		{
+			blockedRow = row;
+			break; 
+		}
+	}
+
+	if (blockedRow == -1) 
+	{
+		std::cout << "No valid row to block. Tsunami cannot be activated.\n";
+		return;
+	}
+
+	std::cout << "Row " << blockedRow << " will be blocked for the opponent's next turn.\n";
+
+	blockedRowForNextTurn = blockedRow;
 }
 
 void Element_Mode::Cutremur()

@@ -44,6 +44,7 @@ private:
 	Board board;
 	Player player1, player2;
 	Player* currentPlayer;
+	int blockedRowForNextTurn = -1;
 
 	void SwitchTurn();
 
@@ -78,5 +79,6 @@ public:
 	void Ceata();
 	void Val();
 	void VartejDeApa();
+	void ActivateTsunami();
 	void Cutremur();
 };
