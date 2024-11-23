@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <utility>
+
 class Card
 {
 private:
@@ -10,6 +12,11 @@ private:
 
 public:
 	Card(int value = 0, const std::string& color = "red", const std::string& type = "normal");
+	~Card();
+	Card(const Card& other);
+	Card& operator=(const Card& other);
+	Card(Card&& other)noexcept;
+	Card& operator=(Card&& other)noexcept;
 	int getValue() const;
 	std::string getType() const;
 	bool getIsFaceDown() const;
