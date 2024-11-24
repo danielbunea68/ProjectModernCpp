@@ -91,5 +91,6 @@ public:
 	void Cutremur();
     void Cascada();
     void Sprijin();
-    void Sfaramare();
+    void Sfaramare(); 
+	void Avalansa(int row1, int col1, int row2, int col2);
 };
