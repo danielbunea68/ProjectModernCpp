@@ -1068,5 +1068,45 @@ void Element_Mode::Cutremur()
 	}
 }
 
+void Element_Mode::Cascada()
+{
+    board.Display();
+
+    int row;
+    std::cout << currentPlayer->getName() << ", select the row (0-" << board.GetSize() - 1 << ") for the cascade: ";
+    std::cin >> row;
+
+    if (row < 0 || row >= board.GetSize()) {
+        std::cout << "Invalid row selected. Try again.\n";
+        return;
+    }
+
+    char direction;
+    std::cout << "Choose the direction for the cascade (l for left, r for right): ";
+    std::cin >> direction;
+
+    if (direction != 'l' && direction != 'r') {
+        std::cout << "Invalid direction. Choose 'l' for left or 'r' for right.\n";
+        return;
+    }
+
+    std::stack<Card> cascadeStack;
+    for (int col = 0; col < board.GetSize(); ++col) {
+        while (!board.IsEmpty(row, col)) {
+            cascadeStack.push(board.TopCard(row, col));
+            board.Remove(row, col);
+        }
+    }
+
+    int targetCol = (direction == 'l') ? 0 : board.GetSize() - 1;
+
+    while (!cascadeStack.empty()) {
+        board.AddCard(row, targetCol, cascadeStack.top());
+        cascadeStack.pop();
+    }
+
+    std::cout << "Cascada completed on row " << row << " toward " << (direction == 'l' ? "left" : "right") << ".\n";
+    board.Display();
+}
 
 
