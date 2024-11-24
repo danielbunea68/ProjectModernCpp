@@ -1147,4 +1147,53 @@ void Element_Mode::Sprijin()
     std::cout << "Card at index " << choice << " has been boosted! New value: " << chosenCard.getValue() << ".\n";
 }
 
+void Element_Mode::Sfaramare()
+{
+    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+
+    std::vector<std::pair<int, int>> eligibleCards;
+    for (int row = 0; row < board.GetSize(); ++row) {
+        for (int col = 0; col < board.GetSize(); ++col) {
+            if (!board.IsEmpty(row, col)) {
+                Card topCard = board.TopCard(row, col);
+                if (topCard.getColor() == opponent->getColor() &&
+                    !topCard.getIsFaceDown() &&
+                    (topCard.getValue() == 2 || topCard.getValue() == 3 || topCard.getValue() == 4))
+                {
+                    eligibleCards.emplace_back(row, col);
+                }
+            }
+        }
+    }
+
+    if (eligibleCards.empty()) {
+        std::cout << "No eligible cards belonging to the opponent are available for Sfaramare.\n";
+        return;
+    }
+
+    std::cout << "Eligible opponent cards for Sfaramare:\n";
+    for (size_t i = 0; i < eligibleCards.size(); ++i) {
+        int row = eligibleCards[i].first;
+        int col = eligibleCards[i].second;
+        Card card = board.TopCard(row, col);
+        std::cout << i << ": Card at (" << row << ", " << col << ") - Value: "
+                  << card.getValue() << ", Color: " << card.getColor() << "\n";
+    }
+
+    int choice = -1;
+    while (choice < 0 || choice >= static_cast<int>(eligibleCards.size())) {
+        std::cout << "Enter the index of the card to reduce its value: ";
+        std::cin >> choice;
+    }
+
+    int chosenRow = eligibleCards[choice].first;
+    int chosenCol = eligibleCards[choice].second;
+
+    Card card = board.TopCard(chosenRow, chosenCol);
+    card.setValue(card.getValue() - 1);
+    board.UpdateCard(chosenRow, chosenCol, card);
+
+    std::cout << "Sfaramare applied: Card at (" << chosenRow << ", " << chosenCol
+              << ") now has a value of " << card.getValue() << ".\n";
+}
 

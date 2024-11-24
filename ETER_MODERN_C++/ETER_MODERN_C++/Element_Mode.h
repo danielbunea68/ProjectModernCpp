@@ -83,4 +83,5 @@ public:
 	void Cutremur();
     void Cascada();
     void Sprijin();
+    void Sfaramare();
 };
