@@ -1109,4 +1109,42 @@ void Element_Mode::Cascada()
     board.Display();
 }
 
+void Element_Mode::Sprijin()
+{
+    std::cout << currentPlayer->getName() << "'s hand:\n";
+    currentPlayer->ShowHand();
+
+    std::vector<int> eligibleIndices;
+    const auto& hand = currentPlayer->GetRemovedCards(); // Fetch the player's hand
+
+    for (int i = 0; i < hand.size(); ++i) {
+        int cardValue = hand[i].getValue();
+        if (cardValue == 1 || cardValue == 2 || cardValue == 3) {
+            eligibleIndices.push_back(i);
+        }
+    }
+
+    if (eligibleIndices.empty()) {
+        std::cout << "No eligible cards in your hand for Sprijin (only cards with values 1, 2, or 3 can be boosted).\n";
+        return;
+    }
+
+    std::cout << "Eligible cards for Sprijin:\n";
+    for (int idx : eligibleIndices) {
+        const Card& card = hand[idx];
+        std::cout << idx << ": Value " << card.getValue() << ", Color " << card.getColor() << "\n";
+    }
+
+    int choice = -1;
+    while (choice < 0 || std::find(eligibleIndices.begin(), eligibleIndices.end(), choice) == eligibleIndices.end()) {
+        std::cout << "Choose a card index to boost: ";
+        std::cin >> choice;
+    }
+
+    Card& chosenCard = hand[choice];
+    chosenCard.setValue(chosenCard.getValue() + 1);
+
+    std::cout << "Card at index " << choice << " has been boosted! New value: " << chosenCard.getValue() << ".\n";
+}
+
 

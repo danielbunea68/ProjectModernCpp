@@ -82,4 +82,5 @@ public:
 	void ActivateTsunami();
 	void Cutremur();
     void Cascada();
+    void Sprijin();
 };
