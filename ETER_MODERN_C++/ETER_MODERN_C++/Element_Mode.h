@@ -51,6 +51,14 @@ private:
 public:
 
 	Element_Mode();
+	Element_Mode(Putere putere);
+	//Rule of Five 
+	~Element_Mode();
+	Element_Mode(const Element_Mode& other);
+	Element_Mode& operator=(const Element_Mode& other);
+	Element_Mode(Element_Mode&& other) noexcept;
+	Element_Mode& operator=(Element_Mode&& other) noexcept;
+	//Rule of Five ^^^
 	void InitGame(std::string name1, std::string name2) = 0;
 	void PlayGame() = 0;
 	void ResetGame() = 0;
@@ -71,10 +79,10 @@ public:
 	void Scantei();
 	void Viscol();
 	void Vijelie();
-    void ActivateRafala(int row, int col, int targetRow, int targetCol);
-    void ActivateMiraj(int row, int col, int cardIndex);
-    void ActivateFurtuna();
-    void Uragan(int row);
+	void ActivateRafala(int row, int col, int targetRow, int targetCol);
+	void ActivateMiraj(int row, int col, int cardIndex);
+	void ActivateFurtuna();
+	void Uragan(int row);
 	void SwapStacks();
 	void Ceata();
 	void Val();

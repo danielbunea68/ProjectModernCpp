@@ -300,6 +300,68 @@ void Element_Mode::CreatePit(int row, int col)
  
 Element_Mode::Element_Mode(Putere putere) : tipPutere(putere) {}
 
+Element_Mode::~Element_Mode()
+{
+	std::cout << "Element_Mode destructor called.\n";
+}
+
+Element_Mode::Element_Mode(const Element_Mode& other) : tipPutere(other.tipPutere), board(other.board), 
+player1(other.player1), player2(other.player2), currentPlayer((other.currentPlayer == &other.player1) ? &player1 : &player2), 
+blockedRowForNextTurn(other.blockedRowForNextTurn) 
+{
+	std::cout << "Element_Mode copy constructor called.\n";
+}
+
+Element_Mode& Element_Mode::operator=(const Element_Mode& other)
+{
+	if (this == &other) {
+		return *this;
+	}
+
+	tipPutere = other.tipPutere;
+	board = other.board;
+	player1 = other.player1;
+	player2 = other.player2;
+	currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+	blockedRowForNextTurn = other.blockedRowForNextTurn;
+
+	std::cout << "Element_Mode copy assignment operator called.\n";
+
+	return *this;
+}
+
+Element_Mode::Element_Mode(Element_Mode&& other) noexcept : tipPutere(std::move(other.tipPutere)), 
+board(std::move(other.board)), 
+player1(std::move(other.player1)), player2(std::move(other.player2)), 
+currentPlayer((other.currentPlayer == &other.player1) ? &player1 : &player2), 
+blockedRowForNextTurn(other.blockedRowForNextTurn)
+{
+	other.currentPlayer = nullptr;
+
+	std::cout << "Element_Mode move constructor called.\n";
+
+}
+
+Element_Mode& Element_Mode::operator=(Element_Mode&& other) noexcept
+{
+	if (this == &other) {
+		return *this;
+	}
+
+	tipPutere = std::move(other.tipPutere);
+	board = std::move(other.board);
+	player1 = std::move(other.player1);
+	player2 = std::move(other.player2);
+	currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+	blockedRowForNextTurn = other.blockedRowForNextTurn;
+
+	other.currentPlayer = nullptr;
+
+	std::cout << "Element_Mode move assignment operator called.\n";
+
+	return *this;
+}
+
 Element_Mode::Putere Element_Mode::GetTipPutere()
 {
 	return tipPutere;
@@ -1111,40 +1173,40 @@ void Element_Mode::Cascada()
 
 void Element_Mode::Sprijin()
 {
-    std::cout << currentPlayer->getName() << "'s hand:\n";
-    currentPlayer->ShowHand();
+	std::cout << currentPlayer->getName() << "'s hand:\n";
+	currentPlayer->ShowHand();
 
-    std::vector<int> eligibleIndices;
-    const auto& hand = currentPlayer->GetRemovedCards(); // Fetch the player's hand
+	std::vector<int> eligibleIndices;
+	const auto& hand = currentPlayer->GetRemovedCards(); // Fetch the player's hand
 
-    for (int i = 0; i < hand.size(); ++i) {
-        int cardValue = hand[i].getValue();
-        if (cardValue == 1 || cardValue == 2 || cardValue == 3) {
-            eligibleIndices.push_back(i);
-        }
-    }
+	for (int i = 0; i < hand.size(); ++i) {
+		int cardValue = hand[i].getValue();
+		if (cardValue == 1 || cardValue == 2 || cardValue == 3) {
+			eligibleIndices.push_back(i);
+		}
+	}
 
-    if (eligibleIndices.empty()) {
-        std::cout << "No eligible cards in your hand for Sprijin (only cards with values 1, 2, or 3 can be boosted).\n";
-        return;
-    }
+	if (eligibleIndices.empty()) {
+		std::cout << "No eligible cards in your hand for Sprijin (only cards with values 1, 2, or 3 can be boosted).\n";
+		return;
+	}
 
-    std::cout << "Eligible cards for Sprijin:\n";
-    for (int idx : eligibleIndices) {
-        const Card& card = hand[idx];
-        std::cout << idx << ": Value " << card.getValue() << ", Color " << card.getColor() << "\n";
-    }
+	std::cout << "Eligible cards for Sprijin:\n";
+	for (int idx : eligibleIndices) {
+		const Card& card = hand[idx];
+		std::cout << idx << ": Value " << card.getValue() << ", Color " << card.getColor() << "\n";
+	}
 
-    int choice = -1;
-    while (choice < 0 || std::find(eligibleIndices.begin(), eligibleIndices.end(), choice) == eligibleIndices.end()) {
-        std::cout << "Choose a card index to boost: ";
-        std::cin >> choice;
-    }
+	int choice = -1;
+	while (choice < 0 || std::find(eligibleIndices.begin(), eligibleIndices.end(), choice) == eligibleIndices.end()) {
+		std::cout << "Choose a card index to boost: ";
+		std::cin >> choice;
+	}
 
-    Card& chosenCard = hand[choice];
-    chosenCard.setValue(chosenCard.getValue() + 1);
+	Card& chosenCard = hand[choice];
+	chosenCard.setValue(chosenCard.getValue() + 1);
 
-    std::cout << "Card at index " << choice << " has been boosted! New value: " << chosenCard.getValue() << ".\n";
+	std::cout << "Card at index " << choice << " has been boosted! New value: " << chosenCard.getValue() << ".\n";
 }
 
 void Element_Mode::Sfaramare()
