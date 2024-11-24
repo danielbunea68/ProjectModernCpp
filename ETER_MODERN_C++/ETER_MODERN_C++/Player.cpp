@@ -1,7 +1,75 @@
 #include "Player.h"
 
+Player::Player(const Player& other)
+{
+	m_cards = other.m_cards;
+	m_LifePoints = other.m_LifePoints;
+	m_wizard_power=other.m_wizard_power;
+	m_name=other.m_name;
+	m_color=other.m_color;
+	m_placedCardFaceDown = other.m_placedCardFaceDown;
+	m_last_move = other.m_last_move;
+	removedCards = other.removedCards;
+	powerUsed = other.powerUsed;
+}
+
 Player::Player(const std::string& playerName) :
 	m_name(playerName), m_LifePoints(100), m_placedCardFaceDown(false){}
+
+Player& Player::operator=(const Player& other)
+{
+	if (this != &other) // Self-assignment check
+	{
+		m_cards = other.m_cards;
+		m_LifePoints = other.m_LifePoints;
+		m_wizard_power = other.m_wizard_power;
+		m_name = other.m_name;
+		m_color = other.m_color;
+		m_placedCardFaceDown = other.m_placedCardFaceDown;
+		m_last_move = other.m_last_move;
+		removedCards = other.removedCards;
+		powerUsed = other.powerUsed;
+	}
+	return *this;
+}
+
+Player::Player(Player&& other) noexcept
+{
+	m_cards = std::move(other.m_cards);
+	m_LifePoints= other.m_LifePoints;
+	m_wizard_power = std::move(other.m_wizard_power);
+	m_name = std::move(other.m_name);
+	m_color=std::move(other.m_color);
+	m_placedCardFaceDown = other.m_placedCardFaceDown;
+	m_last_move = std::move(other.m_last_move);
+	removedCards = std::move(other.removedCards);
+	powerUsed = other.powerUsed;
+	other.m_LifePoints = 0;
+	other.m_placedCardFaceDown = false;
+	other.powerUsed = false;
+}
+
+Player& Player::operator=(Player&& other) noexcept
+{
+	if (this != &other) // Self-assignment check
+	{
+		m_cards = std::move(other.m_cards);
+		m_LifePoints = other.m_LifePoints;
+		m_wizard_power = std::move(other.m_wizard_power);
+		m_name = std::move(other.m_name);
+		m_color = std::move(other.m_color);
+		m_placedCardFaceDown = other.m_placedCardFaceDown;
+		m_last_move = std::move(other.m_last_move);
+		removedCards = std::move(other.removedCards);
+		powerUsed = other.powerUsed;
+
+		// Reset the moved-from object to a valid state
+		other.m_LifePoints = 0;
+		other.m_placedCardFaceDown = false;
+		other.powerUsed = false;
+	}
+	return *this;
+}
 
 bool Player::CanPlaceCardFaceDown()
 {

@@ -38,8 +38,14 @@ public:
 	
 
 public:
+
 	Player()=default;
+	~Player() = default;
+	Player(const Player& other);
 	Player(const std::string& playerName);
+	Player& operator=(const Player& other);
+	Player(Player&& other) noexcept;
+	Player& operator=(Player&& other) noexcept;
 
 	bool CanPlaceCardFaceDown();
 	void PlayedCardFaceDown();
