@@ -1173,40 +1173,49 @@ void Element_Mode::Cascada()
 
 void Element_Mode::Sprijin()
 {
-	std::cout << currentPlayer->getName() << "'s hand:\n";
-	currentPlayer->ShowHand();
+    std::vector<std::pair<int, int>> ownCards;
 
-	std::vector<int> eligibleIndices;
-	const auto& hand = currentPlayer->GetRemovedCards(); // Fetch the player's hand
+    for (int row = 0; row < board.GetSize(); ++row) {
+        for (int col = 0; col < board.GetSize(); ++col) {
+            if (!board.IsEmpty(row, col)) {
+                const Card& topCard = board.TopCard(row, col); // Use const reference here
+                if (topCard.getColor() == currentPlayer->getColor() && !topCard.getIsFaceDown() &&
+                    (topCard.getValue() == 1 || topCard.getValue() == 2 || topCard.getValue() == 3)) {
+                    ownCards.emplace_back(row, col);
+                }
+            }
+        }
+    }
 
-	for (int i = 0; i < hand.size(); ++i) {
-		int cardValue = hand[i].getValue();
-		if (cardValue == 1 || cardValue == 2 || cardValue == 3) {
-			eligibleIndices.push_back(i);
-		}
-	}
+    if (ownCards.empty()) {
+        std::cout << "No eligible cards to increase the value of.\n";
+        return;
+    }
 
-	if (eligibleIndices.empty()) {
-		std::cout << "No eligible cards in your hand for Sprijin (only cards with values 1, 2, or 3 can be boosted).\n";
-		return;
-	}
+    std::cout << "Eligible cards for Sprijin:\n";
+    for (size_t i = 0; i < ownCards.size(); ++i) {
+        int row = ownCards[i].first;
+        int col = ownCards[i].second;
+        const Card& card = board.TopCard(row, col);
+        std::cout << i << ": Card at (" << row << ", " << col << ") - Value: "
+                  << card.getValue() << ", Color: " << card.getColor() << "\n";
+    }
 
-	std::cout << "Eligible cards for Sprijin:\n";
-	for (int idx : eligibleIndices) {
-		const Card& card = hand[idx];
-		std::cout << idx << ": Value " << card.getValue() << ", Color " << card.getColor() << "\n";
-	}
+    int choice = -1;
+    while (choice < 0 || choice >= static_cast<int>(ownCards.size())) {
+        std::cout << "Enter the index of the card to increase its value: ";
+        std::cin >> choice;
+    }
 
-	int choice = -1;
-	while (choice < 0 || std::find(eligibleIndices.begin(), eligibleIndices.end(), choice) == eligibleIndices.end()) {
-		std::cout << "Choose a card index to boost: ";
-		std::cin >> choice;
-	}
+    int chosenRow = ownCards[choice].first;
+    int chosenCol = ownCards[choice].second;
 
-	Card& chosenCard = hand[choice];
-	chosenCard.setValue(chosenCard.getValue() + 1);
+    Card updatedCard = board.TopCard(chosenRow, chosenCol); // Get a copy of the card
+    updatedCard.setValue(updatedCard.getValue() + 1); // Modify the copy
+    board.UpdateCard(chosenRow, chosenCol, updatedCard); // Update the card on the board
 
-	std::cout << "Card at index " << choice << " has been boosted! New value: " << chosenCard.getValue() << ".\n";
+    std::cout << "Sprijin applied: Card at (" << chosenRow << ", " << chosenCol
+              << ") now has a value of " << updatedCard.getValue() << ".\n";
 }
 
 void Element_Mode::Sfaramare()
