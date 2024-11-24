@@ -14,6 +14,12 @@ private:
 
 public:
 	Game();
+	~Game() {}
+	Game(const Game& other);
+	Game& operator=(const Game& other);
+	Game(Game&& other) noexcept;
+	Game& operator=(Game&& other) noexcept;
+
 	void RemoveCard(int row, int col) override;
 
 	void ReturnCardToPlayer(int row, int col)override;

@@ -8,6 +8,68 @@ Game::Game()
 
 }
 
+Game::Game(const Game& other)
+{
+	board = other.board;
+	player1 = other.player1;
+	player2=other.player2;
+	if (other.currentPlayer == &other.player1)
+		currentPlayer = &player1;
+	else if (other.currentPlayer == &other.player2)
+		currentPlayer = &player2;
+	else
+		currentPlayer = nullptr;
+}
+
+Game& Game::operator=(const Game& other)
+{
+	if(this == &other)
+		return *this; // Handle self-assignment
+
+	board = other.board;
+	player1 = other.player1;
+	player2 = other.player2;
+
+	// Deep copy for currentPlayer
+	if (other.currentPlayer == &other.player1)
+		currentPlayer = &player1;
+	else if (other.currentPlayer == &other.player2)
+		currentPlayer = &player2;
+	else
+		currentPlayer = nullptr;
+
+	return *this;
+}
+
+Game::Game(Game&& other) noexcept
+{
+	board = std::move(other.board);
+	player1=std::move(other.player1);
+	player2 = std::move(other.player2);
+	currentPlayer = other.currentPlayer == &other.player1 ? &player1 :
+		other.currentPlayer == &other.player2 ? &player2 : nullptr;
+	other.currentPlayer = nullptr;
+
+}
+
+Game& Game::operator=(Game&& other) noexcept
+{
+	if (this == &other)
+		return *this; // Handle self-assignment
+
+	board = std::move(other.board);
+	player1 = std::move(other.player1);
+	player2 = std::move(other.player2);
+
+	// Move currentPlayer
+	currentPlayer = (other.currentPlayer == &other.player1) ? &player1 :
+		(other.currentPlayer == &other.player2) ? &player2 : nullptr;
+
+	other.currentPlayer = nullptr;
+
+	return *this;
+}
+
 void Game::InitGame(std::string name1, std::string name2)
 {
 	player1.setName(name1);
