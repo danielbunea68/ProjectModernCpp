@@ -45,6 +45,7 @@ private:
 	Player player1, player2;
 	Player* currentPlayer;
 	int blockedRowForNextTurn = -1;
+	bool gameWithIllusions;
 
 	void SwitchTurn();
 
@@ -93,4 +94,5 @@ public:
     void Sprijin();
     void Sfaramare(); 
 	void Avalansa(int row1, int col1, int row2, int col2);
+	void Bolovan(int row, int col, int cardIndex);
 };

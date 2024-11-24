@@ -464,8 +464,8 @@ void Element_Mode::ActivatePower()
 		Avalansa(1, 2, 2, 1);
 		break;
 	case Putere::Bolovan:
-		std::cout << "Activating Bolovan: Acoperă o iluzie cu o carte fără a o întoarce." << std::endl;
-		// Logic for Bolovan goes here
+		std::cout << "Activated: Bolovan - Covers an illusion without revealing it.\n";
+		Bolovan(1, 2, 1);
 		break;
 	default:
 		std::cout << "Unknown power!" << std::endl;
@@ -1321,3 +1321,22 @@ void Element_Mode::Avalansa(int row1, int col1, int row2, int col2)
 		std::cout << "Teancul de la (" << row2 << ", " << col2 << ") nu poate fi mutat.\n";
 	}
 }
+
+void Element_Mode::Bolovan(int row, int col, int cardIndex)
+{
+	if (!gameWithIllusions) {
+		std::cout << "Puterea Bolovan este indisponibilă deoarece jocul nu include iluzii.\n";
+		return;
+	}
+
+	if (!board.IsFaceDown(row, col)) {
+		std::cout << "Poziția (" << row << ", " << col << ") nu conține o iluzie.\n";
+		return;
+	}
+
+	auto cardToCover = currentPlayer->PlayCard(cardIndex);
+
+	board.AddCard(row, col, cardToCover);
+
+	std::cout << "Iluzia de la poziția (" << row << ", " << col << ") a fost acoperită cu o carte.\n";
+

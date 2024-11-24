@@ -43,7 +43,6 @@ public:
 	void Remove(int row, int cols);//aici am lucrat
 	void UpdateCard(int row, int col, const Card& card);
 	bool HasCoveredCard(int row, int col, const std::string& color);
+	bool IsFaceDown(int row, int col) const;
 	void Clear();
-
-	
 };

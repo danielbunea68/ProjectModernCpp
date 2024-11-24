@@ -62,7 +62,7 @@ int Board::GetSize() const
 
 Card Board::TopCard(int row, int col) const 
 {
-	return board[row][col].top(); // Assuming board[row][col] is a stack of Cards
+	return board[row][col].top();
 }
 
 void Board::UpdateMarked(int row, int col)
@@ -365,5 +365,14 @@ bool Board::HasCoveredCard(int row, int col, const std::string& color)
 	return false;
 }
 
+bool Board::IsFaceDown(int row, int col) const
+{
+	if (board[row][col].empty()) {
+		std::cout << "Nu există nicio carte la poziția (" << row << ", " << col << ").\n";
+		return false;
+	}
 
+	const Card& topCard = board[row][col].top();
 
+	return topCard.getIsFaceDown();
+}
