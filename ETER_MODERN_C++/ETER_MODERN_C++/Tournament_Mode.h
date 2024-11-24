@@ -3,7 +3,7 @@
 #include "Board.h"
 #include "Player.h"
 #include "IGame.h"
-class Game :public IGame
+class Tournament_Mode :public IGame
 {
 
 private:
