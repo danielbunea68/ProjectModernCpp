@@ -1,13 +1,31 @@
 
-/*
 #pragma once
-#include "Game.h"
-#include "Wizard_Mode.h"
-#include "Elements_Mode.h"
-
-class Tournament_Mode :public Game ,public Wizard_Mode,public Elements_Mode
+#include "Board.h"
+#include "Player.h"
+#include "IGame.h"
+class Game :public IGame
 {
 
-};
+private:
+	Board board;
+	Player player1, player2;
+	Player* currentPlayer;
+	Board boardt;
+	void SwitchTurn();
 
-*/
+public:
+	
+
+	void RemoveCard(int row, int col) override;
+
+	void ReturnCardToPlayer(int row, int col)override;
+
+	void CreatePit(int row, int col)override;
+
+	void InitGame(std::string name1, std::string name2)override;
+
+	Player* CurrentTurn() const;
+
+	void PlayGame()override;
+	void ResetGame()override;
+};
