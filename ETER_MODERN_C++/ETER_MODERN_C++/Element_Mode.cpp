@@ -1068,5 +1068,132 @@ void Element_Mode::Cutremur()
 	}
 }
 
+void Element_Mode::Cascada()
+{
+    board.Display();
 
+    int row;
+    std::cout << currentPlayer->getName() << ", select the row (0-" << board.GetSize() - 1 << ") for the cascade: ";
+    std::cin >> row;
+
+    if (row < 0 || row >= board.GetSize()) {
+        std::cout << "Invalid row selected. Try again.\n";
+        return;
+    }
+
+    char direction;
+    std::cout << "Choose the direction for the cascade (l for left, r for right): ";
+    std::cin >> direction;
+
+    if (direction != 'l' && direction != 'r') {
+        std::cout << "Invalid direction. Choose 'l' for left or 'r' for right.\n";
+        return;
+    }
+
+    std::stack<Card> cascadeStack;
+    for (int col = 0; col < board.GetSize(); ++col) {
+        while (!board.IsEmpty(row, col)) {
+            cascadeStack.push(board.TopCard(row, col));
+            board.Remove(row, col);
+        }
+    }
+
+    int targetCol = (direction == 'l') ? 0 : board.GetSize() - 1;
+
+    while (!cascadeStack.empty()) {
+        board.AddCard(row, targetCol, cascadeStack.top());
+        cascadeStack.pop();
+    }
+
+    std::cout << "Cascada completed on row " << row << " toward " << (direction == 'l' ? "left" : "right") << ".\n";
+    board.Display();
+}
+
+void Element_Mode::Sprijin()
+{
+    std::cout << currentPlayer->getName() << "'s hand:\n";
+    currentPlayer->ShowHand();
+
+    std::vector<int> eligibleIndices;
+    const auto& hand = currentPlayer->GetRemovedCards(); // Fetch the player's hand
+
+    for (int i = 0; i < hand.size(); ++i) {
+        int cardValue = hand[i].getValue();
+        if (cardValue == 1 || cardValue == 2 || cardValue == 3) {
+            eligibleIndices.push_back(i);
+        }
+    }
+
+    if (eligibleIndices.empty()) {
+        std::cout << "No eligible cards in your hand for Sprijin (only cards with values 1, 2, or 3 can be boosted).\n";
+        return;
+    }
+
+    std::cout << "Eligible cards for Sprijin:\n";
+    for (int idx : eligibleIndices) {
+        const Card& card = hand[idx];
+        std::cout << idx << ": Value " << card.getValue() << ", Color " << card.getColor() << "\n";
+    }
+
+    int choice = -1;
+    while (choice < 0 || std::find(eligibleIndices.begin(), eligibleIndices.end(), choice) == eligibleIndices.end()) {
+        std::cout << "Choose a card index to boost: ";
+        std::cin >> choice;
+    }
+
+    Card& chosenCard = hand[choice];
+    chosenCard.setValue(chosenCard.getValue() + 1);
+
+    std::cout << "Card at index " << choice << " has been boosted! New value: " << chosenCard.getValue() << ".\n";
+}
+
+void Element_Mode::Sfaramare()
+{
+    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+
+    std::vector<std::pair<int, int>> eligibleCards;
+    for (int row = 0; row < board.GetSize(); ++row) {
+        for (int col = 0; col < board.GetSize(); ++col) {
+            if (!board.IsEmpty(row, col)) {
+                Card topCard = board.TopCard(row, col);
+                if (topCard.getColor() == opponent->getColor() &&
+                    !topCard.getIsFaceDown() &&
+                    (topCard.getValue() == 2 || topCard.getValue() == 3 || topCard.getValue() == 4))
+                {
+                    eligibleCards.emplace_back(row, col);
+                }
+            }
+        }
+    }
+
+    if (eligibleCards.empty()) {
+        std::cout << "No eligible cards belonging to the opponent are available for Sfaramare.\n";
+        return;
+    }
+
+    std::cout << "Eligible opponent cards for Sfaramare:\n";
+    for (size_t i = 0; i < eligibleCards.size(); ++i) {
+        int row = eligibleCards[i].first;
+        int col = eligibleCards[i].second;
+        Card card = board.TopCard(row, col);
+        std::cout << i << ": Card at (" << row << ", " << col << ") - Value: "
+                  << card.getValue() << ", Color: " << card.getColor() << "\n";
+    }
+
+    int choice = -1;
+    while (choice < 0 || choice >= static_cast<int>(eligibleCards.size())) {
+        std::cout << "Enter the index of the card to reduce its value: ";
+        std::cin >> choice;
+    }
+
+    int chosenRow = eligibleCards[choice].first;
+    int chosenCol = eligibleCards[choice].second;
+
+    Card card = board.TopCard(chosenRow, chosenCol);
+    card.setValue(card.getValue() - 1);
+    board.UpdateCard(chosenRow, chosenCol, card);
+
+    std::cout << "Sfaramare applied: Card at (" << chosenRow << ", " << chosenCol
+              << ") now has a value of " << card.getValue() << ".\n";
+}
 
