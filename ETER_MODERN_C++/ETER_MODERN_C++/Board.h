@@ -15,6 +15,12 @@ private:
 
 
 public:
+	Board() = default;
+	~Board() = default;
+	Board(const Board& other);
+	Board& operator=(const Board& other);
+	Board(Board&& other) noexcept;
+	Board& operator=(Board&& other) noexcept;
 	void SetSize(int size);
 	int  GetSize() const;
 	std::vector<std::vector<std::stack<Card>>>& GetBoard();

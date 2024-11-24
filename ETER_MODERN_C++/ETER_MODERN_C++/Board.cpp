@@ -2,6 +2,52 @@
 #include "Game.h"
 #include <iostream>
 
+Board::Board(const Board& other)
+{
+	m_size = other.m_size;
+	marked = other.marked;
+	board = other.board;
+	blockedRow = other.blockedRow;
+}
+
+Board& Board::operator=(const Board& other)
+{
+	if (this != &other) // Self-assignment check
+	{
+		m_size = other.m_size;
+		marked = other.marked;
+		board = other.board;
+		blockedRow = other.blockedRow;
+	}
+	return *this;
+}
+
+Board::Board(Board&& other) noexcept
+{
+	m_size = other.m_size;
+	marked = std::move(other.marked);
+	board=std::move(other.board);
+	blockedRow=other.blockedRow;
+	other.m_size = 0;
+	other.blockedRow = -1;
+}
+
+Board& Board::operator=(Board&& other) noexcept
+{
+	if (this != &other) // Self-assignment check
+	{
+		m_size = other.m_size;
+		marked = std::move(other.marked);
+		board = std::move(other.board);
+		blockedRow = other.blockedRow;
+
+		// Reset the moved-from object to a valid state
+		other.m_size = 0;
+		other.blockedRow = -1;
+	}
+	return *this;
+}
+
 void Board::SetSize(int size)
 {
 	m_size = size;
