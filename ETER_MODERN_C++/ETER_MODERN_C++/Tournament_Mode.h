@@ -3,29 +3,31 @@
 #include "Board.h"
 #include "Player.h"
 #include "IGame.h"
-class Tournament_Mode :public IGame
+#include "Game.h"
+#include "Wizard_Mode.h"
+#include "Element_Mode.h"
+
+#include <vector>
+#include <string>
+enum class BaseMode {
+	Training,
+	MageDuel,
+	ElementalBattle
+};
+class Tournament_Mode 
 {
 
 private:
-	Board board;
-	Player player1, player2;
-	Player* currentPlayer;
-	Board boardt;
-	void SwitchTurn();
-
+    IGame* game = nullptr;
+    std::vector < std::vector< std::string>> board;
+	char  m_mode; 
 public:
-	
 
-	void RemoveCard(int row, int col) override;
+	void choseGame();
 
-	void ReturnCardToPlayer(int row, int col)override;
+	void setmode(char mode);
 
-	void CreatePit(int row, int col)override;
+	void PlayGameChosen(std::string name1, std::string name2);
 
-	void InitGame(std::string name1, std::string name2)override;
-
-	Player* CurrentTurn() const;
-
-	void PlayGame()override;
-	void ResetGame()override;
+	void updateBoard(int row, int col, std::string color);
 };

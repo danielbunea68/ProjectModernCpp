@@ -216,6 +216,8 @@ void Element_Mode::PlayGame()
 		}
 
 		if (board.CheckWinner(chosenCard.getColor())) {
+			std::pair<int, int> cords(row, col);
+			currentPlayer->setWinnCords(cords);
 			board.Display();
 			std::cout << currentPlayer->getName() << " wins!\n";
 			gameOver = true;
@@ -1115,7 +1117,7 @@ void Element_Mode::Sprijin()
     currentPlayer->ShowHand();
 
     std::vector<int> eligibleIndices;
-    const auto& hand = currentPlayer->GetRemovedCards(); // Fetch the player's hand
+    auto& hand = currentPlayer->GetRemovedCards(); // Fetch the player's hand
 
     for (int i = 0; i < hand.size(); ++i) {
         int cardValue = hand[i].getValue();

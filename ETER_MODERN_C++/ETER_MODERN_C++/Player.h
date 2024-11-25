@@ -33,6 +33,7 @@ private:
 	bool m_placedCardFaceDown;
 	std::pair<int, int> m_last_move;
 	std::vector<Card> removedCards;
+	std::pair<int, int> m_winncords;
 public:
 	bool powerUsed= false ;
 	
@@ -58,8 +59,11 @@ public:
 	WizardPower getWizardPower() const;
 	void setRandomWizardPower();
 	bool getPowerUsed();
-
 	void setPowerUsed();
+
+	void setWinnCords(const std::pair<int,int> cords);
+	std::pair<int, int> getWinnCords() const ;
+
 	void ShowHand();
 	Card PlayCard(int cardIndex);/// ii updataeaza vectorul de carti 
 	bool HasCardAtIndex(int cardIndex);
@@ -75,5 +79,7 @@ public:
 
 	/// 
 	void ClearCards();
+
+
 };
 

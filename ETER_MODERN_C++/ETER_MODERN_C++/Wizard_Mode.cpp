@@ -459,6 +459,8 @@ void Wizard_Mode::PlayGame()
             }
 
             if (board.CheckWinner(chosenCard.getColor())) {
+                std::pair<int, int> cords(row, col);
+                currentPlayer->setWinnCords(cords);
                 board.Display();
                 std::cout << currentPlayer->getName() << " wins!\n";
                 gameOver = true;

@@ -9,6 +9,7 @@ Player::Player(const Player& other)
 	m_color=other.m_color;
 	m_placedCardFaceDown = other.m_placedCardFaceDown;
 	m_last_move = other.m_last_move;
+	m_winncords = other.m_winncords;
 	removedCards = other.removedCards;
 	powerUsed = other.powerUsed;
 }
@@ -27,6 +28,7 @@ Player& Player::operator=(const Player& other)
 		m_color = other.m_color;
 		m_placedCardFaceDown = other.m_placedCardFaceDown;
 		m_last_move = other.m_last_move;
+		m_winncords = other.m_winncords;
 		removedCards = other.removedCards;
 		powerUsed = other.powerUsed;
 	}
@@ -42,6 +44,7 @@ Player::Player(Player&& other) noexcept
 	m_color=std::move(other.m_color);
 	m_placedCardFaceDown = other.m_placedCardFaceDown;
 	m_last_move = std::move(other.m_last_move);
+	m_winncords = std::move(other.m_winncords);
 	removedCards = std::move(other.removedCards);
 	powerUsed = other.powerUsed;
 	other.m_LifePoints = 0;
@@ -60,6 +63,7 @@ Player& Player::operator=(Player&& other) noexcept
 		m_color = std::move(other.m_color);
 		m_placedCardFaceDown = other.m_placedCardFaceDown;
 		m_last_move = std::move(other.m_last_move);
+		m_winncords = std::move(other.m_winncords);
 		removedCards = std::move(other.removedCards);
 		powerUsed = other.powerUsed;
 
@@ -116,6 +120,18 @@ void Player::setPowerUsed()
 {
 	powerUsed = true;
 }
+
+void Player::setWinnCords(const std::pair<int, int> cords)
+{
+	m_winncords = cords;
+}
+
+std::pair<int, int> Player::getWinnCords() const
+{
+	return m_winncords;
+}
+
+
 
 void Player::ShowHand()
 {

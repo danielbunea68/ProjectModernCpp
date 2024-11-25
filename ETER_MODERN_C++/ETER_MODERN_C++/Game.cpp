@@ -179,6 +179,7 @@ void Game::PlayGame()
 		}
 
 		int row = -1, col = -1;
+		
 		int result = board.CanMakeMove(row, col, chosenCard);
 		while (result == 0) {
 			std::cout << "Enter row and column (0, 1, or 2) to place the card: ";
@@ -315,6 +316,8 @@ void Game::PlayGame()
 		}
 
 		if (board.CheckWinner(chosenCard.getColor())) {
+			std::pair<int, int> cords(row, col);
+			currentPlayer->setWinnCords(cords);
 			board.Display();
 			std::cout << currentPlayer->getName() << " wins!\n";
 			gameOver = true;
