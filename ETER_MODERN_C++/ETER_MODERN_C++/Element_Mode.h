@@ -45,12 +45,24 @@ private:
 	Player player1, player2;
 	Player* currentPlayer;
 	int blockedRowForNextTurn = -1;
+	bool gameWithIllusions;
 
 	void SwitchTurn();
 
 public:
 
 	Element_Mode();
+	Element_Mode(Putere putere);
+	//Rule of Five 
+	~Element_Mode();
+	Element_Mode(const Element_Mode& other);
+	Element_Mode& operator=(const Element_Mode& other);
+	Element_Mode(Element_Mode&& other) noexcept;
+	Element_Mode& operator=(Element_Mode&& other) noexcept;
+	//Rule of Five ^^^
+	void InitGame(std::string name1, std::string name2) = 0;
+	void PlayGame() = 0;
+	void ResetGame() = 0;
 	void InitGame(std::string name1, std::string name2) override;
 	void PlayGame() override;
 	void ResetGame() override;
@@ -71,10 +83,10 @@ public:
 	void Scantei();
 	void Viscol();
 	void Vijelie();
-    void ActivateRafala(int row, int col, int targetRow, int targetCol);
-    void ActivateMiraj(int row, int col, int cardIndex);
-    void ActivateFurtuna();
-    void Uragan(int row);
+	void ActivateRafala(int row, int col, int targetRow, int targetCol);
+	void ActivateMiraj(int row, int col, int cardIndex);
+	void ActivateFurtuna();
+	void Uragan(int row);
 	void SwapStacks();
 	void Ceata();
 	void Val();
@@ -83,5 +95,7 @@ public:
 	void Cutremur();
     void Cascada();
     void Sprijin();
-    void Sfaramare();
+    void Sfaramare(); 
+	void Avalansa(int row1, int col1, int row2, int col2);
+	void Bolovan(int row, int col, int cardIndex);
 };

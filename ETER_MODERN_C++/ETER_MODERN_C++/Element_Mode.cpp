@@ -302,115 +302,177 @@ void Element_Mode::CreatePit(int row, int col)
  
 Element_Mode::Element_Mode(Putere putere) : tipPutere(putere) {}
 
+Element_Mode::~Element_Mode()
+{
+	std::cout << "Element_Mode destructor called.\n";
+}
+
+Element_Mode::Element_Mode(const Element_Mode& other) : tipPutere(other.tipPutere), board(other.board), 
+player1(other.player1), player2(other.player2), currentPlayer((other.currentPlayer == &other.player1) ? &player1 : &player2), 
+blockedRowForNextTurn(other.blockedRowForNextTurn) 
+{
+	std::cout << "Element_Mode copy constructor called.\n";
+}
+
+Element_Mode& Element_Mode::operator=(const Element_Mode& other)
+{
+	if (this == &other) {
+		return *this;
+	}
+
+	tipPutere = other.tipPutere;
+	board = other.board;
+	player1 = other.player1;
+	player2 = other.player2;
+	currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+	blockedRowForNextTurn = other.blockedRowForNextTurn;
+
+	std::cout << "Element_Mode copy assignment operator called.\n";
+
+	return *this;
+}
+
+Element_Mode::Element_Mode(Element_Mode&& other) noexcept : tipPutere(std::move(other.tipPutere)), 
+board(std::move(other.board)), 
+player1(std::move(other.player1)), player2(std::move(other.player2)), 
+currentPlayer((other.currentPlayer == &other.player1) ? &player1 : &player2), 
+blockedRowForNextTurn(other.blockedRowForNextTurn)
+{
+	other.currentPlayer = nullptr;
+
+	std::cout << "Element_Mode move constructor called.\n";
+
+}
+
+Element_Mode& Element_Mode::operator=(Element_Mode&& other) noexcept
+{
+	if (this == &other) {
+		return *this;
+	}
+
+	tipPutere = std::move(other.tipPutere);
+	board = std::move(other.board);
+	player1 = std::move(other.player1);
+	player2 = std::move(other.player2);
+	currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+	blockedRowForNextTurn = other.blockedRowForNextTurn;
+
+	other.currentPlayer = nullptr;
+
+	std::cout << "Element_Mode move assignment operator called.\n";
+
+	return *this;
+}
+
 Element_Mode::Putere Element_Mode::GetTipPutere()
 {
 	return tipPutere;
 }
 
-void Element_Mode::ActivatePower() 
+void Element_Mode::ActivatePower()
 {
-    switch (tipPutere) 
-    {
-    case Putere::ExplozieControlata:
-        std::cout << "Activating Explozie Controlata: Tabla explodează!" << std::endl;
-        ActivateControlledExplosion();
-        break;
-    case Putere::Distrugere:
-        std::cout << "Activating Distrugere: Elimină ultima carte jucată de adversar." << std::endl;
-        DestroyLastOpponentCard();
-        break;
-    case Putere::Flacari:
-        std::cout << "Activating Flacari: Întoarce iluzia adversarului și joacă o carte." << std::endl;
-        Flacari();
-        break;
-    case Putere::Lava:
-        std::cout << "Activating Lava: Toate cărțile vizibile cu un anumit număr se întorc la proprietari." << std::endl;
+	switch (tipPutere)
+	{
+	case Putere::ExplozieControlata:
+		std::cout << "Activating Explozie Controlata: Tabla explodează!" << std::endl;
+		ActivateControlledExplosion();
+		break;
+	case Putere::Distrugere:
+		std::cout << "Activating Distrugere: Elimină ultima carte jucată de adversar." << std::endl;
+		DestroyLastOpponentCard();
+		break;
+	case Putere::Flacari:
+		std::cout << "Activating Flacari: Întoarce iluzia adversarului și joacă o carte." << std::endl;
+		Flacari();
+		break;
+	case Putere::Lava:
+		std::cout << "Activating Lava: Toate cărțile vizibile cu un anumit număr se întorc la proprietari." << std::endl;
 		Lava();
-        break;
-    case Putere::DinCenusa:
-        std::cout << "Activating Din Cenusa: Joacă imediat o carte eliminată." << std::endl;
+		break;
+	case Putere::DinCenusa:
+		std::cout << "Activating Din Cenusa: Joacă imediat o carte eliminată." << std::endl;
 		DinCenusa();
-        break;
-    case Putere::Scantei:
-        std::cout << "Activating Scantei: Joacă o carte acoperită de adversar pe o altă poziție." << std::endl;
+		break;
+	case Putere::Scantei:
+		std::cout << "Activating Scantei: Joacă o carte acoperită de adversar pe o altă poziție." << std::endl;
 		Scantei();
-        break;
-    case Putere::Viscol:
-        std::cout << "Activating Viscol: Întoarce o carte vizibilă a oponentului în mâna sa." << std::endl;
+		break;
+	case Putere::Viscol:
+		std::cout << "Activating Viscol: Întoarce o carte vizibilă a oponentului în mâna sa." << std::endl;
 		Viscol();
-        break;
-    case Putere::Vijelie:
-        std::cout << "Activating Vijelie: Toate cărțile acoperite se întorc la proprietari." << std::endl;
+		break;
+	case Putere::Vijelie:
+		std::cout << "Activating Vijelie: Toate cărțile acoperite se întorc la proprietari." << std::endl;
 		Vijelie();
-        break;
-    case Putere::Uragan:
-        std::cout << "Activating Uragan: Shiftează un rând complet ocupat." << std::endl;
-        // Logic for Uragan goes here
-        break;
-    case Putere::Rafala:
-        std::cout << "Activating Rafala: Mută o carte vizibilă adiacent unei cărți cu număr mai mic." << std::endl;
-        // Logic for Rafala goes here
-        break;
-    case Putere::Miraj:
-        std::cout << "Activating Miraj: Înlocuiește propria iluzie plasată cu o altă iluzie." << std::endl;
-        // Logic for Miraj goes here
-        break;
-    case Putere::Furtuna:
-        std::cout << "Activating Furtuna: Elimină din joc un teanc de cărți cu 2 sau mai multe cărți." << std::endl;
-        // Logic for Furtuna goes here
-        break;
-    case Putere::Maree:
-        std::cout << "Activating Maree: Interschimbă pozițiile a două teancuri de cărți." << std::endl;
+		break;
+	case Putere::Uragan:
+		std::cout << "Activating Uragan: Shiftează un rând complet ocupat." << std::endl;
+		// Logic for Uragan goes here
+		break;
+	case Putere::Rafala:
+		std::cout << "Activating Rafala: Mută o carte vizibilă adiacent unei cărți cu număr mai mic." << std::endl;
+		// Logic for Rafala goes here
+		break;
+	case Putere::Miraj:
+		std::cout << "Activating Miraj: Înlocuiește propria iluzie plasată cu o altă iluzie." << std::endl;
+		// Logic for Miraj goes here
+		break;
+	case Putere::Furtuna:
+		std::cout << "Activating Furtuna: Elimină din joc un teanc de cărți cu 2 sau mai multe cărți." << std::endl;
+		// Logic for Furtuna goes here
+		break;
+	case Putere::Maree:
+		std::cout << "Activating Maree: Interschimbă pozițiile a două teancuri de cărți." << std::endl;
 		SwapStacks();
-        break;
-    case Putere::Ceata:
-        std::cout << "Activating Ceata: Joacă încă o iluzie." << std::endl;
+		break;
+	case Putere::Ceata:
+		std::cout << "Activating Ceata: Joacă încă o iluzie." << std::endl;
 		Ceata();
-        break;
-    case Putere::Val:
-        std::cout << "Activating Val: Mută un teanc pe o poziție adiacentă goală și joacă o carte pe noua poziție goală." << std::endl;
+		break;
+	case Putere::Val:
+		std::cout << "Activating Val: Mută un teanc pe o poziție adiacentă goală și joacă o carte pe noua poziție goală." << std::endl;
 		Val();
-        break;
-    case Putere::VartejDeApa:
-        std::cout << "Activating Vartej De Apa: Mută 2 cărți despărțite de un spațiu gol pe acel spațiu." << std::endl;
+		break;
+	case Putere::VartejDeApa:
+		std::cout << "Activating Vartej De Apa: Mută 2 cărți despărțite de un spațiu gol pe acel spațiu." << std::endl;
 		VartejDeApa();
-        break;
-    case Putere::Tsunami:
-        std::cout << "Activating Tsunami: Blochează un rând pentru adversar în următoarea tură." << std::endl;
+		break;
+	case Putere::Tsunami:
+		std::cout << "Activating Tsunami: Blochează un rând pentru adversar în următoarea tură." << std::endl;
 		ActivateTsunami();
-        break;
-    case Putere::Cascada:
-        std::cout << "Activating Cascade: Teancurile de pe un rând cad spre o margine și formează un nou teanc." << std::endl;
-        // Logic for Cascade goes here
-        break;
-    case Putere::Sprijin:
-        std::cout << "Activating Sprijin: Valoarea unei cărți proprii 1/2/3 crește cu 1." << std::endl;
-        // Logic for Sprijin goes here
-        break;
-    case Putere::Cutremur:
-        std::cout << "Activating Cutremur: Elimină de pe tablă toate cărțile vizibile cu numărul 1." << std::endl;
+		break;
+	case Putere::Cascada:
+		std::cout << "Activating Cascade: Teancurile de pe un rând cad spre o margine și formează un nou teanc." << std::endl;
+		// Logic for Cascade goes here
+		break;
+	case Putere::Sprijin:
+		std::cout << "Activating Sprijin: Valoarea unei cărți proprii 1/2/3 crește cu 1." << std::endl;
+		// Logic for Sprijin goes here
+		break;
+	case Putere::Cutremur:
+		std::cout << "Activating Cutremur: Elimină de pe tablă toate cărțile vizibile cu numărul 1." << std::endl;
 		Cutremur();
-        break;
-    case Putere::Sfaramare:
-        std::cout << "Activating Sfaramare: Valoarea unei cărți a adversarului 2/3/4 scade cu 1." << std::endl;
-        // Logic for Sfaramare goes here
-        break;
-    case Putere::Granite:
-        std::cout << "Activating Granite: Plasează o carte neutră care definește o graniță." << std::endl;
-        // Logic for Granite goes here
-        break;
-    case Putere::Avalansa:
-        std::cout << "Activating Avalansa: Shiftează două teancuri adiacente pe o poziție goală." << std::endl;
-        // Logic for Avalansa goes here
-        break;
-    case Putere::Bolovan:
-        std::cout << "Activating Bolovan: Acoperă o iluzie cu o carte fără a o întoarce." << std::endl;
-        // Logic for Bolovan goes here
-        break;
-    default:
-        std::cout << "Unknown power!" << std::endl;
-        break;
-    }
+		break;
+	case Putere::Sfaramare:
+		std::cout << "Activating Sfaramare: Valoarea unei cărți a adversarului 2/3/4 scade cu 1." << std::endl;
+		// Logic for Sfaramare goes here
+		break;
+	case Putere::Granite:
+		std::cout << "Activating Granite: Plasează o carte neutră care definește o graniță." << std::endl;
+		// Logic for Granite goes here
+		break;
+	case Putere::Avalansa:
+		std::cout << "Activated: Avalansa - Shifts two adjacent stacks.\n";
+		Avalansa(1, 2, 2, 1);
+		break;
+	case Putere::Bolovan:
+		std::cout << "Activated: Bolovan - Covers an illusion without revealing it.\n";
+		Bolovan(1, 2, 1);
+		break;
+	default:
+		std::cout << "Unknown power!" << std::endl;
+		break;
+	}
 }
 
 void Element_Mode::ActivateControlledExplosion()
@@ -1113,40 +1175,49 @@ void Element_Mode::Cascada()
 
 void Element_Mode::Sprijin()
 {
-    std::cout << currentPlayer->getName() << "'s hand:\n";
-    currentPlayer->ShowHand();
+    std::vector<std::pair<int, int>> ownCards;
 
-    std::vector<int> eligibleIndices;
-    auto& hand = currentPlayer->GetRemovedCards(); // Fetch the player's hand
-
-    for (int i = 0; i < hand.size(); ++i) {
-        int cardValue = hand[i].getValue();
-        if (cardValue == 1 || cardValue == 2 || cardValue == 3) {
-            eligibleIndices.push_back(i);
+    for (int row = 0; row < board.GetSize(); ++row) {
+        for (int col = 0; col < board.GetSize(); ++col) {
+            if (!board.IsEmpty(row, col)) {
+                const Card& topCard = board.TopCard(row, col); // Use const reference here
+                if (topCard.getColor() == currentPlayer->getColor() && !topCard.getIsFaceDown() &&
+                    (topCard.getValue() == 1 || topCard.getValue() == 2 || topCard.getValue() == 3)) {
+                    ownCards.emplace_back(row, col);
+                }
+            }
         }
     }
 
-    if (eligibleIndices.empty()) {
-        std::cout << "No eligible cards in your hand for Sprijin (only cards with values 1, 2, or 3 can be boosted).\n";
+    if (ownCards.empty()) {
+        std::cout << "No eligible cards to increase the value of.\n";
         return;
     }
 
     std::cout << "Eligible cards for Sprijin:\n";
-    for (int idx : eligibleIndices) {
-        const Card& card = hand[idx];
-        std::cout << idx << ": Value " << card.getValue() << ", Color " << card.getColor() << "\n";
+    for (size_t i = 0; i < ownCards.size(); ++i) {
+        int row = ownCards[i].first;
+        int col = ownCards[i].second;
+        const Card& card = board.TopCard(row, col);
+        std::cout << i << ": Card at (" << row << ", " << col << ") - Value: "
+                  << card.getValue() << ", Color: " << card.getColor() << "\n";
     }
 
     int choice = -1;
-    while (choice < 0 || std::find(eligibleIndices.begin(), eligibleIndices.end(), choice) == eligibleIndices.end()) {
-        std::cout << "Choose a card index to boost: ";
+    while (choice < 0 || choice >= static_cast<int>(ownCards.size())) {
+        std::cout << "Enter the index of the card to increase its value: ";
         std::cin >> choice;
     }
 
-    Card& chosenCard = hand[choice];
-    chosenCard.setValue(chosenCard.getValue() + 1);
+    int chosenRow = ownCards[choice].first;
+    int chosenCol = ownCards[choice].second;
 
-    std::cout << "Card at index " << choice << " has been boosted! New value: " << chosenCard.getValue() << ".\n";
+    Card updatedCard = board.TopCard(chosenRow, chosenCol); // Get a copy of the card
+    updatedCard.setValue(updatedCard.getValue() + 1); // Modify the copy
+    board.UpdateCard(chosenRow, chosenCol, updatedCard); // Update the card on the board
+
+    std::cout << "Sprijin applied: Card at (" << chosenRow << ", " << chosenCol
+              << ") now has a value of " << updatedCard.getValue() << ".\n";
 }
 
 void Element_Mode::Sfaramare()
@@ -1197,5 +1268,87 @@ void Element_Mode::Sfaramare()
 
     std::cout << "Sfaramare applied: Card at (" << chosenRow << ", " << chosenCol
               << ") now has a value of " << card.getValue() << ".\n";
+}
+
+void Element_Mode::Avalansa(int row1, int col1, int row2, int col2)
+{
+	if (!((row1 == row2 && abs(col1 - col2) == 1) || (col1 == col2 && abs(row1 - row2) == 1))) {
+		std::cout << "Teancurile nu sunt adiacente. Alegerea este invalidă.\n";
+		return;
+	}
+
+	if (board.IsEmpty(row1, col1) || board.IsEmpty(row2, col2)) {
+		std::cout << "Una sau ambele poziții selectate sunt goale. Alegerea este invalidă.\n";
+		return;
+	}
+
+	int shiftRow1 = row1, shiftCol1 = col1;
+	int shiftRow2 = row2, shiftCol2 = col2;
+
+	if (row1 == row2) {
+		if (board.IsEmpty(row1, col1 - 1)) {
+			shiftCol1 = col1 - 1;
+		}
+		else if (board.IsEmpty(row1, col1 + 1)) {
+			shiftCol1 = col1 + 1;
+		}
+
+		if (board.IsEmpty(row2, col2 - 1)) {
+			shiftCol2 = col2 - 1;
+		}
+		else if (board.IsEmpty(row2, col2 + 1)) {
+			shiftCol2 = col2 + 1;
+		}
+	}
+	else {
+		if (board.IsEmpty(row1 - 1, col1)) {
+			shiftRow1 = row1 - 1;
+		}
+		else if (board.IsEmpty(row1 + 1, col1)) {
+			shiftRow1 = row1 + 1;
+		}
+
+		if (board.IsEmpty(row2 - 1, col2)) {
+			shiftRow2 = row2 - 1;
+		}
+		else if (board.IsEmpty(row2 + 1, col2)) {
+			shiftRow2 = row2 + 1;
+		}
+	}
+
+	if ((shiftRow1 != row1 || shiftCol1 != col1) && board.IsEmpty(shiftRow1, shiftCol1)) {
+		board.MoveStack(row1, col1, shiftRow1, shiftCol1);
+		std::cout << "Teancul de la (" << row1 << ", " << col1 << ") a fost mutat la (" << shiftRow1 << ", " << shiftCol1 << ").\n";
+	}
+	else {
+		std::cout << "Teancul de la (" << row1 << ", " << col1 << ") nu poate fi mutat.\n";
+	}
+
+	if ((shiftRow2 != row2 || shiftCol2 != col2) && board.IsEmpty(shiftRow2, shiftCol2)) {
+		board.MoveStack(row2, col2, shiftRow2, shiftCol2);
+		std::cout << "Teancul de la (" << row2 << ", " << col2 << ") a fost mutat la (" << shiftRow2 << ", " << shiftCol2 << ").\n";
+	}
+	else {
+		std::cout << "Teancul de la (" << row2 << ", " << col2 << ") nu poate fi mutat.\n";
+	}
+}
+
+void Element_Mode::Bolovan(int row, int col, int cardIndex)
+{
+	if (!gameWithIllusions) {
+		std::cout << "Puterea Bolovan este indisponibilă deoarece jocul nu include iluzii.\n";
+		return;
+	}
+
+	if (!board.IsFaceDown(row, col)) {
+		std::cout << "Poziția (" << row << ", " << col << ") nu conține o iluzie.\n";
+		return;
+	}
+
+	auto cardToCover = currentPlayer->PlayCard(cardIndex);
+
+	board.AddCard(row, col, cardToCover);
+
+	std::cout << "Iluzia de la poziția (" << row << ", " << col << ") a fost acoperită cu o carte.\n";
 }
 
