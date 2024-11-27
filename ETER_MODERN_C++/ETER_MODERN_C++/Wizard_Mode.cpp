@@ -204,11 +204,19 @@ void Wizard_Mode::InitGame(std::string name1, std::string name2)
     currentPlayer = &player1;
 }
 
-Player* Wizard_Mode::CurrentTurn() const
+Player* Wizard_Mode::CurrentTurn()
 {
     return currentPlayer;
 }
 
+Player* Wizard_Mode::PreviousTurn()
+{
+
+    if (currentPlayer->getName() == player1.getName())
+        return &player2;
+    else
+        return &player1;
+}
 
 
 void Wizard_Mode::SwitchTurn()

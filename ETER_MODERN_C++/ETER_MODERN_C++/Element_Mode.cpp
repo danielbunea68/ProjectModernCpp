@@ -299,6 +299,20 @@ void Element_Mode::CreatePit(int row, int col)
 	std::cout << "Pit created at position (" << row << ", " << col << "). All cards removed.\n";
 }
 
+Player* Element_Mode::CurrentTurn()
+{
+	return currentPlayer;
+}
+
+Player* Element_Mode::PreviousTurn()
+{
+
+	if (currentPlayer->getName() == player1.getName())
+		return &player2;
+	else
+		return &player1;
+}
+
  
 Element_Mode::Element_Mode(Putere putere) : tipPutere(putere) {}
 

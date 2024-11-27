@@ -32,7 +32,8 @@ public :
 
     void InitGame(std::string name1, std::string name2)override;
 
-    Player* CurrentTurn() const;
+    Player* CurrentTurn() override;
+    Player* PreviousTurn() override;
 
     void PlayGame()override;
 
