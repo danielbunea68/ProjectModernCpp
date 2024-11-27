@@ -23,6 +23,40 @@ void Element_Mode::SwitchTurn()
 	blockedRowForNextTurn = -1;
 }
 
+void Element_Mode::InitializePowers()
+{
+	std::vector<Putere> allPowers = 
+	{
+		Putere::ExplozieControlata, Putere::Distrugere, Putere::Flacari,
+		Putere::Lava, Putere::DinCenusa, Putere::Scantei, Putere::Viscol,
+		Putere::Vijelie, Putere::Uragan, Putere::Rafala, Putere::Miraj,
+		Putere::Furtuna, Putere::Maree, Putere::Ceata, Putere::Val,
+		Putere::VartejDeApa, Putere::Tsunami, Putere::Cascada,
+		Putere::Sprijin, Putere::Cutremur, Putere::Sfaramare,
+		Putere::Granite, Putere::Avalansa, Putere::Bolovan
+	};
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::shuffle(allPowers.begin(), allPowers.end(), gen);
+
+	availablePowers = { allPowers[0], allPowers[1] };
+	std::cout << "Selected powers for this match: "<< static_cast<int>(availablePowers[0]) << " and "<< static_cast<int>(availablePowers[1]) << ".\n";
+}
+
+bool Element_Mode::CanUsePower(Putere power) 
+{
+	return std::find(availablePowers.begin(), availablePowers.end(), power) != availablePowers.end() && usedPowers.find(power) == usedPowers.end();
+}
+
+void Element_Mode::UsePower(Putere power) 
+{
+	usedPowers.insert(power);
+	std::cout << "Power " << static_cast<int>(power) << " has been used and is no longer available.\n";
+}
+
+
+
 Element_Mode::Element_Mode()
 {
     currentPlayer = NULL;
@@ -371,6 +405,14 @@ Element_Mode::Putere Element_Mode::GetTipPutere()
 
 void Element_Mode::ActivatePower()
 {
+	if (!CanUsePower(tipPutere)) 
+	{
+		std::cout << "This power is either unavailable or already used.\n";
+		return;
+	}
+
+	UsePower(tipPutere);
+
 	switch (tipPutere)
 	{
 	case Putere::ExplozieControlata:
@@ -473,6 +515,8 @@ void Element_Mode::ActivatePower()
 		std::cout << "Unknown power!" << std::endl;
 		break;
 	}
+
+	SwitchTurn();
 }
 
 void Element_Mode::ActivateControlledExplosion()
