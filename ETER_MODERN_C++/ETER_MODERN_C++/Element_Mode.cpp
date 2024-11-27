@@ -89,9 +89,15 @@ void Element_Mode::PlayGame()
 		board.Display();
 		currentPlayer->ShowHand();
 
-		// TODO: Daca player-ul curent are o bomba
-		// Intreabal daca vrea sa o foloseasca si daca da, afiseaza un meniu in care sa ii spui ca poate roti bomba
-		// si apoi sa confirme si sa fie aplicate efectele
+		char usePower;
+		std::cout << currentPlayer->getName() << ", do you want to use your power this turn? y/[n]: ";
+		std::cin >> usePower;
+
+		if (usePower == 'y')
+		{
+			ActivatePower(); 
+			continue; 
+		}
 
 		int cardIndex = -1;
 		while (!currentPlayer->HasCardAtIndex(cardIndex))
@@ -249,19 +255,22 @@ void Element_Mode::PlayGame()
 
 		}
 
-		if (board.CheckWinner(chosenCard.getColor())) {
+		if (board.CheckWinner(chosenCard.getColor()))
+		{
 			std::pair<int, int> cords(row, col);
 			currentPlayer->setWinnCords(cords);
 			board.Display();
 			std::cout << currentPlayer->getName() << " wins!\n";
 			gameOver = true;
 		}
-		else if (board.IsDraw()) {
+		else if (board.IsDraw())
+		{
 			board.Display();
 			std::cout << "It's a draw!\n";
 			gameOver = true;
 		}
-		else {
+		else
+		{
 			SwitchTurn();
 		}
 	}

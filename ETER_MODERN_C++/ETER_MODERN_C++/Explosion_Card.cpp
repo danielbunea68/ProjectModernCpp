@@ -1,4 +1,4 @@
-
+﻿
 #include "Explosion_Card.h"
 #include <cstdlib>
 #include <ctime>
@@ -46,6 +46,58 @@ Explosion_Card::Explosion_Card(int explosionSize):
     std::srand(std::time(0));
     generateEffects();
     board.resize(m_row, std::vector<char>(m_col, 'C')); 
+}
+
+Explosion_Card::~Explosion_Card()
+{
+}
+
+Explosion_Card::Explosion_Card(const Explosion_Card& other) : m_size(other.m_size), m_row(other.m_row), m_col(other.m_col),
+m_effects(other.m_effects), appliedPositions(other.appliedPositions) 
+{
+    board = other.board;
+}
+
+Explosion_Card& Explosion_Card::operator=(const Explosion_Card& other) 
+{
+    if (this != &other) 
+    {
+        m_size = other.m_size;
+        m_row = other.m_row;
+        m_col = other.m_col;
+        m_effects = other.m_effects;
+        appliedPositions = other.appliedPositions;
+        board = other.board;
+    }
+    return *this;
+}
+
+Explosion_Card::Explosion_Card(Explosion_Card&& other) noexcept
+    : m_size(other.m_size), m_row(other.m_row), m_col(other.m_col),
+    m_effects(std::move(other.m_effects)), appliedPositions(std::move(other.appliedPositions)),
+    board(std::move(other.board)) 
+{
+ 
+    other.m_size = 0;
+    other.m_row = 0;
+    other.m_col = 0;
+}
+
+Explosion_Card& Explosion_Card::operator=(Explosion_Card&& other) noexcept {
+    if (this != &other) {
+        m_size = other.m_size;
+        m_row = other.m_row;
+        m_col = other.m_col;
+        m_effects = std::move(other.m_effects);
+        appliedPositions = std::move(other.appliedPositions);
+        board = std::move(other.board);
+
+        // Resetăm obiectul sursă
+        other.m_size = 0;
+        other.m_row = 0;
+        other.m_col = 0;
+    }
+    return *this;
 }
 
 void Explosion_Card::storeAppliedPosition(int row, int col) 
