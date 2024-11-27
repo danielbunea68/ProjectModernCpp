@@ -2,6 +2,9 @@
 
 #include <iostream>
 #include <unordered_map>
+#include <unordered_set>
+#include <vector>
+#include <random>
 #include "IGame.h"
 #include "Board.h"
 #include "Player.h"
@@ -41,13 +44,19 @@ public:
 
 private:
 	Putere tipPutere;
+	std::unordered_set<Putere> usedPowers;
+	std::vector<Putere> availablePowers;
 	Board board;
 	Player player1, player2;
 	Player* currentPlayer;
 	int blockedRowForNextTurn = -1;
 	bool gameWithIllusions;
-
+	int player1Wins = 0, player2Wins = 0;
 	void SwitchTurn();
+
+	void InitializePowers();
+	bool CanUsePower(Putere power); 
+	void UsePower(Putere power);
 
 public:
 
@@ -60,7 +69,7 @@ public:
 	Element_Mode(Element_Mode&& other) noexcept;
 	Element_Mode& operator=(Element_Mode&& other) noexcept;
 	//Rule of Five ^^^
-	
+
 	void InitGame(std::string name1, std::string name2) override;
 	void PlayGame() override;
 	void ResetGame() override;
@@ -72,7 +81,6 @@ public:
 	Player* CurrentTurn() override;
 	Player* PreviousTurn() override;
 
-	Element_Mode(Putere putere);
 	Putere GetTipPutere();
 	void ActivatePower();
 	void ActivateControlledExplosion();
