@@ -85,6 +85,19 @@ void Game::InitGame(std::string name1, std::string name2)
 	currentPlayer = &player1;
 }
 
+Player* Game::CurrentTurn()
+{
+	return currentPlayer;
+}
+
+Player* Game::PreviousTurn()
+{
+	if (currentPlayer->getName() == player1.getName())
+		return &player2;
+	else
+		return &player1;
+}
+
 void Game::SwitchTurn()
 {
 	if (currentPlayer->getName() == player1.getName())
@@ -98,10 +111,7 @@ void Game::SwitchTurn()
 }
 
 
-Player* Game::CurrentTurn() const
-{
-	return currentPlayer;
-}
+
 
 void Game::RemoveCard(int row, int col) //aici
 {

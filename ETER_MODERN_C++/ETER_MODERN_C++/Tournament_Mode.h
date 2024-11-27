@@ -19,13 +19,19 @@ class Tournament_Mode
 
 private:
     IGame* game = nullptr;
-    std::vector < std::vector< std::string>> board;
+    std::vector < std::vector< std::string>> tournament_board;
 	char  m_mode; 
+	bool isover = false;
+
+
 public:
 
 	void choseGame();
 
 	void setmode(char mode);
+	bool CheckWinner(std::string color);
+
+	int NumberOfTokens(std::string color);
 
 	void PlayGameChosen(std::string name1, std::string name2);
 

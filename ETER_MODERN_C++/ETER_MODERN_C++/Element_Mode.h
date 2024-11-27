@@ -60,9 +60,7 @@ public:
 	Element_Mode(Element_Mode&& other) noexcept;
 	Element_Mode& operator=(Element_Mode&& other) noexcept;
 	//Rule of Five ^^^
-	void InitGame(std::string name1, std::string name2) = 0;
-	void PlayGame() = 0;
-	void ResetGame() = 0;
+	
 	void InitGame(std::string name1, std::string name2) override;
 	void PlayGame() override;
 	void ResetGame() override;
@@ -71,6 +69,8 @@ public:
 	void ReturnCardToPlayer(int row, int col) override;
 	void CreatePit(int row, int col) override;
 
+	Player* CurrentTurn() override;
+	Player* PreviousTurn() override;
 
 	Element_Mode(Putere putere);
 	Putere GetTipPutere();
