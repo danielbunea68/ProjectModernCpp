@@ -117,6 +117,8 @@ void Element_Mode::InitGame(std::string name1, std::string name2)
 void Element_Mode::PlayGame()
 {
 	bool gameOver = false;
+	int player1Wins = 0;
+	int player2Wins = 0;
 	while (!gameOver)
 	{
 		board.Display();
@@ -295,11 +297,27 @@ void Element_Mode::PlayGame()
 			board.Display();
 			std::cout << currentPlayer->getName() << " wins this round!\n";
 
-			board.Clear();
+			if (currentPlayer->getName() == player1.getName()) 
+				player1Wins++;
+			else
+				player2Wins++;
 
-			InitializePowers();
-
-			SwitchTurn();
+			if (player1Wins == 3)
+			{
+				std::cout << player1.getName() << " wins the game with 3 round wins!\n";
+				gameOver = true;
+			}
+			else if (player2Wins == 3)
+			{
+				std::cout << player2.getName() << " wins the game with 3 round wins!\n";
+				gameOver = true;
+			}
+			else
+			{
+				board.Clear();
+				InitializePowers(); 
+				SwitchTurn();
+			}
 			break;
 		}
 		else if (board.IsDraw())
@@ -307,11 +325,22 @@ void Element_Mode::PlayGame()
 			board.Display();
 			std::cout << "It's a draw!\n";
 
-			board.Clear();
-
-			InitializePowers();
-
-			SwitchTurn();
+			if (player1Wins == 3)
+			{
+				std::cout << player1.getName() << " wins the game with 3 round wins!\n";
+				gameOver = true;
+			}
+			else if (player2Wins == 3)
+			{
+				std::cout << player2.getName() << " wins the game with 3 round wins!\n";
+				gameOver = true;
+			}
+			else
+			{
+				board.Clear();
+				InitializePowers();
+				SwitchTurn();
+			}
 			break;
 		}
 		else
@@ -319,6 +348,8 @@ void Element_Mode::PlayGame()
 			SwitchTurn();
 		}
 	}
+	if(gameOver==true)
+		std::cout << "Game over! Thanks for playing.\n";
 }
 
 void Element_Mode::ResetGame()
@@ -555,11 +586,11 @@ void Element_Mode::ActivatePower()
 		break;
 	case Putere::Cascada:
 		std::cout << "Activating Cascade: Teancurile de pe un rând cad spre o margine și formează un nou teanc." << std::endl;
-		// Logic for Cascade goes here
+		Cascada();
 		break;
 	case Putere::Sprijin:
 		std::cout << "Activating Sprijin: Valoarea unei cărți proprii 1/2/3 crește cu 1." << std::endl;
-		// Logic for Sprijin goes here
+		Sprijin();
 		break;
 	case Putere::Cutremur:
 		std::cout << "Activating Cutremur: Elimină de pe tablă toate cărțile vizibile cu numărul 1." << std::endl;
@@ -567,7 +598,7 @@ void Element_Mode::ActivatePower()
 		break;
 	case Putere::Sfaramare:
 		std::cout << "Activating Sfaramare: Valoarea unei cărți a adversarului 2/3/4 scade cu 1." << std::endl;
-		// Logic for Sfaramare goes here
+		Sfaramare();
 		break;
 	case Putere::Granite:
 		std::cout << "Activating Granite: Plasează o carte neutră care definește o graniță." << std::endl;
@@ -1458,7 +1489,8 @@ void Element_Mode::Avalansa(int row1, int col1, int row2, int col2)
 
 void Element_Mode::Bolovan(int row, int col, int cardIndex)
 {
-	if (!gameWithIllusions) {
+	if (!gameWithIllusions) 
+	{
 		std::cout << "Puterea Bolovan este indisponibilă deoarece jocul nu include iluzii.\n";
 		return;
 	}

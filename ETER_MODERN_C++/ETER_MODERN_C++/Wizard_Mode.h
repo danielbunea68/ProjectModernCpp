@@ -24,6 +24,17 @@ private :
     void SwitchTurn();
 public :
     Wizard_Mode();
+
+    ~Wizard_Mode();
+
+    Wizard_Mode(const Wizard_Mode& other);
+
+    Wizard_Mode& operator=(const Wizard_Mode& other);
+
+    Wizard_Mode& operator=(Wizard_Mode&& other) noexcept;
+
+    Wizard_Mode(Wizard_Mode&& other) noexcept;
+
     void RemoveCard(int row, int col) override;
 
     void ReturnCardToPlayer(int row, int col)override;

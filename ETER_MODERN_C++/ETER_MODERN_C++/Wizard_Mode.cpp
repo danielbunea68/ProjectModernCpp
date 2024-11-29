@@ -236,6 +236,46 @@ Wizard_Mode::Wizard_Mode()
     currentPlayer = NULL;
 }
 
+Wizard_Mode::~Wizard_Mode()
+{
+}
+
+Wizard_Mode::Wizard_Mode(const Wizard_Mode& other) : board(other.board), player1(other.player1), player2(other.player2), 
+currentPlayer(other.currentPlayer) {}
+
+Wizard_Mode& Wizard_Mode::operator=(const Wizard_Mode& other) 
+{
+    if (this != &other) 
+    {   
+        board = other.board; 
+        player1 = other.player1;  
+        player2 = other.player2;  
+        currentPlayer = other.currentPlayer; 
+    }
+    return *this;
+}
+
+Wizard_Mode& Wizard_Mode::operator=(Wizard_Mode&& other) noexcept 
+{
+    if (this != &other) 
+    {  
+        board = std::move(other.board);
+        player1 = std::move(other.player1);
+        player2 = std::move(other.player2);
+        currentPlayer = other.currentPlayer;
+
+        other.currentPlayer = nullptr;
+    }
+    return *this;
+}
+
+Wizard_Mode::Wizard_Mode(Wizard_Mode&& other) noexcept : board(std::move(other.board)), player1(std::move(other.player1)), 
+player2(std::move(other.player2)), currentPlayer(other.currentPlayer) 
+{
+    other.currentPlayer = nullptr;  
+}
+
+
 void Wizard_Mode::RemoveCard(int row, int col)
 {
     board.Remove(row, col);
