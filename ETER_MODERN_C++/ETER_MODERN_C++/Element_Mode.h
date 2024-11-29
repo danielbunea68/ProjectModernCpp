@@ -54,6 +54,7 @@ private:
 	int player1Wins = 0, player2Wins = 0;
 	void SwitchTurn();
 
+	std::string GetPowerName(Putere power);
 	void InitializePowers();
 	bool CanUsePower(Putere power); 
 	void UsePower(Putere power);

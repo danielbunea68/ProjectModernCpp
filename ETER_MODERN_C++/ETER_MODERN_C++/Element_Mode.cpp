@@ -23,17 +23,47 @@ void Element_Mode::SwitchTurn()
 	blockedRowForNextTurn = -1;
 }
 
-void Element_Mode::InitializePowers() 
+std::string Element_Mode::GetPowerName(Putere power)
+{
+	switch (power) 
+	{
+	case Putere::ExplozieControlata: return "Explozie Controlata";
+	case Putere::Distrugere: return "Distrugere";
+	case Putere::Flacari: return "Flacari";
+	case Putere::Lava: return "Lava";
+	case Putere::DinCenusa: return "Din Cenusa";
+	case Putere::Scantei: return "Scantei";
+	case Putere::Viscol: return "Viscol";
+	case Putere::Vijelie: return "Vijelie";
+	case Putere::Uragan: return "Uragan";
+	case Putere::Rafala: return "Rafala";
+	case Putere::Miraj: return "Miraj";
+	case Putere::Furtuna: return "Furtuna";
+	case Putere::Maree: return "Maree";
+	case Putere::Ceata: return "Ceata";
+	case Putere::Val: return "Val";
+	case Putere::VartejDeApa: return "Vartej De Apa";
+	case Putere::Tsunami: return "Tsunami";
+	case Putere::Cascada: return "Cascada";
+	case Putere::Sprijin: return "Sprijin";
+	case Putere::Cutremur: return "Cutremur";
+	case Putere::Sfaramare: return "Sfaramare";
+	case Putere::Granite: return "Granite";
+	case Putere::Avalansa: return "Avalansa";
+	case Putere::Bolovan: return "Bolovan";
+	default: return "Unknown";
+	}
+}
+
+void Element_Mode::InitializePowers()
 {
 	std::vector<Putere> allPowers = 
 	{
-		Putere::ExplozieControlata, Putere::Distrugere, Putere::Flacari,
-		Putere::Lava, Putere::DinCenusa, Putere::Scantei, Putere::Viscol,
-		Putere::Vijelie, Putere::Uragan, Putere::Rafala, Putere::Miraj,
-		Putere::Furtuna, Putere::Maree, Putere::Ceata, Putere::Val,
-		Putere::VartejDeApa, Putere::Tsunami, Putere::Cascada,
-		Putere::Sprijin, Putere::Cutremur, Putere::Sfaramare,
-		Putere::Granite, Putere::Avalansa, Putere::Bolovan
+		Putere::ExplozieControlata, Putere::Distrugere, Putere::Flacari, Putere::Lava,
+		Putere::DinCenusa, Putere::Scantei, Putere::Viscol, Putere::Vijelie, Putere::Uragan,
+		Putere::Rafala, Putere::Miraj, Putere::Furtuna, Putere::Maree, Putere::Ceata,
+		Putere::Val, Putere::VartejDeApa, Putere::Tsunami, Putere::Cascada, Putere::Sprijin,
+		Putere::Cutremur, Putere::Sfaramare, Putere::Granite, Putere::Avalansa, Putere::Bolovan
 	};
 
 	std::random_device rd;
@@ -41,9 +71,12 @@ void Element_Mode::InitializePowers()
 	std::shuffle(allPowers.begin(), allPowers.end(), gen);
 
 	availablePowers = { allPowers[0], allPowers[1] };
-	std::cout << "Selected powers for this match: "
-		<< static_cast<int>(availablePowers[0]) << " and "
-		<< static_cast<int>(availablePowers[1]) << ".\n";
+
+	std::cout << "Selected powers for this round:\n";
+	for (const auto& putere : availablePowers) 
+	{
+		std::cout << "- " << GetPowerName(putere) << "\n";
+	}
 }
 
 bool Element_Mode::CanUsePower(Putere power) 
@@ -74,9 +107,9 @@ void Element_Mode::InitGame(std::string name1, std::string name2)
 		player1.AddCard(Card(value, player1.getColor()));
 		player2.AddCard(Card(value, player2.getColor()));
 	}
-	player1.AddCard(Card(5, player1.getColor(), "Eter"));
+	player1.AddCard(Card(1, player1.getColor(), "Eter"));
 
-	player2.AddCard(Card(5, player2.getColor(), "Eter"));
+	player2.AddCard(Card(1, player2.getColor(), "Eter"));
 
 	currentPlayer = &player1;
 }
@@ -260,14 +293,26 @@ void Element_Mode::PlayGame()
 			std::pair<int, int> cords(row, col);
 			currentPlayer->setWinnCords(cords);
 			board.Display();
-			std::cout << currentPlayer->getName() << " wins!\n";
-			gameOver = true;
+			std::cout << currentPlayer->getName() << " wins this round!\n";
+
+			board.Clear();
+
+			InitializePowers();
+
+			SwitchTurn();
+			break;
 		}
 		else if (board.IsDraw())
 		{
 			board.Display();
 			std::cout << "It's a draw!\n";
-			gameOver = true;
+
+			board.Clear();
+
+			InitializePowers();
+
+			SwitchTurn();
+			break;
 		}
 		else
 		{
@@ -432,6 +477,12 @@ void Element_Mode::ActivatePower()
 		return;
 	}
 
+	if (usedPowers.find(tipPutere) != usedPowers.end())
+	{
+		std::cout << "This power has already been used in this match.\n";
+		return;
+	}
+
 	switch (tipPutere)
 	{
 	case Putere::ExplozieControlata:
@@ -535,7 +586,16 @@ void Element_Mode::ActivatePower()
 		break;
 	}
 
+	usedPowers.insert(tipPutere);
+
+	auto it = std::find(availablePowers.begin(), availablePowers.end(), tipPutere);
+	if (it != availablePowers.end())
+	{
+		availablePowers.erase(it);
+	}
+
 	SwitchTurn();
+
 }
 
 void Element_Mode::ActivateControlledExplosion()
