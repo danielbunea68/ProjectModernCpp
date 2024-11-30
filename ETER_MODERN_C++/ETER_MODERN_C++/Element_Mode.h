@@ -55,6 +55,7 @@ private:
 	void SwitchTurn();
 
 	std::string GetPowerName(Putere power);
+	std::string GetPowerDescription(Putere power);
 	void InitializePowers();
 	bool CanUsePower(Putere power); 
 	void UsePower(Putere power);
@@ -83,7 +84,7 @@ public:
 	Player* PreviousTurn() override;
 
 	Putere GetTipPutere();
-	void ActivatePower();
+	void ActivatePower(Putere power);
 	void ActivateControlledExplosion();
 	void  DestroyLastOpponentCard();
 	void Flacari();
