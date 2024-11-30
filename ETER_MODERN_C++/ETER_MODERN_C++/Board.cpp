@@ -103,11 +103,16 @@ bool Board::CanMakeMove(int row, int col, Card chosenCard)
 	if (!IsValidPosition(row, col))
 		return 0;
 
-	if (board[row][col].empty())
-		return 1;
+	if (!board[row - 1][col].empty() || !board[row + 1][col].empty() || !board[row][col - 1].empty() || !board[row][col + 1].empty()|| // pe liniii
+		!board[row+1][col + 1].empty()|| !board[row-1][col -1].empty()||!board[row-1][col + 1].empty()|| !board[row+1][col- 1].empty()) // pe coloane 
+	{
+		if (board[row][col].empty())
+			return 1;
 
-	if (board[row][col].top().getValue() < chosenCard.getValue())
-		return 1;
+		if (board[row][col].top().getValue() < chosenCard.getValue())
+			return 1;
+	}
+	
 
 	if (board[row][col].top().getValue() >= chosenCard.getValue() && board[row][col].top().getIsFaceDown())
 		return -1;
