@@ -1,4 +1,6 @@
 #include "Game.h"
+#include "IGame.h"
+#include "Element_Mode.h"
 #include <iostream>
 
 int main() {
@@ -30,7 +32,7 @@ int main() {
 	// Game -> TrainingMode : IGame
 	// In interfata metodele vor fi virtual ... = 0;
 	// In clasele concrete vei da override
-	Game game;
+	Element_Mode game; 
 
 	/*char mode;
 	std::cout << "Alege un mod de joc: \nTraining (t)\nWizard Mode (w)\nElemental Cards (e)\n";

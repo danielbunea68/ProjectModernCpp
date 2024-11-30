@@ -9,7 +9,7 @@ class Board
 private:
 	int m_size;
 
-	std::vector<std::vector<bool>> marked;
+	
 	std::vector<std::vector<std::stack<Card>>> board;
 	int blockedRow = -1;
 
@@ -25,8 +25,6 @@ public:
 	int  GetSize() const;
 	std::vector<std::vector<std::stack<Card>>>& GetBoard();
 	Card TopCard(int row, int col) const;//aici am lucrat
-	void UpdateMarked(int col, int row);
-	void UpdateUnMarked(int row, int col);
 	bool IsEmpty(int row, int col);
 	void Display();
 	bool MakeMove(int row, int col, Card card);

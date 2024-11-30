@@ -308,7 +308,7 @@ void Wizard_Mode::ReturnCardToPlayer(int row, int col)
 
 void Wizard_Mode::CreatePit(int row, int col)
 {
-    board.UpdateMarked(row, col);  // Mark the position as a pit
+   
 
     // Now, remove all cards from that position using the getter function to access the internal board
     auto& boardGrid = board.GetBoard();  // Get a reference to the board

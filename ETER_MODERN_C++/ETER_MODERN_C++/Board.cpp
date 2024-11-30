@@ -5,7 +5,6 @@
 Board::Board(const Board& other)
 {
 	m_size = other.m_size;
-	marked = other.marked;
 	board = other.board;
 	blockedRow = other.blockedRow;
 }
@@ -15,7 +14,6 @@ Board& Board::operator=(const Board& other)
 	if (this != &other) // Self-assignment check
 	{
 		m_size = other.m_size;
-		marked = other.marked;
 		board = other.board;
 		blockedRow = other.blockedRow;
 	}
@@ -25,7 +23,6 @@ Board& Board::operator=(const Board& other)
 Board::Board(Board&& other) noexcept
 {
 	m_size = other.m_size;
-	marked = std::move(other.marked);
 	board=std::move(other.board);
 	blockedRow=other.blockedRow;
 	other.m_size = 0;
@@ -37,7 +34,6 @@ Board& Board::operator=(Board&& other) noexcept
 	if (this != &other) // Self-assignment check
 	{
 		m_size = other.m_size;
-		marked = std::move(other.marked);
 		board = std::move(other.board);
 		blockedRow = other.blockedRow;
 
@@ -51,7 +47,6 @@ Board& Board::operator=(Board&& other) noexcept
 void Board::SetSize(int size)
 {
 	m_size = size;
-	marked.resize(m_size, std::vector<bool>(m_size));
 	board.resize(m_size, std::vector<std::stack<Card>>(m_size));
 }
 
@@ -65,26 +60,17 @@ Card Board::TopCard(int row, int col) const
 	return board[row][col].top();
 }
 
-void Board::UpdateMarked(int row, int col)
-{
-	marked[row][col] = true;
-}
 
 std::vector<std::vector<std::stack<Card>>>& Board::GetBoard()
 {
 	return board;
 }
 
-void Board::UpdateUnMarked(int row, int col)
-{
-	marked[row][col] = false;
-}
-
 
 
 bool Board::IsEmpty(int row, int col)
 {
-	return row >= 0 && row < GetSize() && col >= 0 && col < GetSize() && !marked[row][col];
+	return row >= 0 && row < GetSize() && col >= 0 && col < GetSize() && board[row][col].empty();
 }
 
 void Board::Display()
@@ -136,7 +122,7 @@ bool Board::MakeMove(int row, int col, Card card)
 	if (IsEmpty(row, col)) {
 	
 		board[row][col].push(card);
-		UpdateMarked(row, col);
+		
 		return true;
 	}
 	else
@@ -215,7 +201,7 @@ bool Board::IsDraw()
 {
 	for (int i = 0; i < GetSize(); i++) {
 		for (int j = 0; j < GetSize(); j++) {
-			if (marked[i][j] == false) return false;
+			if (board[i][j].empty() ) return false;
 		}
 	}
 	return true;
@@ -287,9 +273,6 @@ void Board::MoveStack(int srcRow, int srcCol, int destRow, int destCol)
 		board[srcRow][srcCol].pop();
 	}
 
-	UpdateUnMarked(srcRow, srcCol);
-	UpdateMarked(destRow, destCol);
-
 	std::cout << "Moved stack from (" << srcRow << ", " << srcCol << ") to (" << destRow << ", " << destCol << ").\n";
 }
 
@@ -313,7 +296,7 @@ void Board::Remove(int row, int col)
 		std::cout << "Card removed from position (" << row << ", " << col << ").\n";
 
 		// After removing the card, unmark the position (assuming the pit is no longer relevant after the card is removed)
-		UpdateUnMarked(row, col);  // Unmark the position where the card was removed
+		
 	}
 	else
 	{
