@@ -1,6 +1,8 @@
 #include "Game.h"
 #include "IGame.h"
 #include "Element_Mode.h"
+#include "Wizard_Mode.h"
+#include "Tournament_Mode.h"
 #include <iostream>
 
 int main() {
@@ -32,38 +34,42 @@ int main() {
 	// Game -> TrainingMode : IGame
 	// In interfata metodele vor fi virtual ... = 0;
 	// In clasele concrete vei da override
-	Element_Mode game; 
+	IGame *game = nullptr; 
+	Tournament_Mode* game_special = nullptr;;
 
-	/*char mode;
-	std::cout << "Alege un mod de joc: \nTraining (t)\nWizard Mode (w)\nElemental Cards (e)\n";
+
+	char mode;
+	std::cout << "Alege un mod de joc: \nTraining (t)\nWizard Mode (w)\nElemental Cards (e)\nTournament Mode (T)\n";
 	std::cin >> mode;
 
 	switch (mode) {
 	case 't':
 		std::cout << "Ai ales modul trainig\n";
-		game = new Training();
+		game = new Game();
 		break;
 	case 'w':
-		game = new Wizard();
+		game = new Wizard_Mode();
 		break;
 	case 'e':
-		game = new Elemental();
+		game = new Element_Mode();
 		break;
-	default:
-		game = Training();
+	case 'T':
+		game_special = new Tournament_Mode();
 		break;
-	}*/
+	
+		
+	}
 
-	game.InitGame(name1, name2);
+	game->InitGame(name1, name2);
 	bool keepPlaying = true;
 	while (keepPlaying) {
-		game.PlayGame();
+		game->PlayGame();
 
 		char answer = 'n';
 		std::cout << "Do you want to play again? y/[n]\n";
 		std::cin >> answer;
 		if (answer == 'y') {
-			game.ResetGame();
+			game->ResetGame();
 		}
 		else {
 			break;

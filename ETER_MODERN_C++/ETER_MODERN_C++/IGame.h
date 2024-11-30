@@ -3,6 +3,7 @@
 #include <string>
 
 class IGame {
+
 public:
     virtual ~IGame() = default;
 
