@@ -25,7 +25,12 @@ private:
 
 
 public:
-
+	Tournament_Mode() = default;
+	~Tournament_Mode();
+	Tournament_Mode(const Tournament_Mode& other);
+	Tournament_Mode& operator=(const Tournament_Mode& other);
+	Tournament_Mode(Tournament_Mode&& other) noexcept;
+	Tournament_Mode& operator=(Tournament_Mode&& other) noexcept;
 	void choseGame();
 
 	void setmode(char mode);

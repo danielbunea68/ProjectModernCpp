@@ -1,4 +1,49 @@
-#include "Tournament_Mode.h"
+﻿#include "Tournament_Mode.h"
+
+Tournament_Mode::~Tournament_Mode()
+{
+	delete game;
+}
+
+Tournament_Mode::Tournament_Mode(const Tournament_Mode& other)
+{
+	
+	tournament_board = other.tournament_board;
+	m_mode = other.m_mode;
+	isover = other.isover;
+}
+
+Tournament_Mode& Tournament_Mode::operator=(const Tournament_Mode& other)
+{
+	if (this == &other) return *this; // Auto-atribuire
+	delete game; // Eliberăm resursa existentă
+	tournament_board = other.tournament_board;
+	m_mode = other.m_mode;
+	isover = other.isover;
+	return *this;
+}
+
+Tournament_Mode::Tournament_Mode(Tournament_Mode&& other) noexcept
+{
+	game = other.game;
+	tournament_board = std::move(other.tournament_board);
+	m_mode = other.m_mode;
+	isover = other.isover;
+	other.game = nullptr; 
+}
+
+Tournament_Mode& Tournament_Mode::operator=(Tournament_Mode&& other) noexcept
+{
+	if (this == &other) return *this; // Auto-atribuire
+	delete game; // Eliberăm resursa existentă
+	game = other.game;
+	tournament_board = std::move(other.tournament_board);
+	m_mode = other.m_mode;
+	isover = other.isover;
+	other.game = nullptr; // Invalidăm resursa din other
+	return *this;
+}
+
 
 void Tournament_Mode::choseGame()
 {	
