@@ -75,8 +75,8 @@ bool Board::IsEmpty(int row, int col)
 
 void Board::Display()
 {
-	for (int i = 0; i < GetSize(); i++) {
-		for (int j = 0; j < GetSize(); j++) {
+	for (int i = topRow; i < bottomRow; i++) {
+		for (int j = leftCol; j < rightCol; j++) {
 			if (board[i][j].empty()) {
 				std::cout << "     ";
 			}
@@ -100,11 +100,11 @@ void Board::Display()
 
 bool Board::CanMakeMove(int row, int col, Card chosenCard)
 {
+	
 	if (!IsValidPosition(row, col))
 		return 0;
 
-	if (!board[row - 1][col].empty() || !board[row + 1][col].empty() || !board[row][col - 1].empty() || !board[row][col + 1].empty()|| // pe liniii
-		!board[row+1][col + 1].empty()|| !board[row-1][col -1].empty()||!board[row-1][col + 1].empty()|| !board[row+1][col- 1].empty()) // pe coloane 
+	if (CheckNeighbours(row,col)) 
 	{
 		if (board[row][col].empty())
 			return 1;
@@ -124,9 +124,14 @@ bool Board::IsValidPosition(int row, int col) {
 
 bool Board::MakeMove(int row, int col, Card card)
 {
-	if (IsEmpty(row, col)) {
+	topRow = std::min(topRow, row);
+	bottomRow = std::max(bottomRow, row);
+	leftCol = std::min(leftCol, col);
+	rightCol = std::max(rightCol, col);
+	if (IsEmpty(row, col)&& bottomRow - topRow <= m_size || rightCol - leftCol <=m_size  ) {
 	
 		board[row][col].push(card);
+		
 		
 		return true;
 	}
@@ -211,6 +216,21 @@ bool Board::IsDraw()
 	}
 	return true;
 
+}
+
+bool Board::CheckNeighbours(int row, int col)
+{
+	std::vector<std::pair<int, int>> directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
+
+	for (auto dir : directions) {
+		int nx = col + dir.first;
+		int ny = row + dir.second;
+		if (!board[nx][ny].empty()) {
+			return true;
+		}
+	}
+	return false;
+	
 }
 
 void Board::Clear()
@@ -364,3 +384,4 @@ bool Board::IsFaceDown(int row, int col) const
 
 	return topCard.getIsFaceDown();
 }
+

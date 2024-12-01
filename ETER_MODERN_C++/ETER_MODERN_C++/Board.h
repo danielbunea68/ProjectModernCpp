@@ -12,6 +12,11 @@ private:
 	
 	std::vector<std::vector<std::stack<Card>>> board;
 	int blockedRow = -1;
+	int topRow;
+	int bottomRow ;
+	int leftCol ;
+	int rightCol ;
+
 
 
 public:
@@ -31,6 +36,7 @@ public:
 	bool CheckWinner(std::string color);
 	bool CheckIsBomb();
 	bool IsDraw();
+	bool CheckNeighbours(int row, int col);
 	bool IsValidPosition(int row, int col);
 	bool CanMakeMove(int row, int col, Card chosenCard);
 	int GetStackSize(int row, int col);
@@ -42,5 +48,6 @@ public:
 	void UpdateCard(int row, int col, const Card& card);
 	bool HasCoveredCard(int row, int col, const std::string& color);
 	bool IsFaceDown(int row, int col) const;
+	
 	void Clear();
 };

@@ -199,6 +199,7 @@ void Game::PlayGame()
 		if (result == 1)
 		{
 			board.MakeMove(row, col, chosenCard);
+
 		}
 
 		if (board.CheckIsBomb())//aici
