@@ -55,6 +55,63 @@ std::string Element_Mode::GetPowerName(Putere power)
 	}
 }
 
+std::string Element_Mode::GetPowerDescription(Putere power)
+{
+	switch (power)
+	{
+	case Putere::ExplozieControlata:
+		return "Explodes the board in a controlled manner.";
+	case Putere::Distrugere:
+		return "Destroys the last card played by the opponent.";
+	case Putere::Flacari:
+		return "Flips the opponent's illusion and lets you play a card.";
+	case Putere::Lava:
+		return "Returns all visible cards with a specific number to their owners.";
+	case Putere::DinCenusa:
+		return "Allows you to immediately play an eliminated card.";
+	case Putere::Scantei:
+		return "Plays a hidden card of the opponent in another position.";
+	case Putere::Viscol:
+		return "Returns a visible card from the opponent to their hand.";
+	case Putere::Vijelie:
+		return "Returns all covered cards to their owners.";
+	case Putere::Uragan:
+		return "Shifts a fully occupied row.";
+	case Putere::Rafala:
+		return "Moves a visible card adjacent to a card with a smaller number.";
+	case Putere::Miraj:
+		return "Replaces your placed illusion with another illusion.";
+	case Putere::Furtuna:
+		return "Removes from the game a stack of cards with 2 or more cards.";
+	case Putere::Maree:
+		return "Swaps positions of two stacks of cards.";
+	case Putere::Ceata:
+		return "Plays another illusion.";
+	case Putere::Val:
+		return "Moves a stack to an adjacent empty position and plays a card on the new empty position.";
+	case Putere::VartejDeApa:
+		return "Moves two cards separated by an empty space into that space.";
+	case Putere::Tsunami:
+		return "Blocks a row for the opponent in the next turn.";
+	case Putere::Cascada:
+		return "Stacks from a row collapse towards an edge and form a new stack.";
+	case Putere::Sprijin:
+		return "Increases the value of one of your cards (1/2/3) by 1.";
+	case Putere::Cutremur:
+		return "Removes all visible cards with the value 1 from the table.";
+	case Putere::Sfaramare:
+		return "Decreases the value of an opponent's card (2/3/4) by 1.";
+	case Putere::Granite:
+		return "Places a neutral card that defines a boundary.";
+	case Putere::Avalansa:
+		return "Shifts two adjacent stacks.";
+	case Putere::Bolovan:
+		return "Covers an illusion without revealing it.";
+	default:
+		return "Unknown power.";
+	}
+}
+
 void Element_Mode::InitializePowers()
 {
 	std::vector<Putere> allPowers = 
@@ -119,19 +176,66 @@ void Element_Mode::PlayGame()
 	bool gameOver = false;
 	int player1Wins = 0;
 	int player2Wins = 0;
+
+	InitializePowers();
+
 	while (!gameOver)
 	{
 		board.Display();
 		currentPlayer->ShowHand();
 
-		char usePower;
-		std::cout << currentPlayer->getName() << ", do you want to use your power this turn? y/[n]: ";
-		std::cin >> usePower;
-
-		if (usePower == 'y')
+		if (!availablePowers.empty())
 		{
-			ActivatePower(); 
-			continue; 
+			char usePower;
+			std::cout << currentPlayer->getName() << ", do you want to use your power this turn? y/[n]: ";
+			std::cin >> usePower;
+
+			if (usePower == 'y')
+			{
+				int chosenPowerIndex = -1;
+				std::cout << "Choose a power to apply:\n";
+				for (size_t i = 0; i < availablePowers.size(); ++i)
+				{
+					std::cout << i + 1 << ": " << GetPowerName(availablePowers[i]) << "\n" << " - " << GetPowerDescription(availablePowers[i]) << "\n";;
+				}
+
+				std::cout << "Enter the number of the power you want to use: ";
+				std::cin >> chosenPowerIndex;
+
+				if (chosenPowerIndex >= 1 && chosenPowerIndex <= availablePowers.size())
+				{
+					Putere selectedPower = availablePowers[chosenPowerIndex - 1];
+
+
+					if (CanUsePower(selectedPower))
+					{
+						ActivatePower(selectedPower);
+						UsePower(selectedPower);
+
+						availablePowers.erase(availablePowers.begin() + (chosenPowerIndex - 1));
+
+						if (availablePowers.empty())
+						{
+							std::cout << "All powers have been used.\n";
+						}
+					}
+					else
+					{
+						std::cout << "You cannot use this power right now.\n";
+					}
+				}
+				else
+				{
+					std::cout << "Invalid power choice!\n";
+				}
+
+				continue;  
+			}
+		}
+		else
+		{
+			
+			std::cout << "No powers available to use.\n";
 		}
 
 		int cardIndex = -1;
@@ -500,21 +604,21 @@ Element_Mode::Putere Element_Mode::GetTipPutere()
 	return tipPutere;
 }
 
-void Element_Mode::ActivatePower()
+void Element_Mode::ActivatePower(Putere power)
 {
-	if (!CanUsePower(tipPutere)) 
+	if (!CanUsePower(power))
 	{
 		std::cout << "This power is either unavailable or already used.\n";
 		return;
 	}
 
-	if (usedPowers.find(tipPutere) != usedPowers.end())
+	if (usedPowers.find(power) != usedPowers.end())
 	{
 		std::cout << "This power has already been used in this match.\n";
 		return;
 	}
 
-	switch (tipPutere)
+	switch (power)
 	{
 	case Putere::ExplozieControlata:
 		std::cout << "Activating Explozie Controlata: Tabla explodează!" << std::endl;
