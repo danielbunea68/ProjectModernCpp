@@ -44,20 +44,25 @@ int main() {
 
 	switch (mode) {
 	case 't':
-		std::cout << "Ai ales modul trainig\n";
+		std::cout << "Ai ales modul Trainig\n";
 		game = new Game();
 		break;
 	case 'w':
+		std::cout << "Ai ales modul Wizard\n";
 		game = new Wizard_Mode();
 		break;
 	case 'e':
+		std::cout << "Ai ales modul Element\n";
 		game = new Element_Mode();
 		break;
 	case 'T':
+		std::cout << "Ai ales modul Tournament\n";
 		game_special = new Tournament_Mode();
 		break;
-	
-		
+	default : 
+		std::cout << "Optiune invalida! Se alege implicit modul Training\n";
+		game = new Game();
+		break;
 	}
 
 	game->InitGame(name1, name2);

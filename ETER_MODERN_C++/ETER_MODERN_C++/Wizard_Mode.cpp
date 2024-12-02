@@ -370,13 +370,19 @@ void Wizard_Mode::PlayGame()
                 }
             }
 
-            int row = -1, col = -1;
-            int result = board.CanMakeMove(row, col, chosenCard);
-            while (result == 0) {
-                std::cout << "Enter row and column (0, 1, or 2) to place the card: ";
+            int row, col;
+            int result;
+
+            do {
+                std::cout << "Enter the row and column to place the card (0, 1, or 2).\n";
+                if (!board.IsDefinitiveBoard()) {
+                    std::cout << "If the board is not definitive, you may also enter (-1, 3) to place the card in a special position.\n";
+                }
+
                 std::cin >> row >> col;
                 result = board.CanMakeMove(row, col, chosenCard);
-            }
+
+            } while (result == 0);
             if (result == 1)
             {
                 board.MakeMove(row, col, chosenCard);

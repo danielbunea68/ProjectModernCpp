@@ -7,6 +7,7 @@ Board::Board(const Board& other)
 	m_size = other.m_size;
 	board = other.board;
 	blockedRow = other.blockedRow;
+
 }
 
 Board& Board::operator=(const Board& other)
@@ -23,8 +24,8 @@ Board& Board::operator=(const Board& other)
 Board::Board(Board&& other) noexcept
 {
 	m_size = other.m_size;
-	board=std::move(other.board);
-	blockedRow=other.blockedRow;
+	board = std::move(other.board);
+	blockedRow = other.blockedRow;
 	other.m_size = 0;
 	other.blockedRow = -1;
 }
@@ -55,7 +56,7 @@ int Board::GetSize() const
 	return m_size;
 }
 
-Card Board::TopCard(int row, int col) const 
+Card Board::TopCard(int row, int col) const
 {
 	return board[row][col].top();
 }
@@ -66,8 +67,6 @@ std::vector<std::vector<std::stack<Card>>>& Board::GetBoard()
 	return board;
 }
 
-
-
 bool Board::IsEmpty(int row, int col)
 {
 	return row >= 0 && row < GetSize() && col >= 0 && col < GetSize() && board[row][col].empty();
@@ -75,8 +74,8 @@ bool Board::IsEmpty(int row, int col)
 
 void Board::Display()
 {
-	for (int i = topRow; i < bottomRow; i++) {
-		for (int j = leftCol; j < rightCol; j++) {
+	for (int i = 0; i < m_size; i++) {
+		for (int j = 0; j < m_size; j++) {
 			if (board[i][j].empty()) {
 				std::cout << "     ";
 			}
@@ -98,24 +97,41 @@ void Board::Display()
 	std::cout << "\n";
 }
 
-bool Board::CanMakeMove(int row, int col, Card chosenCard)
+int Board::CanMakeMove(int row, int col, Card chosenCard)
 {
-	
+	if (CountDistinctCards() == 0)
+		return 1;
+
+	if (!IsDefinitiveBoard()) {
+
+		if (CheckNeighbours(row, col))
+		{
+			if (row == -1 || row == m_size || col == -1 || col == m_size)
+				return 1;
+
+			if (board[row][col].empty())
+				return 1;
+
+			if (board[row][col].top().getValue() < chosenCard.getValue())
+				return 1;
+		}
+	}
+
+
 	if (!IsValidPosition(row, col))
 		return 0;
 
-	if (CheckNeighbours(row,col)) 
-	{
-		if (board[row][col].empty())
-			return 1;
+	if (board[row][col].empty())
+		return 1;
 
-		if (board[row][col].top().getValue() < chosenCard.getValue())
-			return 1;
+	if (board[row][col].top().getValue() > chosenCard.getValue()) {
+		if (board[row][col].top().getIsFaceDown())
+			return -1;
+		else
+			return 0;
 	}
-	
 
-	if (board[row][col].top().getValue() >= chosenCard.getValue() && board[row][col].top().getIsFaceDown())
-		return -1;
+	return board[row][col].top().getValue() < chosenCard.getValue();
 }
 
 bool Board::IsValidPosition(int row, int col) {
@@ -124,21 +140,23 @@ bool Board::IsValidPosition(int row, int col) {
 
 bool Board::MakeMove(int row, int col, Card card)
 {
-	topRow = std::min(topRow, row);
-	bottomRow = std::max(bottomRow, row);
-	leftCol = std::min(leftCol, col);
-	rightCol = std::max(rightCol, col);
-	if (IsEmpty(row, col)&& bottomRow - topRow <= m_size || rightCol - leftCol <=m_size  ) {
-	
+	if (IsEmpty(row, col) || !IsDefinitiveBoard()) {
+
+		ShiftBoard(row, col);
 		board[row][col].push(card);
-		
-		
+
+		UpdateLimits();
+
 		return true;
 	}
 	else
 		if (!board[row][col].empty() && board[row][col].top().getValue() < card.getValue())
 		{
+			ShiftBoard(row, col);
 			board[row][col].push(card);
+
+			UpdateLimits();
+
 			return true;
 		}
 
@@ -170,48 +188,48 @@ bool Board::CheckWinner(std::string color)
 bool Board::CheckIsBomb()
 {
 	int nr = 0;
+	for (int i = 0; i < GetSize(); i++)
+	{
+		bool verif = true;
+
+		for (int j = 0; j < GetSize(); j++)
+		{
+			if (board[i][j].empty())
+				verif = false;
+		}
+		if (verif)
+		{
+
+			nr++;
+		}
+	}
+
+	for (int j = 0; j < GetSize(); j++)
+	{
+		bool verif = true;
+
 		for (int i = 0; i < GetSize(); i++)
 		{
-			bool verif = true;
-			
-			for (int j = 0; j < GetSize(); j++)
-			{
-				if (board[i][j].empty())
-					verif = false;
-			}
-			if (verif)
-			{
-				
-				nr++;
-			}
-		}			
-	
-		for (int j = 0; j < GetSize(); j++)
-			{
-				bool verif = true;
+			if (board[i][j].empty())
+				verif = false;
+		}
+		if (verif)
+		{
+			nr++;
+		}
+	}
 
-				for (int i = 0; i < GetSize(); i++)
-				{
-					if (board[i][j].empty())
-						verif = false;
-				}
-				if (verif)
-				{
-					nr++;
-				}
-			}
-
-		if (nr == 2)
-			return true;
-		else
-			return false;
+	if (nr == 2)
+		return true;
+	else
+		return false;
 }
 
 bool Board::IsDraw()
 {
 	for (int i = 0; i < GetSize(); i++) {
 		for (int j = 0; j < GetSize(); j++) {
-			if (board[i][j].empty() ) return false;
+			if (board[i][j].empty()) return false;
 		}
 	}
 	return true;
@@ -220,17 +238,17 @@ bool Board::IsDraw()
 
 bool Board::CheckNeighbours(int row, int col)
 {
-	std::vector<std::pair<int, int>> directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
+	std::vector<std::pair<int, int>> directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0}, {-1, -1}, {1 ,-1}, {1, 1}, {-1, 1} };
 
 	for (auto dir : directions) {
-		int nx = col + dir.first;
-		int ny = row + dir.second;
-		if (!board[nx][ny].empty()) {
+		int nx = row + dir.first;
+		int ny = col + dir.second;
+		if (nx >= 0 && nx < m_size && ny >= 0 && ny < m_size && !board[nx][ny].empty()) {
 			return true;
 		}
 	}
 	return false;
-	
+
 }
 
 void Board::Clear()
@@ -273,19 +291,19 @@ void Board::SwapStacks(int row1, int col1, int row2, int col2)
 
 void Board::MoveStack(int srcRow, int srcCol, int destRow, int destCol)
 {
-	if (!IsValidPosition(srcRow, srcCol) || !IsValidPosition(destRow, destCol)) 
+	if (!IsValidPosition(srcRow, srcCol) || !IsValidPosition(destRow, destCol))
 	{
 		std::cerr << "Invalid positions. Source or destination out of bounds.\n";
 		return;
 	}
 
-	if (IsEmpty(srcRow, srcCol)) 
+	if (IsEmpty(srcRow, srcCol))
 	{
 		std::cerr << "Source position (" << srcRow << ", " << srcCol << ") is empty. Nothing to move.\n";
 		return;
 	}
 
-	if (!IsEmpty(destRow, destCol)) 
+	if (!IsEmpty(destRow, destCol))
 	{
 		std::cerr << "Destination position (" << destRow << ", " << destCol << ") is not empty.\n";
 		return;
@@ -293,7 +311,7 @@ void Board::MoveStack(int srcRow, int srcCol, int destRow, int destCol)
 
 	board[destRow][destCol] = std::move(board[srcRow][srcCol]);
 
-	while (!board[srcRow][srcCol].empty()) 
+	while (!board[srcRow][srcCol].empty())
 	{
 		board[srcRow][srcCol].pop();
 	}
@@ -304,7 +322,7 @@ void Board::MoveStack(int srcRow, int srcCol, int destRow, int destCol)
 
 bool Board::AreAdjacent(int row1, int col1, int row2, int col2)
 {
-	if (!IsValidPosition(row1, col1) || !IsValidPosition(row2, col2)) 
+	if (!IsValidPosition(row1, col1) || !IsValidPosition(row2, col2))
 	{
 		std::cerr << "Invalid positions. Either one or both positions are out of bounds.\n";
 		return false;
@@ -321,7 +339,7 @@ void Board::Remove(int row, int col)
 		std::cout << "Card removed from position (" << row << ", " << col << ").\n";
 
 		// After removing the card, unmark the position (assuming the pit is no longer relevant after the card is removed)
-		
+
 	}
 	else
 	{
@@ -331,40 +349,40 @@ void Board::Remove(int row, int col)
 
 void Board::UpdateCard(int row, int col, const Card& card)
 {
-	if (!IsValidPosition(row, col)) 
+	if (!IsValidPosition(row, col))
 	{
 		std::cerr << "Invalid position (" << row << ", " << col << ").\n";
 		return;
 	}
 
-	if (board[row][col].empty()) 
+	if (board[row][col].empty())
 	{
 		std::cerr << "No cards at position (" << row << ", " << col << ") to update.\n";
 		return;
 	}
 
-	board[row][col].pop();    
+	board[row][col].pop();
 	board[row][col].push(card);
 
 	std::cout << "Updated the top card at position (" << row << ", " << col << ").\n";
 }
 
-bool Board::HasCoveredCard(int row, int col, const std::string& color) 
+bool Board::HasCoveredCard(int row, int col, const std::string& color)
 {
-	if (IsValidPosition(row, col) && !IsEmpty(row, col)) 
+	if (IsValidPosition(row, col) && !IsEmpty(row, col))
 	{
 		std::stack<Card>& cardStack = board[row][col];
-		if (cardStack.size() > 1) 
+		if (cardStack.size() > 1)
 		{
 
 			Card topCard = cardStack.top();
 
 			cardStack.pop();
 			Card secondCard = cardStack.top();
-			
+
 			cardStack.push(topCard);
-			
-			if (secondCard.getColor() == color && secondCard.getIsFaceDown()) 
+
+			if (secondCard.getColor() == color && secondCard.getIsFaceDown())
 			{
 				return true;
 			}
@@ -383,5 +401,86 @@ bool Board::IsFaceDown(int row, int col) const
 	const Card& topCard = board[row][col].top();
 
 	return topCard.getIsFaceDown();
+}
+
+int Board::CountDistinctCards()
+{
+	int count = 0;
+	for (auto row : board) {
+		for (auto col : row) {
+			count += !col.empty();
+		}
+	}
+	return count;
+}
+
+void Board::ShiftBoard(int &row, int &col)
+{
+	if (!IsDefinitiveBoard()) {
+
+		if (row < 0) {
+			row++;
+			ShiftDown();
+		}
+		else if (row > 2) {
+			row--;
+			ShiftUp();
+		}
+
+		if (col < 0) {
+			col++;
+			ShiftRight();
+		}
+		else if (col > 2) {
+			col--;
+			ShiftLeft();
+		}
+	}
+}
+
+inline void Board::ShiftLeft() {
+	for (auto& row : board) {
+		auto first = std::move(row[0]);
+		for (size_t i = 0; i < row.size() - 1; ++i) {
+			row[i] = std::move(row[i + 1]);
+		}
+		row[row.size() - 1] = std::move(first);
+	}
+}
+
+inline void Board::ShiftRight() {
+	for (auto& row : board) {
+		auto last = std::move(row[row.size() - 1]);
+		for (int i = row.size() - 1; i > 0; --i) {
+			row[i] = std::move(row[i - 1]);
+		}
+		row[0] = std::move(last);
+	}
+}
+
+inline void Board::ShiftUp() {
+	int numCols = board[0].size();
+	for (int col = 0; col < numCols; ++col) {
+		auto first = std::move(board[0][col]);
+		for (int row = 0; row < board.size() - 1; ++row) {
+			board[row][col] = std::move(board[row + 1][col]);
+		}
+		board[board.size() - 1][col] = std::move(first);
+	}
+}
+
+inline void Board::ShiftDown() {
+	int numCols = board[0].size();
+	for (int col = 0; col < numCols; ++col) {
+		auto last = std::move(board[board.size() - 1][col]);
+		for (int row = board.size() - 1; row > 0; --row) {
+			board[row][col] = std::move(board[row - 1][col]);
+		}
+		board[0][col] = std::move(last);
+	}
+}
+
+inline bool Board::IsDefinitiveBoard() {
+	return bottomRow - topRow >= m_size - 1 || rightCol - leftCol >= m_size - 1;
 }
 
