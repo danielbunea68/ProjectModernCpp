@@ -146,3 +146,18 @@ void Tournament_Mode::PlayGameChosen(std::string name1, std::string name2)
 
 	 
 }
+
+void Tournament_Mode::DisplayTournamentBoard() {
+    std::cout << "\nCurrent Tournament Board:\n";
+    for (const auto& row : tournament_board) {
+        for (const auto& cell : row) {
+            if (cell.empty()) {
+                std::cout << "   .   ";
+            } else {
+                std::cout << "   " << cell << "   ";
+            }
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+}
