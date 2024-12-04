@@ -275,6 +275,115 @@ player2(std::move(other.player2)), currentPlayer(other.currentPlayer)
     other.currentPlayer = nullptr;  
 }
 
+void Wizard_Mode::ActivatePower(WizardPower power) 
+{
+    switch (power) 
+    {
+    case WizardPower::RemoveOpponentCard: 
+    {
+        std::cout << currentPlayer->getName() << " used RemoveOpponentCard power!\n";
+        int row, col;
+        std::cout << "Enter the row and column of the opponent's card to remove: ";
+        std::cin >> row >> col;
+
+        removeOpponentCard(row, col);
+        std::cout << "Removed the opponent's card at (" << row << ", " << col << ").\n";
+        break;
+    }
+
+    case WizardPower::RemoveRow: 
+    {
+        std::cout << currentPlayer->getName() << " used RemoveRow power!\n";
+        int row1;
+        std::cout << "Enter the row to remove: ";
+        std::cin >> row1;
+
+        removeRow(row1);
+        std::cout << "Removed row " << row1 << ".\n";
+        break;
+    }
+
+    case WizardPower::CoverOpponentCard: 
+    {
+        std::cout << currentPlayer->getName() << " used CoverOpponentCard power!\n";
+        int row2, col2;
+        std::cout << "Enter the row and column of the opponent's card to cover: ";
+        std::cin >> row2 >> col2;
+
+        coverOpponentCard(row2, col2);
+        std::cout << "Covered the opponent's card at (" << row2 << ", " << col2 << ").\n";
+        break;
+    }
+
+    case WizardPower::CreatePit: 
+    {
+        std::cout << currentPlayer->getName() << " used CreatePit power!\n";
+        int row3, col3;
+        std::cout << "Enter the row and column to create a pit: ";
+        std::cin >> row3 >> col3;
+
+        createPit(row3, col3);
+        std::cout << "Created a pit at (" << row3 << ", " << col3 << ").\n";
+        break;
+    }
+
+    case WizardPower::MoveOwnStack: 
+    {
+        std::cout << currentPlayer->getName() << " used MoveOwnStack power!\n";
+        int row4, col4;
+        std::cout << "Enter the row and column to move your stack to: ";
+        std::cin >> row4 >> col4;
+
+        moveOwnStack(row4, col4);
+        std::cout << "Moved your stack to (" << row4 << ", " << col4 << ").\n";
+        break;
+    }
+
+    case WizardPower::ExtraEterCard: 
+    {
+        std::cout << currentPlayer->getName() << " used ExtraEterCard power!\n";
+        int row5, col5;
+        std::cout << "Enter the row and column to grant an extra Eter card: ";
+        std::cin >> row5 >> col5;
+
+        grantExtraEterCard(row5, col5);
+        std::cout << "Granted an extra Eter card at (" << row5 << ", " << col5 << ").\n";
+        break;
+    }
+
+    case WizardPower::MoveOpponentStack: 
+    {
+        std::cout << currentPlayer->getName() << " used MoveOpponentStack power!\n";
+        int row6, col6;
+        std::cout << "Enter the row and column to move the opponent's stack: ";
+        std::cin >> row6 >> col6;
+
+        moveOpponentStack(row6, col6);
+        std::cout << "Moved opponent's stack to (" << row6 << ", " << col6 << ").\n";
+        break;
+    }
+
+    case WizardPower::MoveEdgeRow: 
+    {
+        std::cout << currentPlayer->getName() << " used MoveEdgeRow power!\n";
+        int row7;
+        std::cout << "Enter the edge row to move: ";
+        std::cin >> row7;
+        moveEdgeRow(row7);
+        std::cout << "Moved edge row " << row7 << ".\n";
+        break;
+    }
+
+    default:
+        std::cout << "Unknown power.\n";
+        break;
+    }
+
+    currentPlayer->setPowerUsed();
+    std::cout << "The power has been used, and it cannot be used again in this game.\n";
+}
+
+
 
 void Wizard_Mode::RemoveCard(int row, int col)
 {

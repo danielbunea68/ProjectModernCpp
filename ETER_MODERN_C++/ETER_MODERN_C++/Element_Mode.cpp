@@ -192,51 +192,59 @@ void Element_Mode::PlayGame()
 
 			if (usePower == 'y')
 			{
-				int chosenPowerIndex = -1;
-				std::cout << "Choose a power to apply:\n";
-				for (size_t i = 0; i < availablePowers.size(); ++i)
+				while (true) 
 				{
-					std::cout << i + 1 << ": " << GetPowerName(availablePowers[i]) << "\n" << " - " << GetPowerDescription(availablePowers[i]) << "\n";;
-				}
-
-				std::cout << "Enter the number of the power you want to use: ";
-				std::cin >> chosenPowerIndex;
-
-				if (chosenPowerIndex >= 1 && chosenPowerIndex <= availablePowers.size())
-				{
-					Putere selectedPower = availablePowers[chosenPowerIndex - 1];
-
-
-					if (CanUsePower(selectedPower))
+					int chosenPowerIndex = -1;
+					std::cout << "Choose a power to apply (or enter 0 to exit):\n";
+					for (size_t i = 0; i < availablePowers.size(); ++i)
 					{
-						ActivatePower(selectedPower);
-						UsePower(selectedPower);
+						std::cout << i + 1 << ": " << GetPowerName(availablePowers[i])
+							<< "\n - " << GetPowerDescription(availablePowers[i]) << "\n";
+					}
 
-						availablePowers.erase(availablePowers.begin() + (chosenPowerIndex - 1));
+					std::cout << "Enter the number of the power you want to use: ";
+					std::cin >> chosenPowerIndex;
 
-						if (availablePowers.empty())
+					if (chosenPowerIndex == 0)
+					{
+						std::cout << "Exiting power menu.\n";
+						break;
+					}
+
+					if (chosenPowerIndex >= 1 && chosenPowerIndex <= availablePowers.size())
+					{
+						Putere selectedPower = availablePowers[chosenPowerIndex - 1];
+
+						if (CanUsePower(selectedPower))
 						{
-							std::cout << "All powers have been used.\n";
+							ActivatePower(selectedPower);
+							UsePower(selectedPower);
+
+							availablePowers.erase(availablePowers.begin() + (chosenPowerIndex - 1));
+
+							if (availablePowers.empty())
+							{
+								std::cout << "All powers have been used.\n";
+							}
+							break;
+						}
+						else
+						{
+							std::cout << "You cannot use this power right now.\n";
 						}
 					}
 					else
 					{
-						std::cout << "You cannot use this power right now.\n";
+						std::cout << "Invalid power choice! Please try again.\n";
 					}
 				}
-				else
-				{
-					std::cout << "Invalid power choice!\n";
-				}
-
-				continue;  
 			}
 		}
 		else
 		{
-			
 			std::cout << "No powers available to use.\n";
 		}
+
 
 		int cardIndex = -1;
 		while (!currentPlayer->HasCardAtIndex(cardIndex))
@@ -857,7 +865,7 @@ void Element_Mode::Flacari()
 	}
 	Card chosenCard = currentPlayer->PlayCard(cardIndex);
 
-	int row = -1, col = -1;
+	int row =-1, col=-1 ;
 	int result = board.CanMakeMove(row, col, chosenCard);
 	while (result == 0)
 	{

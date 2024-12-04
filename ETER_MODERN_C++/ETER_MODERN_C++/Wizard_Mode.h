@@ -6,7 +6,9 @@
 
 #include "IGame.h"
 
-class Wizard_Mode : public IGame {
+class Wizard_Mode : public IGame 
+{
+
 private :
     Board board;
     Player player1, player2;
@@ -34,6 +36,8 @@ public :
     Wizard_Mode& operator=(Wizard_Mode&& other) noexcept;
 
     Wizard_Mode(Wizard_Mode&& other) noexcept;
+
+    void ActivatePower(WizardPower power);
 
     void RemoveCard(int row, int col) override;
 
