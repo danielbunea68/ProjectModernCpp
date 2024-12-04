@@ -1,3 +1,4 @@
+/*
 #include "Speed_Mode.h"
 #include <iostream>
 #include <chrono>
@@ -78,3 +79,4 @@ void Speed_Mode::TimerBasedPlay() {
         validMove = board.MakeMove(row, col, currentPlayer->PlayCard(0));
     } while (!validMove);
 }
+*/

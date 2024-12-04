@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "Board.h"
 #include "Player.h"
 #include "IGame.h"
@@ -24,3 +24,4 @@ public:
 
     void TimerBasedPlay();
 };
+*/

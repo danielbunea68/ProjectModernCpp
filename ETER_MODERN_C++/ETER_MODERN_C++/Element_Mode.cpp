@@ -1534,6 +1534,74 @@ void Element_Mode::Sfaramare()
               << ") now has a value of " << card.getValue() << ".\n";
 }
 
+void Element_Mode::Granita()
+{
+	Card neutralCard(0, "neutral");
+	int row = -1, col = -1;
+
+	for (int r = 0; r < board.GetSize(); ++r)
+	{
+		if (board.IsEmpty(r, 0)) 
+		{
+			row = r; 
+			col = 0; 
+			break; 
+		} 
+		if (board.IsEmpty(r, board.GetSize() - 1)) 
+		{
+			row = r; 
+			col = board.GetSize() - 1; 
+			break; 
+		}
+	}
+	if (row == -1)
+	{
+		for (int c = 0; c < board.GetSize(); ++c)
+		{
+			if (board.IsEmpty(0, c)) 
+			{
+				row = 0; 
+				col = c; 
+				break; 
+			} 
+			if (board.IsEmpty(board.GetSize() - 1, c)) 
+			{
+				row = board.GetSize() - 1; 
+				col = c; 
+				break; 
+			}
+		}
+	}
+
+	if (row != -1 && col != -1)
+	{
+		board.MakeMove(row, col, neutralCard);
+		std::cout << "Neutral card placed at (" << row << ", " << col << ").\n";
+	}
+	else
+	{
+		std::cout << "No valid position to place a neutral card!\n";
+	}
+
+	int cardIndex = -1;
+	while (!currentPlayer->HasCardAtIndex(cardIndex))
+	{
+		std::cout << currentPlayer->getName() << ", choose a card index to play: ";
+		std::cin >> cardIndex;
+	}
+	Card chosenCard = currentPlayer->PlayCard(cardIndex);
+
+	int playRow, playCol;
+	do 
+	{
+		std::cout << "Enter the row and column to place the card (0 to " << board.GetSize() - 1 << "): ";
+		std::cin >> playRow >> playCol;
+	} while (!board.IsEmpty(playRow, playCol));
+
+	board.MakeMove(playRow, playCol, chosenCard);
+	std::cout << "Card placed by " << currentPlayer->getName() << " at (" << playRow << ", " << playCol << ").\n";
+}
+
 void Element_Mode::Avalansa(int row1, int col1, int row2, int col2)
 {
 	if (!((row1 == row2 && abs(col1 - col2) == 1) || (col1 == col2 && abs(row1 - row2) == 1))) {
