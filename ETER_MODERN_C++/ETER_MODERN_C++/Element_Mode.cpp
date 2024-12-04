@@ -660,19 +660,60 @@ void Element_Mode::ActivatePower(Putere power)
 		break;
 	case Putere::Uragan:
 		std::cout << "Activating Uragan: Shiftează un rând complet ocupat." << std::endl;
-		// Logic for Uragan goes here
+
+		int row;
+		std::cout << "Introduceți numărul rândului pe care doriți să îl shiftați (0-indexed): ";
+		std::cin >> row;
+
+		try 
+		{
+			Uragan(row);
+		}
+		catch (const std::exception& ex) 
+		{
+			std::cerr << "Eroare la activarea Uragan: " << ex.what() << std::endl;
+		}
 		break;
 	case Putere::Rafala:
 		std::cout << "Activating Rafala: Mută o carte vizibilă adiacent unei cărți cu număr mai mic." << std::endl;
-		// Logic for Rafala goes here
+
+		int row1, col, targetRow, targetCol;
+		std::cout << "Introduceți rândul și coloana cărții de mutat (0-indexed): ";
+		std::cin >> row1 >> col;
+
+		std::cout << "Introduceți rândul și coloana poziției țintă (0-indexed): ";
+		std::cin >> targetRow >> targetCol;
+
+		try 
+		{
+			ActivateRafala(row1, col, targetRow, targetCol);
+		}
+		catch (const std::exception& ex) 
+		{
+			std::cerr << "Eroare la activarea Rafala: " << ex.what() << std::endl;
+		}
 		break;
 	case Putere::Miraj:
 		std::cout << "Activating Miraj: Înlocuiește propria iluzie plasată cu o altă iluzie." << std::endl;
-		// Logic for Miraj goes here
+
+		int row2, col2, cardIndex;
+		std::cout << "Introduceți rândul și coloana iluzii de înlocuit (0-indexed): ";
+		std::cin >> row2 >> col2;
+
+		std::cout << "Introduceți indexul cărții din mână care va înlocui iluzia: ";
+		std::cin >> cardIndex;
+
+		try {
+			ActivateMiraj(row2, col2, cardIndex);
+		}
+		catch (const std::exception& ex) 
+		{
+			std::cerr << "Eroare la activarea Miraj: " << ex.what() << std::endl;
+		}
 		break;
 	case Putere::Furtuna:
 		std::cout << "Activating Furtuna: Elimină din joc un teanc de cărți cu 2 sau mai multe cărți." << std::endl;
-		// Logic for Furtuna goes here
+		ActivateFurtuna();
 		break;
 	case Putere::Maree:
 		std::cout << "Activating Maree: Interschimbă pozițiile a două teancuri de cărți." << std::endl;
@@ -712,15 +753,44 @@ void Element_Mode::ActivatePower(Putere power)
 		break;
 	case Putere::Granite:
 		std::cout << "Activating Granite: Plasează o carte neutră care definește o graniță." << std::endl;
-		// Logic for Granite goes here
+		Granita();
 		break;
 	case Putere::Avalansa:
 		std::cout << "Activated: Avalansa - Shifts two adjacent stacks.\n";
-		Avalansa(1, 2, 2, 1);
+
+		int row3, col3, row4, col4;
+		std::cout << "Introduceți coordonatele primului teanc (rând și coloană 0-indexed): ";
+		std::cin >> row3 >> col3;
+
+		std::cout << "Introduceți coordonatele celui de-al doilea teanc (rând și coloană 0-indexed): ";
+		std::cin >> row4 >> col4;
+
+		try 
+		{
+			Avalansa(row3, col3, row4, col4);
+		}
+		catch (const std::exception& ex) 
+		{
+			std::cerr << "Eroare la activarea Avalansa: " << ex.what() << std::endl;
+		}
 		break;
 	case Putere::Bolovan:
 		std::cout << "Activated: Bolovan - Covers an illusion without revealing it.\n";
-		Bolovan(1, 2, 1);
+		int row5, col5, cardIndex1;
+		std::cout << "Introduceți coordonatele teancului (rând și coloană 0-indexed): ";
+		std::cin >> row5 >> col5;
+
+		std::cout << "Introduceți indexul cărții din teanc (0-indexed): ";
+		std::cin >> cardIndex1;
+
+		try 
+		{
+			Bolovan(row5, col5, cardIndex1);
+		}
+		catch (const std::exception& ex) 
+		{
+			std::cerr << "Eroare la activarea Bolovan: " << ex.what() << std::endl;
+		}
 		break;
 	default:
 		std::cout << "Unknown power!" << std::endl;
