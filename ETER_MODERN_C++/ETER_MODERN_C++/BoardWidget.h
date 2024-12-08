@@ -14,7 +14,6 @@ public:
     explicit BoardWidget(QWidget* parent = nullptr);
 
     void setBoard(Board* board);
-    void setPlayerHand(const std::vector<Card>& hand);
 
 signals:
     void cardPlaced(int row, int col, Card card);
@@ -24,12 +23,15 @@ protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
 
-private:
-    Board* board;
-    std::vector<Card> playerHand;
+    void DrawBoard(QPainter &painter);
+    void DrawCards(QPainter& painter);
 
-    int selectedCardIndex = -1;
-    QPoint dragStartPosition;
-    QRect cardArea(int index) const; // Helper to determine card position in hand
+
+private:
+    int cellWidth{};
+    int cellHeight{};
+    int boardSize{};
+
+    Board* board;
     QPoint boardCellFromMouse(const QPoint& pos) const;
 };
