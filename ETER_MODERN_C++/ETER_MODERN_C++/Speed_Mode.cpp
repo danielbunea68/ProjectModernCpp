@@ -1,4 +1,3 @@
-/*
 #include "Speed_Mode.h"
 #include <iostream>
 #include <chrono>
@@ -6,6 +5,49 @@
 Speed_Mode::Speed_Mode() : isGameOver(false), currentPlayer(nullptr) {}
 
 Speed_Mode::~Speed_Mode() {}
+
+Speed_Mode::Speed_Mode(const Speed_Mode& other) : board(other.board),
+player1(other.player1), player2(other.player2), currentPlayer(other.currentPlayer == &other.player1 ? &player1 : &player2),
+isGameOver(other.isGameOver) {}
+
+Speed_Mode& Speed_Mode::operator=(const Speed_Mode& other)
+{
+    if (this == &other)
+        return *this;
+
+    board = other.board;
+    player1 = other.player1;
+    player2 = other.player2;
+    currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+    isGameOver = other.isGameOver;
+
+    return *this;
+}
+
+Speed_Mode::Speed_Mode(Speed_Mode&& other) noexcept
+:board(std::move(other.board)), player1(std::move(other.player1)), player2(std::move(other.player2)),
+ currentPlayer(other.currentPlayer == &other.player1 ? &player1 : &player2), isGameOver(other.isGameOver) 
+{
+    other.currentPlayer = nullptr;
+    other.isGameOver = false;
+}
+
+Speed_Mode& Speed_Mode::operator=(Speed_Mode&& other) noexcept
+{
+    if (this == &other)
+        return *this;
+
+    board = std::move(other.board);
+    player1 = std::move(other.player1);
+    player2 = std::move(other.player2);
+    currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+    isGameOver = other.isGameOver;
+
+    other.currentPlayer = nullptr;
+    other.isGameOver = false;
+
+    return *this;
+}
 
 void Speed_Mode::InitGame(std::string name1, std::string name2) {
     player1.setName(name1);
@@ -79,4 +121,3 @@ void Speed_Mode::TimerBasedPlay() {
         validMove = board.MakeMove(row, col, currentPlayer->PlayCard(0));
     } while (!validMove);
 }
-*/

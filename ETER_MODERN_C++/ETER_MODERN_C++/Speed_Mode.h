@@ -1,4 +1,4 @@
-/*#pragma once
+#pragma once
 #include "Board.h"
 #include "Player.h"
 #include "IGame.h"
@@ -15,6 +15,10 @@ private:
 public:
     Speed_Mode();
     ~Speed_Mode();
+    Speed_Mode(const Speed_Mode& other);
+    Speed_Mode& operator=(const Speed_Mode& other);
+    Speed_Mode(Speed_Mode&& other) noexcept;
+    Speed_Mode& operator=(Speed_Mode&& other) noexcept;
 
     void InitGame(std::string name1, std::string name2) override;
     Player* CurrentTurn() override;
@@ -24,4 +28,3 @@ public:
 
     void TimerBasedPlay();
 };
-*/
