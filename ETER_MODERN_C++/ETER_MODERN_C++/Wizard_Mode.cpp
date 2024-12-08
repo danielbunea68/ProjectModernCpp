@@ -42,57 +42,67 @@ void Wizard_Mode::removeRow(int row) {
 
 
 void Wizard_Mode::coverOpponentCard(int row, int col) {
-    if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() != currentPlayer->getColor()) {
-        int cardIndex = -1;
-        std::cout << "Choose a lower card from hand to cover opponent's card: ";
-        currentPlayer->ShowHand();
+    if (!board.IsValidPosition(row, col) || board.IsEmpty(row, col) || board.TopCard(row, col).getColor() == currentPlayer->getColor()) {
+        std::cout << "Cannot cover card at (" << row << ", " << col << "). Invalid position or not an opponent's card.\n";
+        return;
+    }
 
-        while (!currentPlayer->HasCardAtIndex(cardIndex))
-        {
-           
-            std::cin >> cardIndex;
-        }
-        Card chosenCard = currentPlayer->PlayCard(cardIndex);
-        if (chosenCard.getValue() < board.TopCard(row, col).getValue()) {
-            board.AddCard(row, col, chosenCard);
-            std::cout << "Covered opponent's card with " << chosenCard.getValue() << ".\n";
-        }
+    currentPlayer->ShowHand();
+    int cardIndex = -1;
+    std::cout << "Choose a lower card from hand to cover opponent's card: ";
+    while (!currentPlayer->HasCardAtIndex(cardIndex)) {
+        std::cin >> cardIndex;
+    }
+
+    Card chosenCard = currentPlayer->PlayCard(cardIndex);
+    if (chosenCard.getValue() < board.TopCard(row, col).getValue()) {
+        board.AddCard(row, col, chosenCard);
+        std::cout << "Covered opponent's card with " << chosenCard.getValue() << ".\n";
+    } else {
+        std::cout << "Cannot cover with card of equal or higher value.\n";
+        currentPlayer->AddCard(chosenCard);
     }
 }
 
 
 void Wizard_Mode::createPit(int row, int col) {
-    if (board.IsEmpty(row, col)) {
-        CreatePit(row, col);
-        std::cout << "Pit created at (" << row << ", " << col << ").\n";
+    if (!board.IsValidPosition(row, col) || !board.IsEmpty(row, col)) {
+        std::cout << "Cannot create pit at (" << row << ", " << col << "). Invalid position or already occupied.\n";
+        return;
     }
+
+    CreatePit(row, col);
+    std::cout << "Pit created at (" << row << ", " << col << ").\n";
 }
 
 
 void Wizard_Mode::moveOwnStack(int row, int col) {
-    if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() == currentPlayer->getColor()) {
-        int newRow, newCol;
-        std::cout << "Enter new row and column to move stack: ";
-        std::cin >> newRow >> newCol;
-        if (board.IsEmpty(newRow, newCol)) {
-            std::deque<Card> coada;
-            while (!board.IsEmpty(row, col))
-            {
-                Card topCard = board.TopCard(row, col);
-                RemoveCard(row, col);
-                coada.push_back(topCard);
-                
-
-            }
-            while (!coada.empty())
-            {
-                board.AddCard(newRow, newCol, coada.back());
-                coada.pop_back();
-            }
-          
-            std::cout << "Moved stack to (" << newRow << ", " << newCol << ").\n";
-        }
+    if (!board.IsValidPosition(row, col) || board.IsEmpty(row, col) || board.TopCard(row, col).getColor() != currentPlayer->getColor()) {
+        std::cout << "Cannot move stack at (" << row << ", " << col << "). Invalid position or not your stack.\n";
+        return;
     }
+
+    int newRow, newCol;
+    std::cout << "Enter new row and column to move stack: ";
+    std::cin >> newRow >> newCol;
+
+    if (!board.IsValidPosition(newRow, newCol) || !board.IsEmpty(newRow, newCol)) {
+        std::cout << "Invalid destination (" << newRow << ", " << newCol << ").\n";
+        return;
+    }
+
+    std::deque<Card> stack;
+    while (!board.IsEmpty(row, col)) {
+        stack.push_back(board.TopCard(row, col));
+        board.Remove(row, col);
+    }
+
+    while (!stack.empty()) {
+        board.AddCard(newRow, newCol, stack.back());
+        stack.pop_back();
+    }
+
+    std::cout << "Moved stack to (" << newRow << ", " << newCol << ").\n";
 }
 
 
