@@ -10,17 +10,13 @@
 
 
 void Wizard_Mode::removeOpponentCard(int row, int col) {
-    if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() != currentPlayer->getColor()) {
-
-        Card card = board.TopCard(row, col);
-        RemoveCard(row, col);
-        if (board.TopCard(row, col).getColor() != currentPlayer->getColor())
-        {
-            board.AddCard(row, col, card);
-            std::cout << "incearca alte coordonate";
-            return;
-        }
+    if (!board.IsValidPosition(row, col) || board.IsEmpty(row, col) || board.TopCard(row, col).getColor() == currentPlayer->getColor()) {
+        std::cout << "Cannot remove card at (" << row << ", " << col << "). Invalid position or not an opponent's card.\n";
+        return;
     }
+
+    board.Remove(row, col);
+    std::cout << "Removed opponent's card at (" << row << ", " << col << ").\n";
 }
 
 
@@ -151,7 +147,10 @@ void Wizard_Mode::moveEdgeRow(int row) {
 }
 
 void Wizard_Mode::activatePower(WizardPower power, int row, int col) {
-   
+    if (!board.IsValidPosition(row, col)) {
+        std::cout << "Invalid position (" << row << ", " << col << ").\n";
+        return;
+    }
 
     switch (power) {
         case WizardPower::RemoveOpponentCard:
@@ -181,6 +180,7 @@ void Wizard_Mode::activatePower(WizardPower power, int row, int col) {
     }
 
     std::cout << "Wizard power activated!\n";
+    currentPlayer->setPowerUsed();
 }
 
 
