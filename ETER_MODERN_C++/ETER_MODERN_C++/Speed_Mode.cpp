@@ -2,7 +2,8 @@
 #include <iostream>
 #include <chrono>
 
-Speed_Mode::Speed_Mode() : isGameOver(false), currentPlayer(nullptr) {}
+Speed_Mode::Speed_Mode()
+    : isGameOver(false), currentPlayer(nullptr), timeLimit(60), remainingTimePlayer1(60), remainingTimePlayer2(60) {}
 
 Speed_Mode::~Speed_Mode() {}
 
@@ -120,4 +121,11 @@ void Speed_Mode::TimerBasedPlay() {
 
         validMove = board.MakeMove(row, col, currentPlayer->PlayCard(0));
     } while (!validMove);
+}
+
+void Speed_Mode::ConfigureTimeLimit(int seconds)
+{
+    timeLimit = seconds;
+    remainingTimePlayer1 = seconds;
+    remainingTimePlayer2 = seconds;
 }

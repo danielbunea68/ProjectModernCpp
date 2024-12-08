@@ -1,7 +1,9 @@
-#pragma once
+﻿#pragma once
 #include "Board.h"
 #include "Player.h"
 #include "IGame.h"
+#include <chrono>
+
 
 class Speed_Mode : public IGame {
 private:
@@ -10,8 +12,16 @@ private:
     Player* currentPlayer;
     bool isGameOver;
 
+    int timeLimit;
+    std::chrono::steady_clock::time_point turnStartTime;
+    int remainingTimePlayer1;
+    int remainingTimePlayer2;
+
     void SwitchTurn();
     void CheckWinner();
+    void StartTurnTimer();
+    bool CheckTimer();
+
 public:
     Speed_Mode();
     ~Speed_Mode();
@@ -21,10 +31,11 @@ public:
     Speed_Mode& operator=(Speed_Mode&& other) noexcept;
 
     void InitGame(std::string name1, std::string name2) override;
-    Player* CurrentTurn() override;
-    Player* PreviousTurn() override;
+    //Player* CurrentTurn() override;
+    //Player* PreviousTurn() override;
     void PlayGame() override;
     void ResetGame() override;
 
     void TimerBasedPlay();
+    void ConfigureTimeLimit(int seconds);
 };
