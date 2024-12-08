@@ -1,26 +1,26 @@
-#include "MainWindow.h"
+﻿#include "MainWindow.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
-    // Creeaz? un widget principal pentru layout
+    // Creează un widget principal pentru layout
     QWidget* mainWidget = new QWidget(this);
     setCentralWidget(mainWidget);
 
-    // Creeaz? un layout orizontal
+    // Creează un layout orizontal
     QHBoxLayout* layout = new QHBoxLayout(mainWidget);
 
-    // Creeaz? un widget pentru "board" (partea din st�nga)
+    // Creează un widget pentru "board" (partea din stânga)
     BoardWidget* boardWidget = new BoardWidget();
     boardWidget->setStyleSheet("background-color: lightblue;");
 
-    // Creeaz? un alt widget pentru partea din dreapta
+    // Creează un alt widget pentru partea din dreapta
     QFrame* rightWidget = new QFrame();
     rightWidget->setStyleSheet("background-color: lightgray;");
 
-    // Adaug? widget-urile �n layout cu propor?ii (1:1 pentru jum?tate/jum?tate)
-    layout->addWidget(boardWidget, 1);   // Ocup? jum?tatea din st�nga
-    layout->addWidget(rightWidget, 1);   // Ocup? jum?tatea din dreapta
+    // Adaugă widget-urile în layout cu proporții (1:1 pentru jumătate/jumătate)
+    layout->addWidget(boardWidget, 1);   // Ocupă jumătatea din stânga
+    layout->addWidget(rightWidget, 1);   // Ocupă jumătatea din dreapta
 
-    // Seteaz? layout-ul principal
+    // Setează layout-ul principal
     mainWidget->setLayout(layout);
 
 
@@ -28,9 +28,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
 }
 
 void MainWindow::onCardPlaced(int row, int col, Card card) {
-    if (game.getBoard().MakeMove(row, col, card)) {
-        //game.SwitchTurn();
+      // if (game.getBoard().MakeMove(row, col, card)) {
         //boardWidget->setPlayerHand(game.CurrentTurn()->getHand());
-        boardWidget->update();
-    }
+        //game.SwitchTurn();
+        //boardWidget->update();
+    //}
 }

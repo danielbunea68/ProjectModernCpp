@@ -1,6 +1,5 @@
 #pragma once
 #include "Board.h"
-#include "Player.h"
 #include "IGame.h"
 
 class Speed_Mode : public IGame {

@@ -64,6 +64,16 @@ void Speed_Mode::InitGame(std::string name1, std::string name2) {
     currentPlayer = &player1;
 }
 
+Player* Speed_Mode::CurrentTurn()
+{
+    return nullptr;
+}
+
+Player* Speed_Mode::PreviousTurn()
+{
+    return nullptr;
+}
+
 void Speed_Mode::SwitchTurn() {
     currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
 }
