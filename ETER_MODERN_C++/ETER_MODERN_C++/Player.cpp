@@ -3,8 +3,8 @@
 Player::Player(const Player& other)
 {
 	m_cards = other.m_cards;
+	m_wizard_power = other.m_wizard_power;
 	m_LifePoints = other.m_LifePoints;
-	m_wizard_power=other.m_wizard_power;
 	m_name=other.m_name;
 	m_color=other.m_color;
 	m_placedCardFaceDown = other.m_placedCardFaceDown;
@@ -22,8 +22,8 @@ Player& Player::operator=(const Player& other)
 	if (this != &other) // Self-assignment check
 	{
 		m_cards = other.m_cards;
-		m_LifePoints = other.m_LifePoints;
 		m_wizard_power = other.m_wizard_power;
+		m_LifePoints = other.m_LifePoints;
 		m_name = other.m_name;
 		m_color = other.m_color;
 		m_placedCardFaceDown = other.m_placedCardFaceDown;
@@ -38,8 +38,8 @@ Player& Player::operator=(const Player& other)
 Player::Player(Player&& other) noexcept
 {
 	m_cards = std::move(other.m_cards);
-	m_LifePoints= other.m_LifePoints;
 	m_wizard_power = std::move(other.m_wizard_power);
+	m_LifePoints= other.m_LifePoints;
 	m_name = std::move(other.m_name);
 	m_color=std::move(other.m_color);
 	m_placedCardFaceDown = other.m_placedCardFaceDown;
@@ -105,22 +105,6 @@ void Player::setLastMove(int row , int col)
 	m_last_move= { row,col };
 }
 
-void Player::setRandomWizardPower()
-{
-	int randomIndex = std::rand() % static_cast<int>(WizardPower::MoveEdgeRow) + 1;
-	m_wizard_power = static_cast<WizardPower>(randomIndex);
-}
-
-bool Player::getPowerUsed()
-{
-	return powerUsed;
-}
-
-void Player::setPowerUsed()
-{
-	powerUsed = true;
-}
-
 void Player::setWinnCords(const std::pair<int, int> cords)
 {
 	m_winncords = cords;
@@ -154,6 +138,40 @@ void Player::setName(const std::string& name)
 WizardPower Player::getWizardPower() const
 {
 	return m_wizard_power;
+}
+
+std::vector<WizardPower> Player::assignedPowers;
+
+void Player::setRandomWizardPower()
+{
+	static bool seeded = false;
+	if (!seeded)
+	{
+		std::srand(static_cast<unsigned int>(std::time(0)));
+		seeded = true;
+	}
+
+	int numPowers = static_cast<int>(WizardPower::MoveEdgeRow) + 1;
+
+	WizardPower power;
+	do
+	{
+		int randomIndex = std::rand() % numPowers;
+		power = static_cast<WizardPower>(randomIndex);
+	} while (std::find(assignedPowers.begin(), assignedPowers.end(), power) != assignedPowers.end());
+
+	m_wizard_power = power;
+	assignedPowers.push_back(power);
+}
+
+bool Player::getPowerUsed()
+{
+	return powerUsed;
+}
+
+void Player::setPowerUsed()
+{
+	powerUsed = true;
 }
 
 Card Player::PlayCard(int cardIndex)

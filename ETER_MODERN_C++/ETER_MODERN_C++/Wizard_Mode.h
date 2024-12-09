@@ -1,10 +1,9 @@
-
 #pragma once
-#include "Game.h"
 #include "Player.h"
 #include "Board.h"
-
 #include "IGame.h"
+#include <string>
+
 
 class Wizard_Mode : public IGame 
 {
@@ -13,6 +12,7 @@ private :
     Board board;
     Player player1, player2;
     Player* currentPlayer;
+    int player1Wins = 0, player2Wins = 0;
 
     void removeOpponentCard(int row, int col);
     void removeRow(int row);
@@ -23,7 +23,9 @@ private :
     void moveOpponentStack(int row, int col);
     void moveEdgeRow(int row);
 
+    std::string GetWizardPowerName(WizardPower power);
     void SwitchTurn();
+
 public :
     Wizard_Mode();
 
@@ -54,8 +56,4 @@ public :
 
     void ResetGame()override;
 
-    void activatePower(WizardPower power, int row = -1, int col = -1);
-
-
-   
 };

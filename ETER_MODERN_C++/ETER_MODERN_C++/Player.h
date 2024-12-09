@@ -9,7 +9,8 @@
 
 #include "Card.h"
 
-enum class WizardPower {
+enum class WizardPower 
+{
 	RemoveOpponentCard,
 	RemoveRow,
 	CoverOpponentCard,
@@ -20,20 +21,21 @@ enum class WizardPower {
 	MoveEdgeRow
 };
 
-
 class Player
 {
 private:
 	std::vector<Card> m_cards;
 	//std::vector<Element_Card> m_ElementCards;
-	int m_LifePoints;
 	WizardPower  m_wizard_power;
+	int m_LifePoints;
 	std::string m_name;
 	std::string m_color;
 	bool m_placedCardFaceDown;
 	std::pair<int, int> m_last_move;
 	std::vector<Card> removedCards;
 	std::pair<int, int> m_winncords;
+	static std::vector<WizardPower> assignedPowers;
+
 public:
 	bool powerUsed= false ;
 	
