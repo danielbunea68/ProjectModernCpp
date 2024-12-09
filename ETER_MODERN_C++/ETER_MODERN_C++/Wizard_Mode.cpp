@@ -72,67 +72,99 @@ void Wizard_Mode::createPit(int row, int col) {
 }
 
 
-void Wizard_Mode::moveOwnStack(int row, int col) {
-    if (!board.IsValidPosition(row, col) || board.IsEmpty(row, col) || board.TopCard(row, col).getColor() != currentPlayer->getColor()) {
-        std::cout << "Cannot move stack at (" << row << ", " << col << "). Invalid position or not your stack.\n";
+void Wizard_Mode::moveOwnStack(int fromRow, int fromCol, int toRow, int toCol) 
+{
+    if (!board.IsValidPosition(fromRow, fromCol)) 
+    {
+        std::cout << "Invalid source position (" << fromRow << ", " << fromCol << ").\n";
         return;
     }
 
-    int newRow, newCol;
-    std::cout << "Enter new row and column to move stack: ";
-    std::cin >> newRow >> newCol;
+    if (board.IsEmpty(fromRow, fromCol)) 
+    {
+        std::cout << "There is no stack at the specified source position (" << fromRow << ", " << fromCol << ").\n";
+        return;
+    }
 
-    if (!board.IsValidPosition(newRow, newCol) || !board.IsEmpty(newRow, newCol)) {
-        std::cout << "Invalid destination (" << newRow << ", " << newCol << ").\n";
+    if (board.TopCard(fromRow, fromCol).getColor() != currentPlayer->getColor()) 
+    {
+        std::cout << "The stack at (" << fromRow << ", " << fromCol << ") does not belong to you.\n";
+        return;
+    }
+
+    if (!board.IsValidPosition(toRow, toCol)) 
+    {
+        std::cout << "Invalid destination position (" << toRow << ", " << toCol << ").\n";
+        return;
+    }
+
+    if (!board.IsEmpty(toRow, toCol)) 
+    {
+        std::cout << "The destination position (" << toRow << ", " << toCol << ") is not empty.\n";
         return;
     }
 
     std::deque<Card> stack;
-    while (!board.IsEmpty(row, col)) {
-        stack.push_back(board.TopCard(row, col));
-        board.Remove(row, col);
+
+    while (!board.IsEmpty(fromRow, fromCol)) 
+    {
+        stack.push_back(board.TopCard(fromRow, fromCol));
+        board.Remove(fromRow, fromCol);  
     }
 
     while (!stack.empty()) {
-        board.AddCard(newRow, newCol, stack.back());
-        stack.pop_back();
+        board.AddCard(toRow, toCol, stack.back());
+        stack.pop_back(); 
     }
 
-    std::cout << "Moved stack to (" << newRow << ", " << newCol << ").\n";
+    std::cout << "Moved your stack from (" << fromRow << ", " << fromCol << ") to (" << toRow << ", " << toCol << ").\n";
 }
 
 
-void Wizard_Mode::grantExtraEterCard(int row ,int col) {
+void Wizard_Mode::grantExtraEterCard(int row ,int col) 
+{
     Card extraCard(5, currentPlayer->getColor(), "Eter");
     currentPlayer->AddCard(extraCard);
     board.MakeMove(row, col, extraCard);
 }
 
 
-void Wizard_Mode::moveOpponentStack(int row, int col) {
-    if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() != currentPlayer->getColor()) {
-        int newRow, newCol;
-        std::cout << "Enter new row and column to move stack: ";
-        std::cin >> newRow >> newCol;
-        if (board.IsEmpty(newRow, newCol)) {
-            std::deque<Card> coada;
-            while (!board.IsEmpty(row, col))
-            {
-                Card topCard = board.TopCard(row, col);
-                RemoveCard(row, col);
-                coada.push_back(topCard);
-                
+void Wizard_Mode::moveOpponentStack(int fromRow, int fromCol, int toRow, int toCol) 
+{
 
-            }
-            while (!coada.empty())
-            {
-                board.AddCard(newRow, newCol, coada.back());
-                coada.pop_back();
-            }
-          
-            std::cout << "Moved stack to (" << newRow << ", " << newCol << ").\n";
-        }
+    if (board.IsEmpty(fromRow, fromCol)) 
+    {
+        std::cout << "There is no stack at the specified source position (" << fromRow << ", " << fromCol << ").\n";
+        return;
     }
+
+    if (board.TopCard(fromRow, fromCol).getColor() == currentPlayer->getColor()) 
+    {
+        std::cout << "You cannot move your own stack!\n";
+        return;
+    }
+
+    if (!board.IsEmpty(toRow, toCol)) 
+    {
+        std::cout << "The destination position (" << toRow << ", " << toCol << ") is not empty.\n";
+        return;
+    }
+
+    std::deque<Card> tempStack;
+
+    while (!board.IsEmpty(fromRow, fromCol)) 
+    {
+        Card topCard = board.TopCard(fromRow, fromCol);
+        RemoveCard(fromRow, fromCol); 
+        tempStack.push_back(topCard); 
+    }
+
+    while (!tempStack.empty()) 
+    {
+        board.AddCard(toRow, toCol, tempStack.back());
+        tempStack.pop_back();
+    }
+    std::cout << "Moved stack from (" << fromRow << ", " << fromCol << ") to (" << toRow << ", " << toCol << ").\n";
 }
 
 void Wizard_Mode::moveEdgeRow(int row) {
@@ -328,12 +360,16 @@ void Wizard_Mode::ActivatePower(WizardPower power)
     case WizardPower::MoveOwnStack: 
     {
         std::cout << currentPlayer->getName() << " used MoveOwnStack power!\n";
-        int row4, col4;
-        std::cout << "Enter the row and column to move your stack to: ";
-        std::cin >> row4 >> col4;
 
-        moveOwnStack(row4, col4);
-        std::cout << "Moved your stack to (" << row4 << ", " << col4 << ").\n";
+        int fromRow1, fromCol1;
+        std::cout << "Enter the row and column of your stack to move: ";
+        std::cin >> fromRow1 >> fromCol1;
+
+        int toRow2, toCol2;
+        std::cout << "Enter the row and column where you want to move the stack: ";
+        std::cin >> toRow2 >> toCol2;
+
+        moveOwnStack(fromRow1, fromCol1, toRow2, toCol2);
         break;
     }
 
@@ -352,12 +388,16 @@ void Wizard_Mode::ActivatePower(WizardPower power)
     case WizardPower::MoveOpponentStack: 
     {
         std::cout << currentPlayer->getName() << " used MoveOpponentStack power!\n";
-        int row6, col6;
-        std::cout << "Enter the row and column to move the opponent's stack: ";
-        std::cin >> row6 >> col6;
 
-        moveOpponentStack(row6, col6);
-        std::cout << "Moved opponent's stack to (" << row6 << ", " << col6 << ").\n";
+        int fromRow, fromCol;
+        std::cout << "Enter the row and column of the opponent's stack to move: ";
+        std::cin >> fromRow >> fromCol;
+
+        int toRow, toCol;
+        std::cout << "Enter the row and column where you want to move the stack: ";
+        std::cin >> toRow >> toCol;
+
+        moveOpponentStack(fromRow, fromCol, toRow, toCol);
         break;
     }
 

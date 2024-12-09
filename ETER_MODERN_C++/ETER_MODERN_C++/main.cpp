@@ -1,4 +1,3 @@
-/*
 #include "Game.h"
 #include "IGame.h"
 #include "Element_Mode.h"
@@ -81,8 +80,8 @@ int main() {
     std::cout << "Game over. Thanks for playing!\n";  // End of game message
     return 0;
 }
-*/
 
+/*
 #include "Game.h"
 #include "IGame.h"
 #include "Element_Mode.h"
@@ -109,3 +108,4 @@ int main(int argc, char* argv[]) {
 	return app.exec();
 
 }
+*/
