@@ -32,6 +32,29 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
     layout->addWidget(boardWidget, 1);   // Ocupă jumătatea din stânga
     layout->addWidget(rightWidget, 1);   // Ocupă jumătatea din dreapta
 
+
+    // Creează un layout vertical pentru rightWidget
+    QVBoxLayout* rightLayout = new QVBoxLayout(rightWidget);
+
+    // Creează widget-urile pentru jumătatea de sus și de jos
+    QFrame* topWidget = new QFrame();
+    topWidget->setStyleSheet("background-color: white; border: 1px solid black;");
+
+    QFrame* bottomWidget = new QFrame();
+    bottomWidget->setStyleSheet("background-color: lightblue; border: 1px solid black;");
+
+    // Adaugă widget-urile în layout-ul vertical
+    rightLayout->addWidget(topWidget, 1);   // Jumătatea de sus
+    rightLayout->addWidget(bottomWidget, 1); // Jumătatea de jos
+
+    // Setează layout-ul pentru rightWidget
+    rightWidget->setLayout(rightLayout);
+
+    // Adaugă widget-urile în layout-ul orizontal principal
+    layout->addWidget(boardWidget, 1);   // Ocupă jumătatea din stânga
+    layout->addWidget(rightWidget, 1);   // Ocupă jumătatea din dreapta
+
+
     // Setează layout-ul principal
     mainWidget->setLayout(layout);
 
