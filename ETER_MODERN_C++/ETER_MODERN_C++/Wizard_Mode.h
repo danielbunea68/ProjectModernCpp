@@ -12,6 +12,7 @@ private :
     Board board;
     Player player1, player2;
     Player* currentPlayer;
+    int player1Wins = 0, player2Wins = 0;
 
     void removeOpponentCard(int row, int col);
     void removeRow(int row);

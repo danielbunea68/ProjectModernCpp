@@ -425,23 +425,29 @@ void Wizard_Mode::PlayGame()
     while (!gameOver)
     {
         board.Display();
-
+        std::cout << currentPlayer->getName() << "'s turn.\n";
         std::cout << "Choose an action:\n";
         std::cout << "Play card (c) or use power (p): ";
         char choice;
         std::cin >> choice;
         if (choice == 'p' && !currentPlayer->getPowerUsed()) 
         {
-            // Use wizard power
-            int row, col;
-            std::cout << "Enter the row and column where you want to activate your power: ";
-            std::cin >> row >> col;
+            char confirmChoice;
+            std::cout << "Are you sure you want to use your power? (y/n): ";
+            std::cin >> confirmChoice;
 
-            WizardPower power = currentPlayer->getWizardPower();
-            ActivatePower(power);
+            if (confirmChoice == 'y' || confirmChoice == 'Y') 
+            {
+                WizardPower power = currentPlayer->getWizardPower();
+                ActivatePower(power);
 
-            currentPlayer->setPowerUsed();  
-            SwitchTurn(); 
+                currentPlayer->setPowerUsed();
+                SwitchTurn();
+            }
+            else 
+            {
+                std::cout << "Action canceled. Returning to the main menu.\n";
+            }
         }
         else if (choice == 'p' && currentPlayer->getPowerUsed()) 
         {
@@ -612,25 +618,73 @@ void Wizard_Mode::PlayGame()
 
 
             }
-
-            if (board.CheckWinner(chosenCard.getColor())) {
+            if (board.CheckWinner(chosenCard.getColor()))
+            {
                 std::pair<int, int> cords(row, col);
                 currentPlayer->setWinnCords(cords);
                 board.Display();
-                std::cout << currentPlayer->getName() << " wins!\n";
-                gameOver = true;
+                std::cout << currentPlayer->getName() << " wins this round!\n";
+
+                if (currentPlayer->getName() == player1.getName())
+                    player1Wins++;
+                else
+                    player2Wins++;
+
+                if (player1Wins == 3)
+                {
+                    std::cout << player1.getName() << " wins the game with 3 round wins!\n";
+                    gameOver = true;
+                }
+                else if (player2Wins == 3)
+                {
+                    std::cout << player2.getName() << " wins the game with 3 round wins!\n";
+                    gameOver = true;
+                }
+                else
+                {
+                    board.Clear();
+                    player1.setRandomWizardPower();
+                    player2.setRandomWizardPower();
+                    std::cout << player1.getName() << " has the power: " << GetWizardPowerName(player1.getWizardPower()) << std::endl;
+                    std::cout << player2.getName() << " has the power: " << GetWizardPowerName(player2.getWizardPower()) << std::endl;
+                    SwitchTurn();
+                }
+                break;
             }
-            else if (board.IsDraw()) {
+            else if (board.IsDraw())
+            {
                 board.Display();
                 std::cout << "It's a draw!\n";
-                gameOver = true;
+
+                if (player1Wins == 3)
+                {
+                    std::cout << player1.getName() << " wins the game with 3 round wins!\n";
+                    gameOver = true;
+                }
+                else if (player2Wins == 3)
+                {
+                    std::cout << player2.getName() << " wins the game with 3 round wins!\n";
+                    gameOver = true;
+                }
+                else
+                {
+                    board.Clear();
+                    player1.setRandomWizardPower();
+                    player2.setRandomWizardPower();
+                    std::cout << player1.getName() << " has the power: " << GetWizardPowerName(player1.getWizardPower()) << std::endl;
+                    std::cout << player2.getName() << " has the power: " << GetWizardPowerName(player2.getWizardPower()) << std::endl;
+                    SwitchTurn();
+                }
+                break;
             }
-            else {
+            else
+            {
                 SwitchTurn();
             }
         }
-
     }
+    if (gameOver == true)
+        std::cout << "Game over! Thanks for playing.\n";
 }
 
 void Wizard_Mode::ResetGame()

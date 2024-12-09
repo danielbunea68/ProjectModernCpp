@@ -34,6 +34,8 @@ private:
 	std::pair<int, int> m_last_move;
 	std::vector<Card> removedCards;
 	std::pair<int, int> m_winncords;
+	static std::vector<WizardPower> assignedPowers;
+
 public:
 	bool powerUsed= false ;
 	

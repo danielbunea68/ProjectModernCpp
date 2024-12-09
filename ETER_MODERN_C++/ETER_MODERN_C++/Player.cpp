@@ -140,10 +140,28 @@ WizardPower Player::getWizardPower() const
 	return m_wizard_power;
 }
 
+std::vector<WizardPower> Player::assignedPowers;
+
 void Player::setRandomWizardPower()
 {
-	int randomIndex = std::rand() % static_cast<int>(WizardPower::MoveEdgeRow) + 1;
-	m_wizard_power = static_cast<WizardPower>(randomIndex);
+	static bool seeded = false;
+	if (!seeded)
+	{
+		std::srand(static_cast<unsigned int>(std::time(0)));
+		seeded = true;
+	}
+
+	int numPowers = static_cast<int>(WizardPower::MoveEdgeRow) + 1;
+
+	WizardPower power;
+	do
+	{
+		int randomIndex = std::rand() % numPowers;
+		power = static_cast<WizardPower>(randomIndex);
+	} while (std::find(assignedPowers.begin(), assignedPowers.end(), power) != assignedPowers.end());
+
+	m_wizard_power = power;
+	assignedPowers.push_back(power);
 }
 
 bool Player::getPowerUsed()
