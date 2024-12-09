@@ -69,7 +69,7 @@ public:
 	bool HasCardAtIndex(int cardIndex);
 	void UseAbilty();
 	void AddCard(Card card);
-
+	std::vector<Card>getCards() const;;
 	/// 
 	
 

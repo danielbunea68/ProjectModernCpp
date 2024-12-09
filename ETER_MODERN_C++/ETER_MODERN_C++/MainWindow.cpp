@@ -36,16 +36,33 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
     // Creează un layout vertical pentru rightWidget
     QVBoxLayout* rightLayout = new QVBoxLayout(rightWidget);
 
-    // Creează widget-urile pentru jumătatea de sus și de jos
-    QFrame* topWidget = new QFrame();
-    topWidget->setStyleSheet("background-color: white; border: 1px solid black;");
+    CardsWidget* cards_p1 = new CardsWidget();
 
-    QFrame* bottomWidget = new QFrame();
-    bottomWidget->setStyleSheet("background-color: lightblue; border: 1px solid black;");
+    Player* player1 = new Player();
+    Player* player2 = new Player();
+    player1->AddCard(Card(1));
+    player1->AddCard(Card(1));
+    player1->AddCard(Card(2));
+    player1->AddCard(Card(2));
+    player1->AddCard(Card(3));
+    player2->AddCard( Card(2, "blue"));
+    player1->AddCard( Card(3));
+    player2->AddCard( Card(1, "blue"));
+    player2->AddCard(Card(1, "blue"));
+    player2->AddCard(Card(2, "blue"));
+    player2->AddCard(Card(2, "blue"));
+    player2->AddCard(Card(3, "blue"));
+    player2->AddCard(Card(3, "blue"));
+
+    // Creează widget-urile pentru jumătatea de sus și de jos
+    cards_p1->setCards(player1);
+
+    CardsWidget* cards_p2 = new CardsWidget();
+    cards_p2->setCards(player2);
 
     // Adaugă widget-urile în layout-ul vertical
-    rightLayout->addWidget(topWidget, 1);   // Jumătatea de sus
-    rightLayout->addWidget(bottomWidget, 1); // Jumătatea de jos
+    rightLayout->addWidget(cards_p1, 1);   // Jumătatea de sus
+    rightLayout->addWidget(cards_p2, 1); // Jumătatea de jos
 
     // Setează layout-ul pentru rightWidget
     rightWidget->setLayout(rightLayout);

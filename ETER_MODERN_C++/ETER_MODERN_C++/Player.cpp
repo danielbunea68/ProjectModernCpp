@@ -173,6 +173,11 @@ void Player::AddCard(Card card)
 	m_cards.push_back(card);
 }
 
+std::vector<Card> Player::getCards() const
+{
+	return m_cards;
+}
+
 
 void Player::AddToRemovedCards(const Card& card)
 {

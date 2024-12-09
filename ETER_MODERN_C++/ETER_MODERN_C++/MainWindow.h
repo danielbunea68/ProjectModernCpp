@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QFrame>
-
+#include "CardsWidget.h"
 #include "BoardWidget.h"
 #include "Game.h"
 #include "Card.h"
@@ -17,6 +17,8 @@ public:
 
 private:
     BoardWidget* boardWidget;
+    CardsWidget* cardsWidget;
+
     Game game;
 
 private slots:
