@@ -3,16 +3,41 @@
 #include "Game.h"
 #include "Player.h"
 #include "Board.h"
-
 #include "IGame.h"
+
+#include <unordered_set>
+#include <vector>
+#include <string>
+#include<random>
 
 class Wizard_Mode : public IGame 
 {
+
+public:
+
+    enum class WizardPower 
+    {
+    RemoveOpponentCard,
+    RemoveRow,
+    CoverOpponentCard,
+    CreatePit,
+    MoveOwnStack,
+    ExtraEterCard,
+    MoveOpponentStack,
+    MoveEdgeRow
+    };
+
 
 private :
     Board board;
     Player player1, player2;
     Player* currentPlayer;
+    WizardPower tipPutere;     
+    WizardPower currentPower;
+    std::unordered_set<WizardPower> usedPowers; 
+    std::vector<WizardPower> availablePowers;
+    WizardPower player1Power; 
+    WizardPower player2Power;
 
     void removeOpponentCard(int row, int col);
     void removeRow(int row);
@@ -24,6 +49,9 @@ private :
     void moveEdgeRow(int row);
 
     void SwitchTurn();
+
+    void InitializeWizardPowers();
+    void AssignPowerToPlayer();
 public :
     Wizard_Mode();
 
@@ -54,8 +82,4 @@ public :
 
     void ResetGame()override;
 
-    void activatePower(WizardPower power, int row = -1, int col = -1);
-
-
-   
 };

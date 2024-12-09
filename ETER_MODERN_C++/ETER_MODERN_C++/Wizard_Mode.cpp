@@ -156,43 +156,6 @@ void Wizard_Mode::moveEdgeRow(int row) {
     }
 }
 
-void Wizard_Mode::activatePower(WizardPower power, int row, int col) {
-    if (!board.IsValidPosition(row, col)) {
-        std::cout << "Invalid position (" << row << ", " << col << ").\n";
-        return;
-    }
-
-    switch (power) {
-        case WizardPower::RemoveOpponentCard:
-            removeOpponentCard(row, col);
-            break;
-        case WizardPower::RemoveRow:
-            removeRow(row);
-            break;
-        case WizardPower::CoverOpponentCard:
-            coverOpponentCard(row, col);
-            break;
-        case WizardPower::CreatePit:
-            createPit(row, col);
-            break;
-        case WizardPower::MoveOwnStack:
-            moveOwnStack(row, col);
-            break;
-        case WizardPower::ExtraEterCard:
-            grantExtraEterCard(row,col);
-            break;
-        case WizardPower::MoveOpponentStack:
-            moveOpponentStack(row, col);
-            break;
-        case WizardPower::MoveEdgeRow:
-            moveEdgeRow(row);
-            break;
-    }
-
-    std::cout << "Wizard power activated!\n";
-    currentPlayer->setPowerUsed();
-}
-
 
 void Wizard_Mode::InitGame(std::string name1, std::string name2)
 {
@@ -209,8 +172,6 @@ void Wizard_Mode::InitGame(std::string name1, std::string name2)
     player1.AddCard(Card(5, player1.getColor(), "Eter"));
     player2.AddCard(Card(5, player2.getColor(), "Eter"));
 
-    player1.setRandomWizardPower();
-    player2.setRandomWizardPower();
     currentPlayer = &player1;
 }
 
@@ -287,6 +248,11 @@ player2(std::move(other.player2)), currentPlayer(other.currentPlayer)
 
 void Wizard_Mode::ActivatePower(WizardPower power) 
 {
+    usedPowers.insert(power);
+    availablePowers.erase(
+        std::remove(availablePowers.begin(), availablePowers.end(), power),
+        availablePowers.end());
+
     switch (power) 
     {
     case WizardPower::RemoveOpponentCard: 
@@ -388,9 +354,43 @@ void Wizard_Mode::ActivatePower(WizardPower power)
         std::cout << "Unknown power.\n";
         break;
     }
+}
 
-    currentPlayer->setPowerUsed();
-    std::cout << "The power has been used, and it cannot be used again in this game.\n";
+void Wizard_Mode::InitializeWizardPowers()
+{
+    availablePowers = 
+    {
+        WizardPower::RemoveOpponentCard,
+        WizardPower::RemoveRow,
+        WizardPower::CoverOpponentCard,
+        WizardPower::CreatePit,
+        WizardPower::MoveOwnStack,
+        WizardPower::ExtraEterCard,
+        WizardPower::MoveOpponentStack,
+        WizardPower::MoveEdgeRow
+    };
+
+    usedPowers.clear();
+}
+
+void Wizard_Mode::AssignPowerToPlayer()
+{
+
+    if (availablePowers.empty())
+    {
+        std::cout << "No more powers available to assign.\n";
+        return;
+    }
+
+    static std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr)));
+    std::uniform_int_distribution<int> dist(0, static_cast<int>(availablePowers.size()) - 1);
+    int powerIndex = dist(rng);
+
+    currentPower = availablePowers[powerIndex];
+    usedPowers.insert(currentPower);
+    availablePowers.erase(availablePowers.begin() + powerIndex);
+
+    std::cout << "Assigned power: " << static_cast<int>(currentPower) << " to the current player.\n";
 }
 
 
@@ -402,20 +402,20 @@ void Wizard_Mode::RemoveCard(int row, int col)
 
 void Wizard_Mode::ReturnCardToPlayer(int row, int col)
 {
-    if (!board.IsEmpty(row, col))  // Check if there's a card to return
+    if (!board.IsEmpty(row, col))  
     {
-        // Get the card from the board
+        
         Card card = board.TopCard(row, col);
-        board.Remove(row, col);  // Remove the card from the board
+        board.Remove(row, col);
 
         if (card.getColor() == currentPlayer->getColor()) {
             currentPlayer->AddCard(card);
             std::cout << "Card returned to " << currentPlayer->getName() << "'s hand.\n";
         }
-        else {
-            // Return the card to the other player's hand
+        else 
+        {
             Player* otherPlayer = (currentPlayer == &player1) ? &player2 : &player1;
-            otherPlayer->AddCard(card);  // Add the card to the other player's hand
+            otherPlayer->AddCard(card);
             std::cout << "Card returned to " << otherPlayer->getName() << "'s hand.\n";
         }
     }
@@ -427,9 +427,6 @@ void Wizard_Mode::ReturnCardToPlayer(int row, int col)
 
 void Wizard_Mode::CreatePit(int row, int col)
 {
-   
-
-    // Now, remove all cards from that position using the getter function to access the internal board
     auto& boardGrid = board.GetBoard();  // Get a reference to the board
     while (!boardGrid[row][col].empty())
     {
@@ -449,20 +446,20 @@ void Wizard_Mode::PlayGame()
         std::cout << "Joaca carte sau putere ";
         char choice;
         std::cin >> choice;
-        if (choice == 'p' && currentPlayer->getPowerUsed()== true )
+        //if (choice == 'p' && currentPlayer->getPowerUsed()== true )
         {
             int row, col;
             std::cout<<"introducet randul si coloana unde vreti sa activati puterea ";
             std::cin >> row>> col;
-            WizardPower power = currentPlayer->getWizardPower();
-            activatePower(power , row ,col);
+            //WizardPower power = currentPlayer->getWizardPower();
+            //ActivatePower(power);
 
-           currentPlayer->setPowerUsed();
+           //currentPlayer->setPowerUsed();
 
             SwitchTurn();
 
         }
-        else if(choice=='c')
+        //else if(choice=='c')
         {
 
 

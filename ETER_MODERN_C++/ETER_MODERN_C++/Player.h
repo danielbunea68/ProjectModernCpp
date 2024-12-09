@@ -9,25 +9,12 @@
 
 #include "Card.h"
 
-enum class WizardPower {
-	RemoveOpponentCard,
-	RemoveRow,
-	CoverOpponentCard,
-	CreatePit,
-	MoveOwnStack,
-	ExtraEterCard,
-	MoveOpponentStack,
-	MoveEdgeRow
-};
-
-
 class Player
 {
 private:
 	std::vector<Card> m_cards;
 	//std::vector<Element_Card> m_ElementCards;
 	int m_LifePoints;
-	WizardPower  m_wizard_power;
 	std::string m_name;
 	std::string m_color;
 	bool m_placedCardFaceDown;
@@ -56,10 +43,6 @@ public:
 	void setLastMove(int row , int col);
 	std::pair<int, int> getLastMove();
 	void setName(const std::string& newName);
-	WizardPower getWizardPower() const;
-	void setRandomWizardPower();
-	bool getPowerUsed();
-	void setPowerUsed();
 
 	void setWinnCords(const std::pair<int,int> cords);
 	std::pair<int, int> getWinnCords() const ;
