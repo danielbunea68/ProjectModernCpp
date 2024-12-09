@@ -60,6 +60,28 @@ void CardsWidget::DrawCards(QPainter& painter)
 		painter.setPen(Qt::black);
 		painter.drawRect(cell);
 
+		if (i == highlightedIndex)
+		{
+			painter.setPen(QPen(Qt::green, 3)); // Chenar roșu cu grosime de 3 pixeli
+			painter.drawRect(cell);
+		}
+
+	}
+}
+
+void CardsWidget::highlightCard(int index)
+{
+	highlightedIndex = index;
+	update();
+}
+
+void CardsWidget::mousePressEvent(QMouseEvent* event)
+{
+	int clickedIndex = event->position().x() / cellWidth; // Determină indexul pe baza poziției x a click-ului
+
+	if (clickedIndex >= 0 && clickedIndex < cards_of_player.size())
+	{
+		highlightCard(clickedIndex); // Evidențiază cartea apăsată
 	}
 }
 	

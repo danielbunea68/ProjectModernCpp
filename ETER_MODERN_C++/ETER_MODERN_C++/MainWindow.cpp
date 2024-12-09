@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
     player1->AddCard(Card(2));
     player1->AddCard(Card(3));
     player2->AddCard( Card(2, "blue"));
-    player1->AddCard( Card(3));
+    player1->AddCard( Card(3)); 
     player2->AddCard( Card(1, "blue"));
     player2->AddCard(Card(1, "blue"));
     player2->AddCard(Card(2, "blue"));
