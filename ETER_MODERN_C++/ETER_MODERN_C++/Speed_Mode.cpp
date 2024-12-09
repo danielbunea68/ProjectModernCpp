@@ -2,7 +2,8 @@
 #include <iostream>
 #include <chrono>
 
-Speed_Mode::Speed_Mode() : isGameOver(false), currentPlayer(nullptr) {}
+Speed_Mode::Speed_Mode()
+    : isGameOver(false), currentPlayer(nullptr), timeLimit(60), remainingTimePlayer1(60), remainingTimePlayer2(60) {}
 
 Speed_Mode::~Speed_Mode() {}
 
@@ -62,6 +63,8 @@ void Speed_Mode::InitGame(std::string name1, std::string name2) {
         player2.AddCard(Card(value, player2.getColor()));
     }
     currentPlayer = &player1;
+    remainingTimePlayer1 = timeLimit;
+    remainingTimePlayer2 = timeLimit;
 }
 
 Player* Speed_Mode::CurrentTurn()
@@ -86,6 +89,38 @@ void Speed_Mode::CheckWinner() {
         std::cout << "It's a draw!\n";
         isGameOver = true;
     }
+}
+
+void Speed_Mode::StartTurnTimer()
+{
+    turnStartTime = std::chrono::steady_clock::now();
+}
+
+bool Speed_Mode::CheckTimer()
+{
+    using namespace std::chrono;
+
+    auto now = steady_clock::now();
+    int elapsed = duration_cast<seconds>(now - turnStartTime).count();
+
+    if (currentPlayer == &player1) {
+        remainingTimePlayer1 -= elapsed;
+        if (remainingTimePlayer1 <= 0) {
+            std::cout << player1.getName() << " ran out of time and loses the game!\n";
+            isGameOver = true;
+            return false;
+        }
+    }
+    else {
+        remainingTimePlayer2 -= elapsed;
+        if (remainingTimePlayer2 <= 0) {
+            std::cout << player2.getName() << " ran out of time and loses the game!\n";
+            isGameOver = true;
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void Speed_Mode::PlayGame() {
@@ -130,4 +165,11 @@ void Speed_Mode::TimerBasedPlay() {
 
         validMove = board.MakeMove(row, col, currentPlayer->PlayCard(0));
     } while (!validMove);
+}
+
+void Speed_Mode::ConfigureTimeLimit(int seconds)
+{
+    timeLimit = seconds;
+    remainingTimePlayer1 = seconds;
+    remainingTimePlayer2 = seconds;
 }
