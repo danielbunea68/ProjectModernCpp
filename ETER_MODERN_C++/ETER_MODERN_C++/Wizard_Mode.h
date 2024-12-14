@@ -18,9 +18,9 @@ private :
     void removeRow(int row);
     void coverOpponentCard(int row, int col);
     void createPit(int row, int col);
-    void moveOwnStack(int row, int col);
+    void moveOwnStack(int fromRow, int fromCol, int toRow, int toCol);
     void grantExtraEterCard(int row ,int col);
-    void moveOpponentStack(int row, int col);
+    void moveOpponentStack(int fromRow, int fromCol, int toRow, int toCol);
     void moveEdgeRow(int row);
 
     std::string GetWizardPowerName(WizardPower power);
