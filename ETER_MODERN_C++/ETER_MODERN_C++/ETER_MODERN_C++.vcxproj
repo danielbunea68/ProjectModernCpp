@@ -184,6 +184,21 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Tournament_Mode.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\images\1_blue.png" />
+    <Image Include="..\images\1_red.png" />
+    <Image Include="..\images\2_blue.png" />
+    <Image Include="..\images\2_red.png" />
+    <Image Include="..\images\3_blue.png" />
+    <Image Include="..\images\3_red.png" />
+    <Image Include="..\images\4_blue.png" />
+    <Image Include="..\images\4_red.png" />
+    <Image Include="..\images\eter_blue.png" />
+    <Image Include="..\images\eter_red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="resources.qrc" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
   <ImportGroup Label="ExtensionTargets">

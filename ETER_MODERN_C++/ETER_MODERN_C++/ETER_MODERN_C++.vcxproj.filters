@@ -119,4 +119,41 @@
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\images\eter_blue.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\4_blue.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\3_blue.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\2_blue.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\1_blue.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\eter_red.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\4_red.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\3_red.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\2_red.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\images\1_red.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="resources.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+  </ItemGroup>
 </Project>

@@ -14,7 +14,9 @@ void CardsWidget::paintEvent(QPaintEvent* event)
 	painter.setRenderHint(QPainter::Antialiasing);
 
 	cellWidth = width() / cards_of_player.size() ;
-	cellHeight = height() / cards_of_player.size();
+	cellHeight = cellWidth + 1;
+	//cellWidth = 196;
+	//cellHeight = 196;
 
 	DrawQueue(painter);	
 	DrawCards(painter);
@@ -30,7 +32,48 @@ void CardsWidget::DrawQueue(QPainter& painter)
 	painter.drawLine(0, y, width(), y); // Linia orizontală de-a lungul întregii lățimi
 	
 }
+void CardsWidget::DrawCards(QPainter& painter)
+{
+	for (int i = 0; i < cards_of_player.size(); ++i) {
 
+		Card card = cards_of_player[i];
+
+		// Definirea dreptunghiului celulei
+		QRect cell(i * cellWidth, 0, cellWidth, cellHeight);
+
+		// Încarcă imaginea corespunzătoare valorii și culorii
+		QString imagePath = "./images/" + QString::number(card.getValue()) + "_" + QString::fromStdString(card.getColor()) + ".png";
+		QPixmap cardImage(imagePath);
+
+		// Desenează imaginea dacă există, altfel desenează fundalul și valoarea
+		if (!cardImage.isNull()) {
+			painter.drawPixmap(cell, cardImage.scaled(cell.size(), Qt::KeepAspectRatio));
+		}
+		else {
+			QColor backgroundColor(QString::fromStdString(card.getColor()));
+			painter.fillRect(cell, backgroundColor);
+			painter.setPen(Qt::white);
+
+			QFont font = painter.font();
+			font.setPointSize(16);
+			painter.setFont(font);
+
+			QString cardValue = QString::number(card.getValue());
+			painter.drawText(cell, Qt::AlignCenter, cardValue);
+		}
+
+		// Desenează bordura neagră în jurul celulei
+		painter.setPen(Qt::black);
+		painter.drawRect(cell);
+
+		if (i == highlightedIndex) {
+			painter.setPen(QPen(Qt::green, 3));
+			painter.drawRect(cell);
+		}
+	}
+}
+
+/*
 void CardsWidget::DrawCards(QPainter& painter)
 {
 	for (int i = 0; i < cards_of_player.size(); ++i) {
@@ -68,7 +111,7 @@ void CardsWidget::DrawCards(QPainter& painter)
 
 	}
 }
-
+*/
 void CardsWidget::highlightCard(int index)
 {
 	highlightedIndex = index;

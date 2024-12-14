@@ -27,29 +27,36 @@ void BoardWidget::DrawCards(QPainter& painter)
 			if (!board->IsEmpty(row, col)) {
 				Card card = board->TopCard(row, col);
 
+				QString imagePath = "./images/" + QString::number(card.getValue()) + "_" + QString::fromStdString(card.getColor()) + ".png";
+				QPixmap cardImage(imagePath);
+
 				// Definirea dreptunghiului celulei
 				QRect cell(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
 
-				// Setează culoarea de fundal la culoarea cărții
-				QColor backgroundColor(QString::fromStdString(card.getColor()));
-				painter.fillRect(cell, backgroundColor);
+				if (!cardImage.isNull()) {
+					painter.drawPixmap(cell, cardImage.scaled(cell.size(), Qt::KeepAspectRatio));
+				}
+				else {
+					// Setează culoarea de fundal la culoarea cărții
+					QColor backgroundColor(QString::fromStdString(card.getColor()));
+					painter.fillRect(cell, backgroundColor);
 
-				// Setează culoarea textului la alb
-				painter.setPen(Qt::white);
+					// Setează culoarea textului la alb
+					painter.setPen(Qt::white);
 
-				// Setează fontul mai mare
-				QFont font = painter.font();
-				font.setPointSize(16); // Ajustează mărimea fontului după necesități
-				painter.setFont(font);
+					// Setează fontul mai mare
+					QFont font = painter.font();
+					font.setPointSize(16); // Ajustează mărimea fontului după necesități
+					painter.setFont(font);
 
-				// Desenează valoarea cărții în centrul celulei
-				QString cardValue = QString::number(card.getValue());
-				painter.drawText(cell, Qt::AlignCenter, cardValue);
+					// Desenează valoarea cărții în centrul celulei
+					QString cardValue = QString::number(card.getValue());
+					painter.drawText(cell, Qt::AlignCenter, cardValue);
+				}
 
 				// Desenează bordura neagră în jurul celulei
 				painter.setPen(Qt::black);
 				painter.drawRect(cell);
-
 			}
 		}
 	}
