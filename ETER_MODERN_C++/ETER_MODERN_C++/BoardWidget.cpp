@@ -10,6 +10,11 @@ void BoardWidget::setBoard(Board* board) {
 	update();
 }
 
+void BoardWidget::setCardsWidget(CardsWidget* widget)
+{
+	this->cardsWidget = widget;
+}
+
 void BoardWidget::DrawBoard(QPainter& painter)
 {
 	for (int i = 0; i <= boardSize; ++i) {
@@ -84,6 +89,19 @@ QPoint BoardWidget::boardCellFromMouse(const QPoint& pos) const {
 void BoardWidget::mousePressEvent(QMouseEvent* event) {
 	QPoint mousePos = event->pos();
 	auto cellPosition = boardCellFromMouse(mousePos);
+
+	
+	int row = cellPosition.y();
+	int col = cellPosition.x();
+
+	if (board->IsEmpty(row, col) && cardsWidget) {
+		Card selectedCard = cardsWidget->getSelectedCard();
+		if (selectedCard.getValue() != 0) { // Verifică dacă s-a selectat o carte validă
+			board->AddCard(row, col, selectedCard);
+			update(); // Actualizează board-ul
+		}
+	}
+
 	// TODO: Sa ai acces la cartea selectata de utilizator
 	// apoi incearca sa o pui
 	// poate vei avea nevoie de o referinta sau un pointer catre game

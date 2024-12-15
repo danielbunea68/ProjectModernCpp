@@ -6,7 +6,7 @@
 #include <vector>
 #include "Board.h"
 #include "Card.h"
-
+#include "CardsWidget.h"
 class BoardWidget : public QWidget {
     Q_OBJECT
 
@@ -14,6 +14,7 @@ public:
     explicit BoardWidget(QWidget* parent = nullptr);
 
     void setBoard(Board* board);
+    void setCardsWidget(CardsWidget* widget);
 
 signals:
     void cardPlaced(int row, int col, Card card);
@@ -34,4 +35,5 @@ private:
 
     Board* board;
     QPoint boardCellFromMouse(const QPoint& pos) const;
+    CardsWidget* cardsWidget;
 };

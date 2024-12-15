@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
 
 	// Creează widget-urile pentru jumătatea de sus și de jos
 	cards_p1->setCards(player1);
+	boardWidget->setCardsWidget(cards_p1);
 
 	CardsWidget* cards_p2 = new CardsWidget();
 	cards_p2->setCards(player2);

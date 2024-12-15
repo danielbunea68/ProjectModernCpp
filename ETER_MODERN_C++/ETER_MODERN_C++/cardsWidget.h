@@ -14,6 +14,8 @@ public :
     explicit CardsWidget(QWidget* parent = nullptr);
 
     void setCards(Player*player);
+    Card getSelectedCard();
+
 
 protected:
     void paintEvent(QPaintEvent* event) override;
