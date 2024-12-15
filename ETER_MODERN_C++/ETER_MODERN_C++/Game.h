@@ -33,6 +33,7 @@ public:
 
 	void PlayGame()override;
 	void ResetGame()override;
+	Board getboard();
 };
 
 

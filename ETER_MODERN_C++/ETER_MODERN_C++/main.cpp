@@ -1,3 +1,4 @@
+/*
 #include "Game.h"
 #include "IGame.h"
 #include "Element_Mode.h"
@@ -81,7 +82,7 @@ int main() {
     return 0;
 }
 
-/*
+*/
 #include "Game.h"
 #include "IGame.h"
 #include "Element_Mode.h"
@@ -109,4 +110,3 @@ int main(int argc, char* argv[]) {
 	return app.exec();
 
 }
-*/

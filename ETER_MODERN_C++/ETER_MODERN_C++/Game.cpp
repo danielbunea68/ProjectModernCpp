@@ -357,3 +357,8 @@ void Game::ResetGame()
 	player2.ClearCards();
 	InitGame(player1.getName(), player2.getName());
 }
+
+Board Game::getboard()
+{
+	return board;
+}

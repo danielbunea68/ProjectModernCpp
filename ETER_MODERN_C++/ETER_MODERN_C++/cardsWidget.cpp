@@ -8,6 +8,18 @@ void CardsWidget::setCards(Player* player)
 
 }
 
+Card CardsWidget::getSelectedCard()
+{
+	if (highlightedIndex >= 0 && highlightedIndex < cards_of_player.size()) {
+		Card selectedCard = cards_of_player[highlightedIndex];
+		cards_of_player.erase(cards_of_player.begin() + highlightedIndex); // Elimină cartea selectată
+		highlightedIndex = -1; // Resetează selecția
+		update(); // Reactualizează desenul
+		return selectedCard;
+	}
+	return Card();
+}
+
 void CardsWidget::paintEvent(QPaintEvent* event)
 {
 	QPainter painter(this);
