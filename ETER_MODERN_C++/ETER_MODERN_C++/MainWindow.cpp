@@ -13,10 +13,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
 	Board* board = new Board();
 	board->SetSize(3);
 	// Delete below
-	board->AddCard(0, 0, Card(1, "red"));
-	board->AddCard(0, 1, Card(2, "blue"));
-	board->AddCard(1, 0, Card(3, "red"));
-	board->AddCard(1, 1, Card(1, "blue"));
+	//board->AddCard(0, 0, Card(1, "red"));
+	//board->AddCard(0, 1, Card(2, "blue"));
+	//board->AddCard(1, 0, Card(3, "red"));
+	//board->AddCard(1, 1, Card(1, "blue"));
 	// Delete above
 	boardWidget->setBoard(board);
 

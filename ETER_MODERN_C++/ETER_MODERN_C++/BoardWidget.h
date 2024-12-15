@@ -7,6 +7,8 @@
 #include "Board.h"
 #include "Card.h"
 #include "CardsWidget.h"
+#include "Game.h"
+
 class BoardWidget : public QWidget {
     Q_OBJECT
 
@@ -15,7 +17,7 @@ public:
 
     void setBoard(Board* board);
     void setCardsWidget(CardsWidget* widget);
-
+    void setGame(Game* gameInstance);
 signals:
     void cardPlaced(int row, int col, Card card);
 
@@ -32,7 +34,7 @@ private:
     int cellWidth{};
     int cellHeight{};
     int boardSize{};
-
+    Game* game;
     Board* board;
     QPoint boardCellFromMouse(const QPoint& pos) const;
     CardsWidget* cardsWidget;

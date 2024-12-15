@@ -15,6 +15,11 @@ void BoardWidget::setCardsWidget(CardsWidget* widget)
 	this->cardsWidget = widget;
 }
 
+void BoardWidget::setGame(Game* gameInstance)
+{
+	this->game = gameInstance;
+}
+
 void BoardWidget::DrawBoard(QPainter& painter)
 {
 	for (int i = 0; i <= boardSize; ++i) {
@@ -90,22 +95,32 @@ void BoardWidget::mousePressEvent(QMouseEvent* event) {
 	QPoint mousePos = event->pos();
 	auto cellPosition = boardCellFromMouse(mousePos);
 
-	
+
 	int row = cellPosition.y();
 	int col = cellPosition.x();
 
-	if (board->IsEmpty(row, col) && cardsWidget) {
+
+	if (board->IsEmpty(row, col) && cardsWidget && game) {
 		Card selectedCard = cardsWidget->getSelectedCard();
-		if (selectedCard.getValue() != 0) { // Verifică dacă s-a selectat o carte validă
-			board->AddCard(row, col, selectedCard);
-			update(); // Actualizează board-ul
+		///if (selectedCard.getValue() != 0) { // Verifică dacă s-a selectat o carte validă
+		///	board->AddCard(row, col, selectedCard);
+		///	update(); // Actualizează board-ul
+		//}
+
+		if (selectedCard.getValue() != 0) {
+			if (game->getboard().CanMakeMove(row, col, selectedCard)) {
+				game->getboard().MakeMove(row, col, selectedCard);
+				board->AddCard(row, col, selectedCard);
+				update();  // Actualizează board-ul
+				game->SwitchTurn();  // Schimbă tura
+			}
+
+			// TODO: Sa ai acces la cartea selectata de utilizator
+			// apoi incearca sa o pui
+			// poate vei avea nevoie de o referinta sau un pointer catre game
+			// va afisa un mesaj scurt daca reuseste sau nu sa puna carte, poti desena oriunde mesajul
 		}
 	}
-
-	// TODO: Sa ai acces la cartea selectata de utilizator
-	// apoi incearca sa o pui
-	// poate vei avea nevoie de o referinta sau un pointer catre game
-	// va afisa un mesaj scurt daca reuseste sau nu sa puna carte, poti desena oriunde mesajul
 }
 
 void BoardWidget::mouseReleaseEvent(QMouseEvent* event) {

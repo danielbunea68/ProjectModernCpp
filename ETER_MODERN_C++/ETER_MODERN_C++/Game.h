@@ -10,7 +10,7 @@ private:
 	Player player1, player2;
 	Player* currentPlayer;
 
-	void SwitchTurn();
+	
 
 public:
 	Game();
@@ -34,6 +34,7 @@ public:
 	void PlayGame()override;
 	void ResetGame()override;
 	Board getboard();
+	void SwitchTurn();
 };
 
 
