@@ -4,6 +4,10 @@
 
 Board::Board(const Board& other)
 {
+	if (&other == nullptr) {
+		std::cerr << "Error: Attempted to copy from a null object." << std::endl;
+		return;
+	}
 	m_size = other.m_size;
 	board = other.board;
 	blockedRow = other.blockedRow;
@@ -12,6 +16,8 @@ Board::Board(const Board& other)
 
 Board& Board::operator=(const Board& other)
 {
+
+	/*
 	if (this != &other) // Self-assignment check
 	{
 		m_size = other.m_size;
@@ -19,10 +25,22 @@ Board& Board::operator=(const Board& other)
 		blockedRow = other.blockedRow;
 	}
 	return *this;
+	*/
+	if (this == &other || &other == nullptr) {
+		return *this;  // Handle self-assignment or null object
+	}
+	m_size = other.m_size;
+	board = other.board;
+	blockedRow = other.blockedRow;
+	return *this;
 }
 
 Board::Board(Board&& other) noexcept
 {
+	if (&other == nullptr) {
+		std::cerr << "Error: Attempted to move from a null object." << std::endl;
+		return;
+	}
 	m_size = other.m_size;
 	board = std::move(other.board);
 	blockedRow = other.blockedRow;

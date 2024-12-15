@@ -100,7 +100,7 @@ void BoardWidget::mousePressEvent(QMouseEvent* event) {
 	int col = cellPosition.x();
 
 
-	if (board->IsEmpty(row, col) && cardsWidget && game) {
+	if (board->IsEmpty(row, col) && cardsWidget ) {
 		Card selectedCard = cardsWidget->getSelectedCard();
 		///if (selectedCard.getValue() != 0) { // Verifică dacă s-a selectat o carte validă
 		///	board->AddCard(row, col, selectedCard);
@@ -110,7 +110,6 @@ void BoardWidget::mousePressEvent(QMouseEvent* event) {
 		if (selectedCard.getValue() != 0) {
 			if (game->getboard().CanMakeMove(row, col, selectedCard)) {
 				game->getboard().MakeMove(row, col, selectedCard);
-				board->AddCard(row, col, selectedCard);
 				update();  // Actualizează board-ul
 				game->SwitchTurn();  // Schimbă tura
 			}
