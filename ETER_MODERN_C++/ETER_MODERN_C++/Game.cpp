@@ -12,7 +12,7 @@ Game::Game(const Game& other)
 {
 	board = other.board;
 	player1 = other.player1;
-	player2=other.player2;
+	player2 = other.player2;
 	if (other.currentPlayer == &other.player1)
 		currentPlayer = &player1;
 	else if (other.currentPlayer == &other.player2)
@@ -23,7 +23,7 @@ Game::Game(const Game& other)
 
 Game& Game::operator=(const Game& other)
 {
-	if(this == &other)
+	if (this == &other)
 		return *this; // Handle self-assignment
 
 	board = other.board;
@@ -44,7 +44,7 @@ Game& Game::operator=(const Game& other)
 Game::Game(Game&& other) noexcept
 {
 	board = std::move(other.board);
-	player1=std::move(other.player1);
+	player1 = std::move(other.player1);
 	player2 = std::move(other.player2);
 	currentPlayer = other.currentPlayer == &other.player1 ? &player1 :
 		other.currentPlayer == &other.player2 ? &player2 : nullptr;
@@ -83,6 +83,7 @@ void Game::InitGame(std::string name1, std::string name2)
 		player2.AddCard(Card(value, player2.getColor()));
 	}
 	currentPlayer = &player1;
+	player1.isTurn = true;
 }
 
 Player* Game::CurrentTurn()
@@ -108,6 +109,9 @@ void Game::SwitchTurn()
 	{
 		currentPlayer = &player1;
 	}
+	player1.isTurn = !player1.isTurn;
+	player2.isTurn = !player2.isTurn;
+	currentPlayer->selectedIndex = 0;
 }
 
 
@@ -145,7 +149,7 @@ void Game::ReturnCardToPlayer(int row, int col)//aici
 
 void Game::CreatePit(int row, int col)
 {
-	
+
 
 	// Now, remove all cards from that position using the getter function to access the internal board
 	auto& boardGrid = board.GetBoard();  // Get a reference to the board

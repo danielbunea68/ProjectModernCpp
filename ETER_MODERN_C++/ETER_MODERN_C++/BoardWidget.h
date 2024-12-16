@@ -20,7 +20,8 @@ public:
     void setGame(Game* gameInstance);
 signals:
     void cardPlaced(int row, int col, Card card);
-
+    void requestGlobalUpdate();
+    
 protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
@@ -35,7 +36,7 @@ private:
     int cellHeight{};
     int boardSize{};
     Game* game;
-    Board* board;
+    Board board;
     QPoint boardCellFromMouse(const QPoint& pos) const;
     CardsWidget* cardsWidget;
 };

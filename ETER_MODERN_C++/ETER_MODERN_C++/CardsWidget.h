@@ -31,6 +31,7 @@ private :
     int boardSize{};
     int highlightedIndex = -1;
 
+    Player* player;
     std::vector<Card> cards_of_player;
     QPoint boardCellFromMouse(const QPoint& pos) const;
 };

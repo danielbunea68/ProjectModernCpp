@@ -82,6 +82,9 @@ public:
 	/// 
 	void ClearCards();
 
+	bool isTurn = false;
+
+	int selectedIndex = 0;
 
 };
 

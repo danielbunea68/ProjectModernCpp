@@ -23,4 +23,6 @@ private:
 
 private slots:
     void onCardPlaced(int row, int col, Card card);
+public slots:
+    void handleGlobalUpdate();
 };

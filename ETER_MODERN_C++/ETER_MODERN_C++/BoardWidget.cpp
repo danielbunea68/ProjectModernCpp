@@ -2,12 +2,9 @@
 #include <QDebug>
 
 BoardWidget::BoardWidget(QWidget* parent)
-	: QWidget(parent), board(nullptr) {}
+	: QWidget(parent) {}
 
 void BoardWidget::setBoard(Board* board) {
-	this->board = board;
-	boardSize = board->GetSize();
-	update();
 }
 
 void BoardWidget::setCardsWidget(CardsWidget* widget)
@@ -18,6 +15,9 @@ void BoardWidget::setCardsWidget(CardsWidget* widget)
 void BoardWidget::setGame(Game* gameInstance)
 {
 	this->game = gameInstance;
+	this->board = gameInstance->getboard();
+	boardSize = board.GetSize();
+	update();
 }
 
 void BoardWidget::DrawBoard(QPainter& painter)
@@ -32,10 +32,10 @@ void BoardWidget::DrawBoard(QPainter& painter)
 
 void BoardWidget::DrawCards(QPainter& painter)
 {
-	for (int row = 0; row < board->GetSize(); ++row) {
-		for (int col = 0; col < board->GetSize(); ++col) {
-			if (!board->IsEmpty(row, col)) {
-				Card card = board->TopCard(row, col);
+	for (int row = 0; row < boardSize; ++row) {
+		for (int col = 0; col < boardSize; ++col) {
+			if (!game->getboard().IsEmpty(row, col)) {
+				Card card = game->getboard().TopCard(row, col);
 
 				QString imagePath = "./images/" + QString::number(card.getValue()) + "_" + QString::fromStdString(card.getColor()) + ".png";
 				QPixmap cardImage(imagePath);
@@ -95,31 +95,24 @@ void BoardWidget::mousePressEvent(QMouseEvent* event) {
 	QPoint mousePos = event->pos();
 	auto cellPosition = boardCellFromMouse(mousePos);
 
+	int row = cellPosition.x();
+	int col = cellPosition.y();
 
-	int row = cellPosition.y();
-	int col = cellPosition.x();
+	int selectedIndex = game->CurrentTurn()->selectedIndex;
+	int handSize = game->CurrentTurn()->getCards().size();
+	if (selectedIndex < 0 || selectedIndex >= handSize)
+		return;
+	Card selectedCard = game->CurrentTurn()->PlayCard(selectedIndex);
 
+	if (!game->getBoard()->CanMakeMove(row, col, selectedCard))
+		return;
+	game->getBoard()->MakeMove(row, col, selectedCard);
 
-	if (board->IsEmpty(row, col) && cardsWidget ) {
-		Card selectedCard = cardsWidget->getSelectedCard();
-		///if (selectedCard.getValue() != 0) { // Verifică dacă s-a selectat o carte validă
-		///	board->AddCard(row, col, selectedCard);
-		///	update(); // Actualizează board-ul
-		//}
-
-		if (selectedCard.getValue() != 0) {
-			if (game->getboard().CanMakeMove(row, col, selectedCard)) {
-				game->getboard().MakeMove(row, col, selectedCard);
-				update();  // Actualizează board-ul
-				game->SwitchTurn();  // Schimbă tura
-			}
-
-			// TODO: Sa ai acces la cartea selectata de utilizator
-			// apoi incearca sa o pui
-			// poate vei avea nevoie de o referinta sau un pointer catre game
-			// va afisa un mesaj scurt daca reuseste sau nu sa puna carte, poti desena oriunde mesajul
-		}
-	}
+	// Verifica conditiile de terminare: remiza sau castig
+	// Primire si utilizare bomba
+	// Primire si utilizare carte magica
+	emit requestGlobalUpdate();
+	game->SwitchTurn();
 }
 
 void BoardWidget::mouseReleaseEvent(QMouseEvent* event) {
