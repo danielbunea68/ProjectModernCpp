@@ -117,6 +117,12 @@ void Board::Display()
 
 int Board::CanMakeMove(int row, int col, Card chosenCard)
 {
+	if (IsBlockedCell(row, col)) 
+	{
+		std::cout << "Cannot make a move. Cell (" << row << ", " << col << ") is blocked.\n";
+		return 0;
+	}
+
 	if (CountDistinctCards() == 0)
 		return 1;
 
@@ -430,6 +436,19 @@ int Board::CountDistinctCards()
 		}
 	}
 	return count;
+}
+
+bool Board::IsBlockedCell(int row, int col) const
+{
+	return blockedCells.find({ row, col }) != blockedCells.end();
+}
+
+void Board::BlockCell(int row, int col)
+{
+	if (row >= 0 && row < m_size && col >= 0 && col < m_size) 
+	{
+		blockedCells.insert({ row, col });
+	}
 }
 
 void Board::ShiftBoard(int &row, int &col)

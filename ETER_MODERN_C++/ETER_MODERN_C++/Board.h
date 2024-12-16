@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <stack>
+#include <set>
 
 #include "Card.h"
 
@@ -11,6 +12,7 @@ private:
 
 
 	std::vector<std::vector<std::stack<Card>>> board;
+	std::set<std::pair<int, int>> blockedCells;
 	int blockedRow = -1;
 
 	int topRow{ 2 };
@@ -50,6 +52,8 @@ public:
 	bool HasCoveredCard(int row, int col, const std::string& color);
 	bool IsFaceDown(int row, int col) const;
 	int CountDistinctCards();
+	bool IsBlockedCell(int row, int col) const;
+	void BlockCell(int row, int col);
 
 	void ShiftBoard(int& row, int& col);
 	void ShiftLeft();

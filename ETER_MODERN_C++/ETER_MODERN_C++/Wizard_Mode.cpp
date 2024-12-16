@@ -61,14 +61,29 @@ void Wizard_Mode::coverOpponentCard(int row, int col) {
 }
 
 
-void Wizard_Mode::createPit(int row, int col) {
-    if (!board.IsValidPosition(row, col) || !board.IsEmpty(row, col)) {
-        std::cout << "Cannot create pit at (" << row << ", " << col << "). Invalid position or already occupied.\n";
+void Wizard_Mode::createPit(int row, int col) 
+{
+    if (!board.IsValidPosition(row, col)) 
+    {
+        std::cout << "Cannot create pit at (" << row << ", " << col << "). Invalid position.\n";
         return;
     }
 
-    CreatePit(row, col);
-    std::cout << "Pit created at (" << row << ", " << col << ").\n";
+    if (board.IsBlockedCell(row, col)) 
+    {
+        std::cout << "Cannot create pit at (" << row << ", " << col << "). This cell is already a pit.\n";
+        return;
+    }
+
+    auto& boardGrid = board.GetBoard();
+    while (!board.IsEmpty(row, col)) 
+    {
+        boardGrid[row][col].pop();
+    }
+
+    board.BlockCell(row, col);
+
+    std::cout << "Pit created at (" << row << ", " << col << "). All cards removed, and no cards can be placed here.\n";
 }
 
 
