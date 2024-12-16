@@ -78,7 +78,7 @@ public:
 
 	void RemoveCard(int row, int col) override;
 	void ReturnCardToPlayer(int row, int col) override;
-	void CreatePit(int row, int col) override;
+	void CreatePit(int row, int col);
 
 	Player* CurrentTurn() override;
 	Player* PreviousTurn() override;
@@ -94,7 +94,7 @@ public:
 	void Viscol();
 	void Vijelie();
 	void ActivateRafala(int row, int col, int targetRow, int targetCol);
-	void ActivateMiraj(int row, int col, int cardIndex);
+	void ActivateMiraj(int cardIndex);
 	void ActivateFurtuna();
 	void Uragan(int row);
 	void SwapStacks();

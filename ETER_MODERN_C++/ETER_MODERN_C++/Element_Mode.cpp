@@ -527,14 +527,28 @@ void Element_Mode::DestroyLastOpponentCard()
 
 void Element_Mode::CreatePit(int row, int col)
 {
-    
-	while (!board.IsEmpty(row,col))
+	if (!board.IsValidPosition(row, col)) 
 	{
-		board.Remove(row,col);  
+		std::cout << "Cannot create pit at (" << row << ", " << col << "). Invalid position.\n";
+		return;
 	}
 
-	std::cout << "Pit created at position (" << row << ", " << col << "). All cards removed.\n";
+	if (board.IsBlockedCell(row, col)) 
+	{
+		std::cout << "Cannot create pit at (" << row << ", " << col << "). This cell is already a pit.\n";
+		return;
+	}
+
+	while (!board.IsEmpty(row, col)) 
+	{
+		board.Remove(row, col);
+	}
+
+	board.BlockCell(row, col);
+
+	std::cout << "Pit created at position (" << row << ", " << col << "). All cards removed, and no cards can be placed here.\n";
 }
+
 
 Player* Element_Mode::CurrentTurn()
 {
@@ -635,169 +649,167 @@ void Element_Mode::ActivatePower(Putere power)
 	switch (power)
 	{
 	case Putere::ExplozieControlata:
-		std::cout << "Activating Explozie Controlata: Tabla explodează!" << std::endl;
+		std::cout << "Activating Controlled Explosion: The board explodes!" << std::endl;
 		ActivateControlledExplosion();
 		break;
 	case Putere::Distrugere:
-		std::cout << "Activating Distrugere: Elimină ultima carte jucată de adversar." << std::endl;
+		std::cout << "Activating Destruction: Removes the last card played by the opponent." << std::endl;
 		DestroyLastOpponentCard();
 		break;
 	case Putere::Flacari:
-		std::cout << "Activating Flacari: Întoarce iluzia adversarului și joacă o carte." << std::endl;
+		std::cout << "Activating Flames: Reveals the opponent's illusion and allows you to play a card." << std::endl;
 		Flacari();
 		break;
 	case Putere::Lava:
-		std::cout << "Activating Lava: Toate cărțile vizibile cu un anumit număr se întorc la proprietari." << std::endl;
+		std::cout << "Activating Lava: All visible cards with a specific number return to their owners." << std::endl;
 		Lava();
 		break;
 	case Putere::DinCenusa:
-		std::cout << "Activating Din Cenusa: Joacă imediat o carte eliminată." << std::endl;
+		std::cout << "Activating From the Ashes: Immediately play an eliminated card." << std::endl;
 		DinCenusa();
 		break;
 	case Putere::Scantei:
-		std::cout << "Activating Scantei: Joacă o carte acoperită de adversar pe o altă poziție." << std::endl;
+		std::cout << "Activating Sparks: Play a card covered by the opponent in a different position." << std::endl;
 		Scantei();
 		break;
 	case Putere::Viscol:
-		std::cout << "Activating Viscol: Întoarce o carte vizibilă a oponentului în mâna sa." << std::endl;
+		std::cout << "Activating Blizzard: Return a visible opponent's card to their hand." << std::endl;
 		Viscol();
 		break;
 	case Putere::Vijelie:
-		std::cout << "Activating Vijelie: Toate cărțile acoperite se întorc la proprietari." << std::endl;
+		std::cout << "Activating Storm: All covered cards return to their owners." << std::endl;
 		Vijelie();
 		break;
 	case Putere::Uragan:
-		std::cout << "Activating Uragan: Shiftează un rând complet ocupat." << std::endl;
+		std::cout << "Activating Hurricane: Shift a fully occupied row." << std::endl;
 
 		int row;
-		std::cout << "Introduceți numărul rândului pe care doriți să îl shiftați (0-indexed): ";
+		std::cout << "Enter the row number you want to shift (0-indexed): ";
 		std::cin >> row;
 
-		try 
+		try
 		{
 			Uragan(row);
 		}
-		catch (const std::exception& ex) 
+		catch (const std::exception& ex)
 		{
-			std::cerr << "Eroare la activarea Uragan: " << ex.what() << std::endl;
+			std::cerr << "Error activating Hurricane: " << ex.what() << std::endl;
 		}
 		break;
 	case Putere::Rafala:
-		std::cout << "Activating Rafala: Mută o carte vizibilă adiacent unei cărți cu număr mai mic." << std::endl;
+		std::cout << "Activating Gust: Move a visible card adjacent to a smaller-numbered card." << std::endl;
 
 		int row1, col, targetRow, targetCol;
-		std::cout << "Introduceți rândul și coloana cărții de mutat (0-indexed): ";
+		std::cout << "Enter the row and column of the card to move (0-indexed): ";
 		std::cin >> row1 >> col;
 
-		std::cout << "Introduceți rândul și coloana poziției țintă (0-indexed): ";
+		std::cout << "Enter the row and column of the target position (0-indexed): ";
 		std::cin >> targetRow >> targetCol;
 
-		try 
+		try
 		{
 			ActivateRafala(row1, col, targetRow, targetCol);
 		}
-		catch (const std::exception& ex) 
+		catch (const std::exception& ex)
 		{
-			std::cerr << "Eroare la activarea Rafala: " << ex.what() << std::endl;
+			std::cerr << "Error activating Gust: " << ex.what() << std::endl;
 		}
 		break;
 	case Putere::Miraj:
-		std::cout << "Activating Miraj: Înlocuiește propria iluzie plasată cu o altă iluzie." << std::endl;
+		std::cout << "Activating Mirage: Replace your placed illusion with another illusion." << std::endl;
 
-		int row2, col2, cardIndex;
-		std::cout << "Introduceți rândul și coloana iluzii de înlocuit (0-indexed): ";
-		std::cin >> row2 >> col2;
+		int cardIndex;
 
-		std::cout << "Introduceți indexul cărții din mână care va înlocui iluzia: ";
+		std::cout << "Enter the index of the card from your hand to replace the illusion: ";
 		std::cin >> cardIndex;
 
 		try {
-			ActivateMiraj(row2, col2, cardIndex);
+			ActivateMiraj(cardIndex);
 		}
-		catch (const std::exception& ex) 
+		catch (const std::exception& ex)
 		{
-			std::cerr << "Eroare la activarea Miraj: " << ex.what() << std::endl;
+			std::cerr << "Error activating Mirage: " << ex.what() << std::endl;
 		}
 		break;
 	case Putere::Furtuna:
-		std::cout << "Activating Furtuna: Elimină din joc un teanc de cărți cu 2 sau mai multe cărți." << std::endl;
+		std::cout << "Activating Storm: Remove a stack of cards with 2 or more cards from the game." << std::endl;
 		ActivateFurtuna();
 		break;
 	case Putere::Maree:
-		std::cout << "Activating Maree: Interschimbă pozițiile a două teancuri de cărți." << std::endl;
+		std::cout << "Activating Tide: Swap the positions of two stacks of cards." << std::endl;
 		SwapStacks();
 		break;
 	case Putere::Ceata:
-		std::cout << "Activating Ceata: Joacă încă o iluzie." << std::endl;
+		std::cout << "Activating Mist: Play another illusion." << std::endl;
 		Ceata();
 		break;
 	case Putere::Val:
-		std::cout << "Activating Val: Mută un teanc pe o poziție adiacentă goală și joacă o carte pe noua poziție goală." << std::endl;
+		std::cout << "Activating Wave: Move a stack to an adjacent empty position and play a card on the new empty position." << std::endl;
 		Val();
 		break;
 	case Putere::VartejDeApa:
-		std::cout << "Activating Vartej De Apa: Mută 2 cărți despărțite de un spațiu gol pe acel spațiu." << std::endl;
+		std::cout << "Activating Whirlpool: Move 2 cards separated by an empty space onto that space." << std::endl;
 		VartejDeApa();
 		break;
 	case Putere::Tsunami:
-		std::cout << "Activating Tsunami: Blochează un rând pentru adversar în următoarea tură." << std::endl;
+		std::cout << "Activating Tsunami: Block a row for the opponent on the next turn." << std::endl;
 		ActivateTsunami();
 		break;
 	case Putere::Cascada:
-		std::cout << "Activating Cascade: Teancurile de pe un rând cad spre o margine și formează un nou teanc." << std::endl;
+		std::cout << "Activating Cascade: Stacks on a row fall towards one edge to form a new stack." << std::endl;
 		Cascada();
 		break;
 	case Putere::Sprijin:
-		std::cout << "Activating Sprijin: Valoarea unei cărți proprii 1/2/3 crește cu 1." << std::endl;
+		std::cout << "Activating Support: The value of one of your cards (1/2/3) increases by 1." << std::endl;
 		Sprijin();
 		break;
 	case Putere::Cutremur:
-		std::cout << "Activating Cutremur: Elimină de pe tablă toate cărțile vizibile cu numărul 1." << std::endl;
+		std::cout << "Activating Earthquake: Remove all visible cards with the number 1 from the board." << std::endl;
 		Cutremur();
 		break;
 	case Putere::Sfaramare:
-		std::cout << "Activating Sfaramare: Valoarea unei cărți a adversarului 2/3/4 scade cu 1." << std::endl;
+		std::cout << "Activating Shatter: The value of an opponent's card (2/3/4) decreases by 1." << std::endl;
 		Sfaramare();
 		break;
 	case Putere::Granite:
-		std::cout << "Activating Granite: Plasează o carte neutră care definește o graniță." << std::endl;
+		std::cout << "Activating Granite: Place a neutral card that defines a boundary." << std::endl;
 		Granita();
 		break;
 	case Putere::Avalansa:
-		std::cout << "Activated: Avalansa - Shifts two adjacent stacks.\n";
+		std::cout << "Activated: Avalanche - Shifts two adjacent stacks." << std::endl;
 
 		int row3, col3, row4, col4;
-		std::cout << "Introduceți coordonatele primului teanc (rând și coloană 0-indexed): ";
+		std::cout << "Enter the coordinates of the first stack (row and column 0-indexed): ";
 		std::cin >> row3 >> col3;
 
-		std::cout << "Introduceți coordonatele celui de-al doilea teanc (rând și coloană 0-indexed): ";
+		std::cout << "Enter the coordinates of the second stack (row and column 0-indexed): ";
 		std::cin >> row4 >> col4;
 
-		try 
+		try
 		{
 			Avalansa(row3, col3, row4, col4);
 		}
-		catch (const std::exception& ex) 
+		catch (const std::exception& ex)
 		{
-			std::cerr << "Eroare la activarea Avalansa: " << ex.what() << std::endl;
+			std::cerr << "Error activating Avalanche: " << ex.what() << std::endl;
 		}
 		break;
 	case Putere::Bolovan:
-		std::cout << "Activated: Bolovan - Covers an illusion without revealing it.\n";
+		std::cout << "Activated: Boulder - Covers an illusion without revealing it." << std::endl;
 		int row5, col5, cardIndex1;
-		std::cout << "Introduceți coordonatele teancului (rând și coloană 0-indexed): ";
+		std::cout << "Enter the coordinates of the stack (row and column 0-indexed): ";
 		std::cin >> row5 >> col5;
 
-		std::cout << "Introduceți indexul cărții din teanc (0-indexed): ";
+		std::cout << "Enter the index of the card in the stack (0-indexed): ";
 		std::cin >> cardIndex1;
 
-		try 
+		try
 		{
 			Bolovan(row5, col5, cardIndex1);
 		}
-		catch (const std::exception& ex) 
+		catch (const std::exception& ex)
 		{
-			std::cerr << "Eroare la activarea Bolovan: " << ex.what() << std::endl;
+			std::cerr << "Error activating Boulder: " << ex.what() << std::endl;
 		}
 		break;
 	default:
@@ -865,22 +877,22 @@ void Element_Mode::Flacari()
 	}
 	Card chosenCard = currentPlayer->PlayCard(cardIndex);
 
-	int row =-1, col=-1 ;
-	int result = board.CanMakeMove(row, col, chosenCard);
-	while (result == 0)
+	int row = -1, col = -1;
+	do
 	{
-		std::cout << "Enter row and column (0, 1, 2, or 3) to place the card: ";
+		std::cout << "Enter row and column (0 to " << board.GetSize() - 1 << ") to place the card: ";
 		std::cin >> row >> col;
-		result = board.CanMakeMove(row, col, chosenCard);
-	}
 
-	if (result == 1)
-	{
-		currentPlayer->setLastMove(row, col);
-		board.MakeMove(row, col, chosenCard);
-		std::cout << currentPlayer->getName() << " placed card with value "
-			<< chosenCard.getValue() << " at (" << row << ", " << col << ").\n";
-	}
+		if (!board.IsEmpty(row, col)) 
+		{
+			std::cout << "Position (" << row << ", " << col << ") is not empty! Try again.\n";
+		}
+	} while (!board.IsEmpty(row, col)); 
+
+	currentPlayer->setLastMove(row, col);
+	board.MakeMove(row, col, chosenCard); 
+
+	std::cout << currentPlayer->getName() << " placed card with value "<< chosenCard.getValue() << " at (" << row << ", " << col << ").\n";
 }
 
 void Element_Mode::Lava()
@@ -1155,30 +1167,29 @@ void Element_Mode::ActivateRafala(int row, int col, int targetRow, int targetCol
     }
 }
 
-void Element_Mode::ActivateMiraj(int row, int col, int cardIndex) {
-    if (!board.IsValidPosition(row, col) || board.IsEmpty(row, col)) {
-        std::cout << "Invalid position or no illusion card found.\n";
-        return;
-    }
+void Element_Mode::ActivateMiraj(int cardIndex) 
+{
+	if (!currentPlayer->HasCardAtIndex(cardIndex)) 
+	{
+		std::cout << "Invalid card index in hand for Miraj.\n";
+		return;
+	}
 
-    Card topCard = board.TopCard(row, col);
+	Card replacementCard = currentPlayer->PlayCard(cardIndex);
+	replacementCard.setFaceDown(true);
 
-    if (topCard.getIsFaceDown() && topCard.getColor() == currentPlayer->getColor()) {
-        if (!currentPlayer->HasCardAtIndex(cardIndex)) {
-            std::cout << "Invalid card index in hand for Miraj.\n";
-            return;
-        }
+	int row = -1, col = -1;
 
-        Card replacementCard = currentPlayer->PlayCard(cardIndex);
-        replacementCard.setFaceDown(true);  // Keep the new card as an illusion
+	do 
+	{
+		std::cout << "Enter the row (0 to " << board.GetSize() - 1 << ") to place the illusion: ";
+		std::cin >> row;
+		std::cout << "Enter the column (0 to " << board.GetSize() - 1 << ") to place the illusion: ";
+		std::cin >> col;
+	} while (!board.IsValidPosition(row, col) || !board.IsEmpty(row, col)); 
 
-        board.Remove(row, col);
-        board.AddCard(row, col, replacementCard);
-
-        std::cout << "Miraj applied: Replaced illusion at (" << row << ", " << col << ") with a new card.\n";
-    } else {
-        std::cout << "No illusion card found at the specified position.\n";
-    }
+	board.AddCard(row, col, replacementCard);
+	std::cout << "Miraj applied: Placed an illusion at (" << row << ", " << col << ").\n";
 }
 
 void Element_Mode::ActivateFurtuna() {
@@ -1617,49 +1628,20 @@ void Element_Mode::Granita()
 	Card neutralCard(0, "neutral");
 	int row = -1, col = -1;
 
-	for (int r = 0; r < board.GetSize(); ++r)
+	std::cout << "Choose a position to place the neutral card to define a boundary.\n";
+	do
 	{
-		if (board.IsEmpty(r, 0)) 
-		{
-			row = r; 
-			col = 0; 
-			break; 
-		} 
-		if (board.IsEmpty(r, board.GetSize() - 1)) 
-		{
-			row = r; 
-			col = board.GetSize() - 1; 
-			break; 
-		}
-	}
-	if (row == -1)
-	{
-		for (int c = 0; c < board.GetSize(); ++c)
-		{
-			if (board.IsEmpty(0, c)) 
-			{
-				row = 0; 
-				col = c; 
-				break; 
-			} 
-			if (board.IsEmpty(board.GetSize() - 1, c)) 
-			{
-				row = board.GetSize() - 1; 
-				col = c; 
-				break; 
-			}
-		}
-	}
+		std::cout << "Enter the row and column (0 to " << board.GetSize() - 1 << "): ";
+		std::cin >> row >> col;
 
-	if (row != -1 && col != -1)
-	{
-		board.MakeMove(row, col, neutralCard);
-		std::cout << "Neutral card placed at (" << row << ", " << col << ").\n";
-	}
-	else
-	{
-		std::cout << "No valid position to place a neutral card!\n";
-	}
+		if (!board.IsEmpty(row, col))
+		{
+			std::cout << "Position (" << row << ", " << col << ") is not empty! Try again.\n";
+		}
+	} while (!board.IsEmpty(row, col));
+
+	board.MakeMove(row, col, neutralCard);
+	std::cout << "Neutral card placed at (" << row << ", " << col << ").\n";
 
 	int cardIndex = -1;
 	while (!currentPlayer->HasCardAtIndex(cardIndex))
@@ -1667,18 +1649,25 @@ void Element_Mode::Granita()
 		std::cout << currentPlayer->getName() << ", choose a card index to play: ";
 		std::cin >> cardIndex;
 	}
+
 	Card chosenCard = currentPlayer->PlayCard(cardIndex);
 
 	int playRow, playCol;
-	do 
+	do
 	{
 		std::cout << "Enter the row and column to place the card (0 to " << board.GetSize() - 1 << "): ";
 		std::cin >> playRow >> playCol;
+
+		if (!board.IsEmpty(playRow, playCol))
+		{
+			std::cout << "Position (" << playRow << ", " << playCol << ") is not empty! Try again.\n";
+		}
 	} while (!board.IsEmpty(playRow, playCol));
 
 	board.MakeMove(playRow, playCol, chosenCard);
 	std::cout << "Card placed by " << currentPlayer->getName() << " at (" << playRow << ", " << playCol << ").\n";
 }
+
 
 void Element_Mode::Avalansa(int row1, int col1, int row2, int col2)
 {
