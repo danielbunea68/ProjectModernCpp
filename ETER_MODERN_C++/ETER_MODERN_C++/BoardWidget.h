@@ -21,7 +21,8 @@ public:
 signals:
     void cardPlaced(int row, int col, Card card);
     void requestGlobalUpdate();
-    
+    void playerWon(const QString& winnerName);
+    void isDraw(const QString& massage);
 protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;

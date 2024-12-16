@@ -92,27 +92,46 @@ QPoint BoardWidget::boardCellFromMouse(const QPoint& pos) const {
 	return QPoint(col, row);
 }
 void BoardWidget::mousePressEvent(QMouseEvent* event) {
-	QPoint mousePos = event->pos();
-	auto cellPosition = boardCellFromMouse(mousePos);
 
-	int row = cellPosition.x();
-	int col = cellPosition.y();
+	bool gameOver = false;
+	while (gameOver != true)
+	{
+		QPoint mousePos = event->pos();
+		auto cellPosition = boardCellFromMouse(mousePos);
 
-	int selectedIndex = game->CurrentTurn()->selectedIndex;
-	int handSize = game->CurrentTurn()->getCards().size();
-	if (selectedIndex < 0 || selectedIndex >= handSize)
-		return;
-	Card selectedCard = game->CurrentTurn()->PlayCard(selectedIndex);
+		int row = cellPosition.x();
+		int col = cellPosition.y();
 
-	if (!game->getBoard()->CanMakeMove(row, col, selectedCard))
-		return;
-	game->getBoard()->MakeMove(row, col, selectedCard);
+		int selectedIndex = game->CurrentTurn()->selectedIndex;
+		int handSize = game->CurrentTurn()->getCards().size();
+		if (selectedIndex < 0 || selectedIndex >= handSize)
+			return;
+		Card selectedCard = game->CurrentTurn()->PlayCard(selectedIndex);
 
-	// Verifica conditiile de terminare: remiza sau castig
-	// Primire si utilizare bomba
-	// Primire si utilizare carte magica
-	emit requestGlobalUpdate();
-	game->SwitchTurn();
+		if (!game->getBoard()->CanMakeMove(row, col, selectedCard))
+			return;
+		game->getBoard()->MakeMove(row, col, selectedCard);
+
+		// Verifica conditiile de terminare: remiza sau castig
+		// Primire si utilizare bomba
+		// Primire si utilizare carte magica
+		emit requestGlobalUpdate();
+
+
+		if (game->getBoard()->CheckWinner(game->CurrentTurn()->getColor())) {
+
+			emit playerWon(QString::fromStdString(game->CurrentTurn()->getName()));
+			gameOver = true;
+		}
+		else if (board.IsDraw()) {
+			emit playerWon(QString::fromStdString("It's a draw!"));
+			gameOver = true;
+		}
+		else {
+			game->SwitchTurn();
+		}
+	}
+
 }
 
 void BoardWidget::mouseReleaseEvent(QMouseEvent* event) {
