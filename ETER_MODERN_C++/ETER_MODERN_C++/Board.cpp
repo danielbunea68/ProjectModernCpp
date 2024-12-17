@@ -162,6 +162,23 @@ bool Board::IsValidPosition(int row, int col) {
 	return row >= 0 && row < GetSize() && col >= 0 && col < GetSize();
 }
 
+bool Board::IsCoveredByOpponent(int row, int col, const std::string& currentPlayerColor)
+{
+	if (!IsValidPosition(row, col) || board[row][col].size() < 2)
+	{
+		return false;
+	}
+
+	const Card& topCard = board[row][col].top();
+
+	if (topCard.getColor() != currentPlayerColor)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 bool Board::MakeMove(int row, int col, Card card)
 {
 	if (IsEmpty(row, col) || !IsDefinitiveBoard()) {

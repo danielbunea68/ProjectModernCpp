@@ -41,6 +41,7 @@ public:
 	bool IsDraw();
 	bool CheckNeighbours(int row, int col);
 	bool IsValidPosition(int row, int col);
+	bool IsCoveredByOpponent(int row, int col, const std::string& currentPlayerColor);
 	int CanMakeMove(int row, int col, Card chosenCard);
 	int GetStackSize(int row, int col);
 	void AddCard(int row, int col, Card card);

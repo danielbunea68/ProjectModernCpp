@@ -183,8 +183,13 @@ void Element_Mode::PlayGame()
 	{
 		board.Display();
 		currentPlayer->ShowHand();
+		bool& currentPlayerUsedAnyPower = (currentPlayer == &player1) ? player1UsedAnyPower : player2UsedAnyPower;
 
-		if (!availablePowers.empty())
+		if (currentPlayerUsedAnyPower)
+		{
+			std::cout << currentPlayer->getName() << ", you have already used your power and cannot use another.\n";
+		}
+		else if (!availablePowers.empty())
 		{
 			char usePower;
 			std::cout << currentPlayer->getName() << ", do you want to use your power this turn? y/[n]: ";
@@ -221,6 +226,8 @@ void Element_Mode::PlayGame()
 							UsePower(selectedPower);
 
 							availablePowers.erase(availablePowers.begin() + (chosenPowerIndex - 1));
+
+							currentPlayerUsedAnyPower = true;
 
 							if (availablePowers.empty())
 							{
@@ -283,6 +290,7 @@ void Element_Mode::PlayGame()
 			currentPlayer->setLastMove(row, col);
 			board.MakeMove(row, col, chosenCard);
 		}
+
 
 		if (board.CheckIsBomb())//aici
 		{
@@ -433,7 +441,9 @@ void Element_Mode::PlayGame()
 			else
 			{
 				board.Clear();
-				InitializePowers(); 
+				InitializePowers();
+				player1UsedAnyPower = false;
+				player2UsedAnyPower = false;
 				SwitchTurn();
 			}
 			break;
@@ -457,6 +467,8 @@ void Element_Mode::PlayGame()
 			{
 				board.Clear();
 				InitializePowers();
+				player1UsedAnyPower = false;
+				player2UsedAnyPower = false;
 				SwitchTurn();
 			}
 			break;
@@ -899,53 +911,68 @@ void Element_Mode::Lava()
 {
 	std::unordered_map<int, int> visibleCardCount;
 
-	for (int row = 0; row < board.GetSize(); ++row) 
+	for (int row = 0; row < board.GetSize(); ++row)
 	{
-		for (int col = 0; col < board.GetSize(); ++col) 
+		for (int col = 0; col < board.GetSize(); ++col)
 		{
-			if (!board.IsEmpty(row, col)) 
+			if (!board.IsEmpty(row, col))
 			{
 				Card topCard = board.TopCard(row, col);
-				if (!topCard.getIsFaceDown()) {
+				if (!topCard.getIsFaceDown()) 
+				{
 					visibleCardCount[topCard.getValue()]++;
 				}
 			}
 		}
 	}
 
-
 	std::vector<int> eligibleNumbers;
-	for (const auto& pair : visibleCardCount) 
+	for (const auto& pair : visibleCardCount)
 	{
-		if (pair.second >= 2) 
+		if (pair.second >= 2)
 		{
 			eligibleNumbers.push_back(pair.first);
 		}
 	}
 
-	if (eligibleNumbers.empty()) 
+	if (eligibleNumbers.empty())
 	{
 		std::cout << "No number has at least two visible cards.\n";
 		return;
 	}
 
 	std::cout << "Choose a number from the following visible numbers with at least two cards:\n";
-	for (int number : eligibleNumbers) 
+	for (int number : eligibleNumbers)
 	{
 		std::cout << number << " ";
 	}
 	std::cout << "\nYour choice: ";
-	int chosenNumber;
-	std::cin >> chosenNumber;
 
-	for (int row = 0; row < board.GetSize(); ++row) 
+	int chosenNumber;
+	while (true)
 	{
-		for (int col = 0; col < board.GetSize(); ++col) 
+		std::cin >> chosenNumber;
+
+		if (std::cin.fail() || std::find(eligibleNumbers.begin(), eligibleNumbers.end(), chosenNumber) == eligibleNumbers.end())
 		{
-			if (!board.IsEmpty(row, col)) 
+			std::cin.clear(); 
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cout << "Invalid choice. Please choose a number from the list: ";
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	for (int row = 0; row < board.GetSize(); ++row)
+	{
+		for (int col = 0; col < board.GetSize(); ++col)
+		{
+			if (!board.IsEmpty(row, col))
 			{
 				Card topCard = board.TopCard(row, col);
-				if (!topCard.getIsFaceDown() && topCard.getValue() == chosenNumber) 
+				if (!topCard.getIsFaceDown() && topCard.getValue() == chosenNumber)
 				{
 					std::cout << "Returning card with value " << chosenNumber
 						<< " at position (" << row << ", " << col << ").\n";
@@ -955,6 +982,7 @@ void Element_Mode::Lava()
 		}
 	}
 }
+
 
 void Element_Mode::DinCenusa()
 {
@@ -1007,16 +1035,16 @@ void Element_Mode::DinCenusa()
 }
 
 
-void Element_Mode::Scantei() 
+void Element_Mode::Scantei()
 {
-	int row, col;
+	int row = -1, col = -1;
 	bool coveredCardFound = false;
 
-	for (int r = 0; r < board.GetSize(); ++r) 
+	for (int r = 0; r < board.GetSize(); ++r)
 	{
-		for (int c = 0; c < board.GetSize(); ++c) 
+		for (int c = 0; c < board.GetSize(); ++c)
 		{
-			if (board.HasCoveredCard(r, c, currentPlayer->getColor())) 
+			if (board.HasCoveredCard(r, c, currentPlayer->getColor()) && board.IsCoveredByOpponent(r, c, currentPlayer->getColor()))
 			{
 				row = r;
 				col = c;
@@ -1024,13 +1052,13 @@ void Element_Mode::Scantei()
 				break;
 			}
 		}
-		if (coveredCardFound) 
+		if (coveredCardFound)
 			break;
 	}
 
-	if (!coveredCardFound) 
+	if (!coveredCardFound)
 	{
-		std::cout << "No covered card found.\n";
+		std::cout << "No covered card found that is owned by you and covered by the opponent.\n";
 		return;
 	}
 
@@ -1040,23 +1068,23 @@ void Element_Mode::Scantei()
 	std::cout << "Enter new row and column to place the card: ";
 	std::cin >> newRow >> newCol;
 
-	while (!board.IsValidPosition(newRow, newCol) || !board.IsEmpty(newRow, newCol)) 
+	while (!board.IsValidPosition(newRow, newCol) || !board.IsEmpty(newRow, newCol))
 	{
 		std::cout << "Invalid position. Enter new row and column: ";
 		std::cin >> newRow >> newCol;
 	}
 
 	Card card = board.TopCard(row, col);
-
 	board.Remove(row, col);
 
-	if (board.MakeMove(newRow, newCol, card)) 
+	if (board.MakeMove(newRow, newCol, card))
 	{
 		std::cout << "Card moved to new position (" << newRow << ", " << newCol << ").\n";
 	}
-	else 
+	else
 	{
-		std::cout << "Failed to place card at the new position.\n";
+		std::cout << "Failed to place card at the new position. Returning the card to the original position.\n";
+		board.MakeMove(row, col, card);
 	}
 }
 
@@ -1259,10 +1287,15 @@ void Element_Mode::SwapStacks() {
 	board.SwapStacks(row1, col1, row2, col2);
 }
 
-void Element_Mode::Ceata() {
-	for (int row = 0; row < board.GetSize(); ++row) {
-		for (int col = 0; col < board.GetSize(); ++col) {
-			if (board.HasCoveredCard(row, col, currentPlayer->getColor())) {
+void Element_Mode::Ceata() 
+{
+
+	for (int row = 0; row < board.GetSize(); ++row) 
+	{
+		for (int col = 0; col < board.GetSize(); ++col) 
+		{
+			if (board.HasCoveredCard(row, col, currentPlayer->getColor())) 
+			{
 				std::cout << currentPlayer->getName() << " already has an active illusion on the board!\n";
 				return;
 			}
@@ -1278,26 +1311,36 @@ void Element_Mode::Ceata() {
 	}
 
 	Card chosenCard = currentPlayer->PlayCard(cardIndex);
-
 	chosenCard.setFaceDown(true);
 
 	int row = -1, col = -1;
-	int result = board.CanMakeMove(row, col, chosenCard);
-	while (result == 0) {
-		std::cout << "Enter row and column (0, 1, 2, ...) to place the illusion: ";
+	while (true) 
+	{
+		std::cout << "Enter row and column (0 - " << board.GetSize() - 1 << ") to place the illusion: ";
 		std::cin >> row >> col;
-		result = board.CanMakeMove(row, col, chosenCard);
+
+		if (row < 0 || row >= board.GetSize() || col < 0 || col >= board.GetSize()) 
+		{
+			std::cout << "Invalid position! Row and column must be within the board boundaries.\n";
+			continue;
+		}
+
+		if (board.CanMakeMove(row, col, chosenCard) == 1) 
+		{
+			break; 
+		}
+		else 
+		{
+			std::cout << "Invalid move! That position is occupied or not valid for an illusion.\n";
+		}
 	}
 
-	if (result == 1) {
-		currentPlayer->setLastMove(row, col);
-		board.MakeMove(row, col, chosenCard);
-		std::cout << currentPlayer->getName() << " played an illusion at position (" << row << ", " << col << ").\n";
-	}
-	else {
-		std::cout << "Failed to play the illusion. Invalid move.\n";
-	}
+	currentPlayer->setLastMove(row, col);
+	board.MakeMove(row, col, chosenCard);
+
+	std::cout << currentPlayer->getName() << " played an illusion at position (" << row << ", " << col << ").\n";
 }
+
 
 void Element_Mode::Val() 
 {
