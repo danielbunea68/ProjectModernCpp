@@ -197,7 +197,7 @@ void Element_Mode::PlayGame()
 
 			if (usePower == 'y')
 			{
-				while (true) 
+				while (true)
 				{
 					int chosenPowerIndex = -1;
 					std::cout << "Choose a power to apply (or enter 0 to exit):\n";
@@ -222,6 +222,7 @@ void Element_Mode::PlayGame()
 
 						if (CanUsePower(selectedPower))
 						{
+							std::string currentPlayerName1 = currentPlayer->getName();
 							ActivatePower(selectedPower);
 							UsePower(selectedPower);
 
@@ -233,6 +234,9 @@ void Element_Mode::PlayGame()
 							{
 								std::cout << "All powers have been used.\n";
 							}
+
+							std::cout << currentPlayerName1 << " has used their power. Turn ends.\n";
+
 							break;
 						}
 						else
@@ -245,6 +249,7 @@ void Element_Mode::PlayGame()
 						std::cout << "Invalid power choice! Please try again.\n";
 					}
 				}
+				continue;
 			}
 		}
 		else
@@ -1474,39 +1479,48 @@ void Element_Mode::VartejDeApa()
 	std::cout << "Cards moved to position (" << row << "," << emptyCol << ").\n";
 }
 
-void Element_Mode::ActivateTsunami()
+void Element_Mode::ActivateTsunami() 
 {
 	std::cout << "Activating Tsunami: Select a row to block for the opponent's next turn.\n";
 
-	int blockedRow = -1;
-	for (int row = 0; row < board.GetSize(); ++row) 
-	{
-		bool hasEmptySpace = false;
-		for (int col = 0; col < board.GetSize(); ++col) 
-		{
-			if (board.IsEmpty(row, col)) 
-			{
-				hasEmptySpace = true;
+	std::vector<int> validRows;
+	for (int row = 0; row < board.GetSize(); ++row) {
+		for (int col = 0; col < board.GetSize(); ++col) {
+			if (board.IsEmpty(row, col)) {
+				validRows.push_back(row);
 				break;
 			}
 		}
-		if (hasEmptySpace) 
-		{
-			blockedRow = row;
-			break; 
-		}
 	}
 
-	if (blockedRow == -1) 
-	{
-		std::cout << "No valid row to block. Tsunami cannot be activated.\n";
+	if (validRows.empty()) {
+		std::cout << "No valid rows to block. Tsunami cannot be activated.\n";
 		return;
 	}
 
-	std::cout << "Row " << blockedRow << " will be blocked for the opponent's next turn.\n";
+	std::cout << "Available rows to block: ";
+	for (size_t i = 0; i < validRows.size(); ++i) {
+		std::cout << validRows[i];
+		if (i < validRows.size() - 1) {
+			std::cout << ", ";
+		}
+	}
+	std::cout << ".\n";
 
-	blockedRowForNextTurn = blockedRow;
+	int chosenRow = -1;
+	while (std::find(validRows.begin(), validRows.end(), chosenRow) == validRows.end()) {
+		std::cout << "Enter the row number to block: ";
+		std::cin >> chosenRow;
+
+		if (std::find(validRows.begin(), validRows.end(), chosenRow) == validRows.end()) {
+			std::cout << "Invalid row. Please select a row with empty spaces.\n";
+		}
+	}
+
+	blockedRowForNextTurn = chosenRow;
+	std::cout << "Row " << chosenRow << " has been blocked for the opponent's next turn.\n";
 }
+
 
 void Element_Mode::Cutremur()
 {
@@ -1777,21 +1791,23 @@ void Element_Mode::Avalansa(int row1, int col1, int row2, int col2)
 
 void Element_Mode::Bolovan(int row, int col, int cardIndex)
 {
-	if (!gameWithIllusions) 
+	if (!board.IsFaceDown(row, col))
 	{
-		std::cout << "Puterea Bolovan este indisponibilă deoarece jocul nu include iluzii.\n";
-		return;
-	}
-
-	if (!board.IsFaceDown(row, col)) {
 		std::cout << "Poziția (" << row << ", " << col << ") nu conține o iluzie.\n";
 		return;
 	}
 
-	auto cardToCover = currentPlayer->PlayCard(cardIndex);
+	while (cardIndex < 0 || cardIndex >= currentPlayer->getCards().size())
+	{
+		std::cout << currentPlayer->getName() << ", alegi un index de card valid: ";
+		std::cin >> cardIndex;
+	}
+
+	Card cardToCover = currentPlayer->PlayCard(cardIndex);
+
+	cardToCover.setFaceDown(true);
 
 	board.AddCard(row, col, cardToCover);
 
 	std::cout << "Iluzia de la poziția (" << row << ", " << col << ") a fost acoperită cu o carte.\n";
 }
-
