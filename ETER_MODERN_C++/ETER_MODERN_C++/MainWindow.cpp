@@ -1,5 +1,5 @@
 ﻿#include "MainWindow.h"
-
+#include <QMessageBox>
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
 	QWidget* mainWidget = new QWidget(this);
 	setCentralWidget(mainWidget);
@@ -11,6 +11,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
 
 	BoardWidget* boardWidget = new BoardWidget();
 	boardWidget->setGame(game);
+
+
+	connect(boardWidget, &BoardWidget::playerWon, this, &MainWindow::showWinnerMessage);
+
+
+
 
 	QFrame* rightWidget = new QFrame();
 	QVBoxLayout* rightLayout = new QVBoxLayout(rightWidget);
@@ -34,6 +40,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
 	connect(boardWidget, &BoardWidget::requestGlobalUpdate, this, &MainWindow::handleGlobalUpdate);
 
 	//connect(boardWidget, &BoardWidget::cardPlaced, this, &MainWindow::onCardPlaced);
+}
+
+void MainWindow::showWinnerMessage(const QString& winnerName)
+{
+	QMessageBox::information(this, "Game Over", winnerName + " has won the game!");
 }
 
 void MainWindow::handleGlobalUpdate() {

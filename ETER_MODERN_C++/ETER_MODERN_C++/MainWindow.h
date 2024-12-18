@@ -23,6 +23,7 @@ private:
 
 private slots:
     void onCardPlaced(int row, int col, Card card);
+    void showWinnerMessage(const QString& winnerName);
 public slots:
     void handleGlobalUpdate();
 };

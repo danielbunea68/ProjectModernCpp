@@ -3,6 +3,7 @@
 #include <stack>
 
 #include "Card.h"
+#include "Explosion_Card.h"
 
 class Board
 {

@@ -30,6 +30,7 @@ protected:
 
     void DrawBoard(QPainter &painter);
     void DrawCards(QPainter& painter);
+    char  isCoordInVector(int row, int col, const std::vector<std::pair<char, std::pair<int, int>>>& coords);
 
 
 private:
