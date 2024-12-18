@@ -21,6 +21,9 @@ private:
 
     Game game;
 
+    void resetGame();
+
+
 private slots:
     void onCardPlaced(int row, int col, Card card);
     void showWinnerMessage(const QString& winnerName);

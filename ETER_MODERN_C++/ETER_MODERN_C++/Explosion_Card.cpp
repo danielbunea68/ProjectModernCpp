@@ -105,6 +105,7 @@ void Explosion_Card::storeAppliedPosition(int row, int col)
     appliedPositions.emplace_back(row, col); 
 }
 
+// TODO: Rename to InitializeExplosion
 void Explosion_Card::activateExplosion() 
 {
     std::cout << "Activating explosion:\n";

@@ -101,6 +101,7 @@ void CardsWidget::mousePressEvent(QMouseEvent* event)
 	{
 		//highlightCard(clickedIndex); // Evidențiază cartea apăsată
 		player->selectedIndex = clickedIndex;
+		update();
 	}
 }
 

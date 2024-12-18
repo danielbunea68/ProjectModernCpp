@@ -44,7 +44,29 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
 
 void MainWindow::showWinnerMessage(const QString& winnerName)
 {
-	QMessageBox::information(this, "Game Over", winnerName + " has won the game!");
+	QMessageBox messageBox;
+	messageBox.setWindowTitle("Game Over");
+	messageBox.setText(winnerName + " has won the game!");
+	messageBox.setIcon(QMessageBox::Information);
+
+	// Adăugăm butoanele Reset și Exit
+	messageBox.addButton("Reset Game", QMessageBox::AcceptRole);
+	messageBox.addButton("Exit Game", QMessageBox::RejectRole);
+
+	// Așteptăm ca utilizatorul să aleagă o opțiune
+	int result = messageBox.exec();
+
+	// Verificăm ce buton a fost apăsat
+	if (result == QMessageBox::AcceptRole) {
+		resetGame(); // Funcție pentru resetarea jocului
+	}
+	else if (result == QMessageBox::RejectRole) {
+		close(); // Închide aplicația
+	}
+}
+
+void MainWindow::resetGame() {
+	// TODO: Reset the board and the cards for the game
 }
 
 void MainWindow::handleGlobalUpdate() {

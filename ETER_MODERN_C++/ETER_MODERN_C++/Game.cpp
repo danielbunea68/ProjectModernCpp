@@ -86,6 +86,25 @@ void Game::InitGame(std::string name1, std::string name2)
 	player1.isTurn = true;
 }
 
+int Game::GetScore(std::string color)
+{
+	int score = 0;
+	for (int i = 0; i < board.GetSize(); i++)
+	{
+		for (int j = 0; j < board.GetSize(); j++)
+		{
+			if (!board.GetBoard()[i][j].empty() && board.GetBoard()[i][j].top().getColor() == color) {
+				if (board.GetBoard()[i][j].top().getIsFaceDown() == true)
+					score++;
+				else 
+					score += board.GetBoard()[i][j].top().getValue();
+
+			}
+		}
+	}
+	return score;
+}
+
 Player* Game::CurrentTurn()
 {
 	return currentPlayer;
@@ -93,7 +112,7 @@ Player* Game::CurrentTurn()
 
 Player* Game::PreviousTurn()
 {
-	if (currentPlayer->getName() == player1.getName())
+	if (currentPlayer == &player1)
 		return &player2;
 	else
 		return &player1;
@@ -159,6 +178,24 @@ void Game::CreatePit(int row, int col)
 	}
 
 	std::cout << "Pit created at position (" << row << ", " << col << "). All cards removed.\n";
+}
+
+bool Game::IsDraw()
+{
+	auto opponent = PreviousTurn();
+	auto board = this->board.GetBoard();
+
+	for (auto row : board) {
+		for (auto col : row) {
+			if (col.empty()) return false;
+
+			for (auto card : opponent->getCards()) {
+				if (card.getColor() == col.top().getColor()) continue;
+				if (card.getValue() > col.top().getValue()) return false;
+			}
+		}
+	}
+	return true;
 }
 
 void Game::PlayGame()

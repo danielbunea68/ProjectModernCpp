@@ -28,6 +28,8 @@ public:
 
 	void InitGame(std::string name1, std::string name2)override;
 
+	int GetScore(std::string color);
+
 	Player* CurrentTurn() override;
 	Player* PreviousTurn() override;
 
@@ -38,6 +40,8 @@ public:
 	Player* getPlayer2() {
 		return &player2;
 	}
+
+	bool IsDraw();
 
 	void PlayGame()override;
 	void ResetGame()override;

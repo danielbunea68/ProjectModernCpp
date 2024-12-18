@@ -184,23 +184,59 @@ bool Board::MakeMove(int row, int col, Card card)
 
 bool Board::CheckWinner(std::string color)
 {
+	int boardSize = board.size(); // Assuming a square board
 
-	for (int i = 0; i < GetSize(); i++) {
-		if (board[i][0].empty() || board[0][i].empty() || board[i][1].empty() || board[1][i].empty() || board[i][2].empty() || board[2][i].empty())
-			return false;
+	// Helper lambda to check if a stack has the given color on top
+	auto hasTopCardWithColor = [&](int row, int col) -> bool {
+		return !board[row][col].empty() && board[row][col].top().getColor() == color;
+		};
 
-		if ((board[i][0].top().getColor() == color && board[i][1].top().getColor() == color && board[i][2].top().getColor() == color) ||
-			(board[0][i].top().getColor() == color && board[1][i].top().getColor() == color && board[2][i].top().getColor() == color)) {
-			return true;
+	// Check rows for a win
+	for (int i = 0; i < boardSize; ++i) {
+		bool rowWin = true;
+		for (int j = 0; j < boardSize; ++j) {
+			if (!hasTopCardWithColor(i, j)) {
+				rowWin = false;
+				break;
+			}
+		}
+		if (rowWin) return true;
+	}
+
+	// Check columns for a win
+	for (int j = 0; j < boardSize; ++j) {
+		bool colWin = true;
+		for (int i = 0; i < boardSize; ++i) {
+			if (!hasTopCardWithColor(i, j)) {
+				colWin = false;
+				break;
+			}
+		}
+		if (colWin) return true;
+	}
+
+	// Check main diagonal (top-left to bottom-right)
+	bool mainDiagonalWin = true;
+	for (int i = 0; i < boardSize; ++i) {
+		if (!hasTopCardWithColor(i, i)) {
+			mainDiagonalWin = false;
+			break;
 		}
 	}
-	// Verifică diagonalele
-	if ((board[0][0].top().getColor() == color && board[1][1].top().getColor() == color && board[2][2].top().getColor() == color) ||
-		(board[0][2].top().getColor() == color && board[1][1].top().getColor() == color && board[2][0].top().getColor() == color)) {
-		return true;
-	}
-	return false;
+	if (mainDiagonalWin) return true;
 
+	// Check anti-diagonal (top-right to bottom-left)
+	bool antiDiagonalWin = true;
+	for (int i = 0; i < boardSize; ++i) {
+		if (!hasTopCardWithColor(i, boardSize - 1 - i)) {
+			antiDiagonalWin = false;
+			break;
+		}
+	}
+	if (antiDiagonalWin) return true;
+
+	// No winning formation found
+	return false;
 }
 
 bool Board::CheckIsBomb()
