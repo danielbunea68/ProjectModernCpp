@@ -14,25 +14,22 @@ public :
     explicit CardsWidget(QWidget* parent = nullptr);
 
     void setCards(Player*player);
-    Card getSelectedCard();
 
 
 protected:
     void paintEvent(QPaintEvent* event) override;
     void DrawQueue(QPainter& painter);
     void DrawCards(QPainter& painter);
-    void highlightCard(int index);
     void mousePressEvent(QMouseEvent* event)override;
 
+    void DrawCard(QPainter& painter, int i);
+    void DrawBomb(QPainter& painter, int i);
 private :
 
     int cellWidth{};
     int cellHeight{};
     int boardSize{};
-    int highlightedIndex = -1;
 
     Player* player;
-    std::vector<Card> cards_of_player;
-    QPoint boardCellFromMouse(const QPoint& pos) const;
 };
 
