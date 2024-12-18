@@ -54,6 +54,9 @@
     <ClInclude Include="Speed_Mode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Bomb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -105,6 +108,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CardsWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bomb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

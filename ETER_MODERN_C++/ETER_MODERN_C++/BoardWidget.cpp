@@ -113,78 +113,27 @@ void BoardWidget::mousePressEvent(QMouseEvent* event) {
 
 	int selectedIndex = game->CurrentTurn()->selectedIndex;
 	int handSize = game->CurrentTurn()->getCards().size();
-	if (selectedIndex < 0 || selectedIndex >= handSize)
-		return;
-	Card selectedCard = game->CurrentTurn()->PlayCard(selectedIndex);
+	auto player = game->CurrentTurn();
 
-	if (!game->getBoard()->CanMakeMove(row, col, selectedCard))
-		return;
-	game->getBoard()->MakeMove(row, col, selectedCard);
+	if (player->hasBomb && player->selectedBomb) {
+		game->useBomb(player);
+		player->hasBomb = false;
+	}
+	else {
+		if (selectedIndex < 0 || selectedIndex > handSize) return;
+		Card selectedCard = game->CurrentTurn()->PlayCard(selectedIndex);
+
+		if (!game->getBoard()->CanMakeMove(row, col, selectedCard)) return;
+		game->getBoard()->MakeMove(row, col, selectedCard);
+	}
 
 	emit requestGlobalUpdate();
 
 
-	/*if (game->getBoard()->CheckIsBomb())
+	if (!game->hasGivenBomb && game->getBoard()->CheckIsBomb())
 	{
-		Explosion_Card explosion_card(board.GetSize());
-
-		explosion_card.activateExplosion();
-		std::vector<std::pair<char, std::pair<int, int>>> coords;
-		std::vector<std::pair<char, std::pair<int, int>>> left_coords;
-		std::vector<std::pair<char, std::pair<int, int>>> right_coords;
-
-		coords = explosion_card.AppliedPositions();
-
-		for (const auto& pos : coords)
-		{
-			char bombType = pos.first;
-			int row = pos.second.first;
-			int col = pos.second.second;
-
-			int right_r = col;
-			int right_c = board.GetSize() - 1 - row;
-			int left_r = board.GetSize() - 1 - col;
-			int left_c = row;
-
-			right_coords.push_back({ bombType, {right_r, right_c} });
-			left_coords.push_back({ bombType, {left_r, left_c} });
-		}
-		QPoint mousePosb = event->pos();
-		auto cellPositionb = boardCellFromMouse(mousePos);
-
-		int rowb = cellPositionb.x();
-		int colb = cellPositionb.y();
-
-		char power;
-
-		if (isCoordInVector(rowb, colb, coords) !='C')
-			power = isCoordInVector(rowb, colb, coords);
-		else if (isCoordInVector(rowb, colb, right_coords))
-			power = isCoordInVector(rowb, colb, right_coords);
-		else
-			power = isCoordInVector(rowb, colb, left_coords);
-
-
-		switch (power)
-		{
-		case 'r':
-
-			game->RemoveCard(rowb, colb);
-			break;
-		case 'u':
-
-			game->ReturnCardToPlayer(rowb, colb);
-			break;
-		case 'p':
-
-			game->CreatePit(rowb, colb);
-			break;
-
-			break;
-		}
-
-
-	}*/
+		game->giveBomb(player);
+	}
 
 	emit requestGlobalUpdate();
 
@@ -209,11 +158,6 @@ void BoardWidget::mousePressEvent(QMouseEvent* event) {
 	}
 
 }
-
-//// create pit 
-
-
-
 
 void BoardWidget::mouseReleaseEvent(QMouseEvent* event) {
 	// TODO: Maybe delete this

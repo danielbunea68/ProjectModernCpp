@@ -10,5 +10,9 @@
         <file>images/4_red.png</file>
         <file>images/eter_blue.png</file>
         <file>images/eter_red.png</file>
+        <file>images/bomb_0.png</file>
+        <file>images/bomb_1.png</file>
+        <file>images/bomb_2.png</file>
+        <file>images/bomb_3.png</file>
     </qresource>
 </RCC>

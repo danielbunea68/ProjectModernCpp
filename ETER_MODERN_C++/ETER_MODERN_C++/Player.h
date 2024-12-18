@@ -8,8 +8,9 @@
 #include <algorithm>
 
 #include "Card.h"
+#include "Bomb.h"
 
-enum class WizardPower 
+enum class WizardPower
 {
 	RemoveOpponentCard,
 	RemoveRow,
@@ -36,13 +37,25 @@ private:
 	std::pair<int, int> m_winncords;
 	static std::vector<WizardPower> assignedPowers;
 
+	Bomb* bomb = nullptr;
+
 public:
-	bool powerUsed= false ;
-	
+	bool powerUsed = false;
+	bool selectedBomb = false;
+	bool hasBomb = false;
+
+	void setBomb(Bomb* bomb) {
+		this->bomb = bomb;
+		hasBomb = true;
+	}
+
+	Bomb* getBomb() {
+		return bomb;
+	}
 
 public:
 
-	Player()=default;
+	Player() = default;
 	~Player() = default;
 	Player(const Player& other);
 	Player(const std::string& playerName);
@@ -55,7 +68,7 @@ public:
 	std::string getColor() const;
 	void setColor(const std::string& color);
 	std::string getName() const;
-	void setLastMove(int row , int col);
+	void setLastMove(int row, int col);
 	std::pair<int, int> getLastMove();
 	void setName(const std::string& newName);
 	WizardPower getWizardPower() const;
@@ -63,8 +76,8 @@ public:
 	bool getPowerUsed();
 	void setPowerUsed();
 
-	void setWinnCords(const std::pair<int,int> cords);
-	std::pair<int, int> getWinnCords() const ;
+	void setWinnCords(const std::pair<int, int> cords);
+	std::pair<int, int> getWinnCords() const;
 
 	void ShowHand();
 	Card PlayCard(int cardIndex);/// ii updataeaza vectorul de carti 
@@ -73,7 +86,7 @@ public:
 	void AddCard(Card card);
 	std::vector<Card>getCards() const;;
 	/// 
-	
+
 
 	void AddToRemovedCards(const Card& card);
 	void RemoveFromRemovedCards(const Card& card);
