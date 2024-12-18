@@ -44,6 +44,15 @@ public:
 	bool selectedBomb = false;
 	bool hasBomb = false;
 
+	void rotateBomb(std::string direction) {
+		if (!hasBomb) return;
+
+		if (direction == "left")
+			bomb->rotateLeft();
+		else
+			bomb->rotateRight();
+	}
+
 	void setBomb(Bomb* bomb) {
 		this->bomb = bomb;
 		hasBomb = true;

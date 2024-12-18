@@ -96,7 +96,7 @@ int Game::GetScore(std::string color)
 			if (!board.GetBoard()[i][j].empty() && board.GetBoard()[i][j].top().getColor() == color) {
 				if (board.GetBoard()[i][j].top().getIsFaceDown() == true)
 					score++;
-				else 
+				else
 					score += board.GetBoard()[i][j].top().getValue();
 
 			}
@@ -131,10 +131,9 @@ void Game::SwitchTurn()
 	player1.isTurn = !player1.isTurn;
 	player2.isTurn = !player2.isTurn;
 	currentPlayer->selectedIndex = 0;
+	currentPlayer->selectedBomb = false;
+	
 }
-
-
-
 
 void Game::RemoveCard(int row, int col) //aici
 {

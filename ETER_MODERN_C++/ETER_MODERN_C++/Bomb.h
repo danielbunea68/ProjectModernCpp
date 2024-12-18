@@ -21,9 +21,45 @@ public:
 
 	std::vector<std::vector<char>> board;
 	int id = -1;
+	int angle = 0;
 
 	int getId() {
 		return id;
+	}
+
+	int getRotationAngle() {
+		return angle;
+	}
+
+	void rotateLeft() {
+		angle = (angle + 270) % 360;
+		int rows = board.size();
+		int cols = board[0].size();
+
+		std::vector<std::vector<char>> rotated(cols, std::vector<char>(rows, ' '));
+
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				rotated[cols - 1 - j][i] = board[i][j];
+			}
+		}
+		board = rotated;
+
+	}
+
+	void rotateRight() {
+		angle = (angle + 90) % 360;
+		int rows = board.size();
+		int cols = board[0].size();
+
+		std::vector<std::vector<char>> rotated(cols, std::vector<char>(rows, ' '));
+
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				rotated[j][rows - 1 - i] = board[i][j];
+			}
+		}
+		board = rotated;
 	}
 };
 

@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
 
 	QHBoxLayout* layout = new QHBoxLayout(mainWidget);
 
-	Game* game = new Game();
+	game = new Game();
 	game->InitGame("Player1", "Player2");
 
 	BoardWidget* boardWidget = new BoardWidget();
@@ -14,9 +14,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
 
 
 	connect(boardWidget, &BoardWidget::playerWon, this, &MainWindow::showWinnerMessage);
-
-
-
 
 	QFrame* rightWidget = new QFrame();
 	QVBoxLayout* rightLayout = new QVBoxLayout(rightWidget);
