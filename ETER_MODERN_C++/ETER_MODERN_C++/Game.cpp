@@ -167,16 +167,22 @@ void Game::ReturnCardToPlayer(int row, int col)//aici
 
 void Game::CreatePit(int row, int col)
 {
-
-
-	// Now, remove all cards from that position using the getter function to access the internal board
-	auto& boardGrid = board.GetBoard();  // Get a reference to the board
-	while (!boardGrid[row][col].empty())
+	if (board.IsBlockedCell(row, col)) 
 	{
-		boardGrid[row][col].pop();  // Remove all cards from the stack at that position
+		std::cout << "Cannot create a pit at (" << row << ", " << col << "). The cell is already blocked.\n";
+		return;
 	}
 
-	std::cout << "Pit created at position (" << row << ", " << col << "). All cards removed.\n";
+	auto& boardGrid = board.GetBoard();
+	while (!board.IsEmpty(row, col)) 
+	{
+		boardGrid[row][col].pop();
+	}
+
+	board.BlockCell(row, col);
+
+	std::cout << "Pit created at (" << row << ", " << col << "). This cell is now blocked.\n";
+
 }
 
 bool Game::IsDraw()

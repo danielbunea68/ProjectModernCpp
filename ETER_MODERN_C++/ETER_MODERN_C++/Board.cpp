@@ -117,6 +117,12 @@ void Board::Display()
 
 int Board::CanMakeMove(int row, int col, Card chosenCard)
 {
+	if (IsBlockedCell(row, col)) 
+	{
+		std::cout << "Cannot make a move. Cell (" << row << ", " << col << ") is blocked.\n";
+		return 0;
+	}
+
 	if (CountDistinctCards() == 0)
 		return 1;
 
@@ -154,6 +160,23 @@ int Board::CanMakeMove(int row, int col, Card chosenCard)
 
 bool Board::IsValidPosition(int row, int col) {
 	return row >= 0 && row < GetSize() && col >= 0 && col < GetSize();
+}
+
+bool Board::IsCoveredByOpponent(int row, int col, const std::string& currentPlayerColor)
+{
+	if (!IsValidPosition(row, col) || board[row][col].size() < 2)
+	{
+		return false;
+	}
+
+	const Card& topCard = board[row][col].top();
+
+	if (topCard.getColor() != currentPlayerColor)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 bool Board::MakeMove(int row, int col, Card card)
@@ -466,6 +489,19 @@ int Board::CountDistinctCards()
 		}
 	}
 	return count;
+}
+
+bool Board::IsBlockedCell(int row, int col) const
+{
+	return blockedCells.find({ row, col }) != blockedCells.end();
+}
+
+void Board::BlockCell(int row, int col)
+{
+	if (row >= 0 && row < m_size && col >= 0 && col < m_size) 
+	{
+		blockedCells.insert({ row, col });
+	}
 }
 
 void Board::ShiftBoard(int &row, int &col)

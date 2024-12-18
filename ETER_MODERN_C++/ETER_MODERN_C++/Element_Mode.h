@@ -51,6 +51,8 @@ private:
 	Player* currentPlayer;
 	int blockedRowForNextTurn = -1;
 	bool gameWithIllusions;
+	bool player1UsedAnyPower = false;
+	bool player2UsedAnyPower = false;
 	int player1Wins = 0, player2Wins = 0;
 	void SwitchTurn();
 
@@ -78,7 +80,7 @@ public:
 
 	void RemoveCard(int row, int col) override;
 	void ReturnCardToPlayer(int row, int col) override;
-	void CreatePit(int row, int col) override;
+	void CreatePit(int row, int col);
 
 	Player* CurrentTurn() override;
 	Player* PreviousTurn() override;
@@ -94,7 +96,7 @@ public:
 	void Viscol();
 	void Vijelie();
 	void ActivateRafala(int row, int col, int targetRow, int targetCol);
-	void ActivateMiraj(int row, int col, int cardIndex);
+	void ActivateMiraj(int cardIndex);
 	void ActivateFurtuna();
 	void Uragan(int row);
 	void SwapStacks();

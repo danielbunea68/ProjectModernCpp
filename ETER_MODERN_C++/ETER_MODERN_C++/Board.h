@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <stack>
+#include <set>
 
 #include "Card.h"
 #include "Explosion_Card.h"
@@ -12,6 +13,7 @@ private:
 
 
 	std::vector<std::vector<std::stack<Card>>> board;
+	std::set<std::pair<int, int>> blockedCells;
 	int blockedRow = -1;
 
 	int topRow{ 2 };
@@ -40,6 +42,7 @@ public:
 	bool IsDraw();
 	bool CheckNeighbours(int row, int col);
 	bool IsValidPosition(int row, int col);
+	bool IsCoveredByOpponent(int row, int col, const std::string& currentPlayerColor);
 	int CanMakeMove(int row, int col, Card chosenCard);
 	int GetStackSize(int row, int col);
 	void AddCard(int row, int col, Card card);
@@ -51,6 +54,8 @@ public:
 	bool HasCoveredCard(int row, int col, const std::string& color);
 	bool IsFaceDown(int row, int col) const;
 	int CountDistinctCards();
+	bool IsBlockedCell(int row, int col) const;
+	void BlockCell(int row, int col);
 
 	void ShiftBoard(int& row, int& col);
 	void ShiftLeft();
