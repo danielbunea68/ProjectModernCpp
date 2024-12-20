@@ -81,7 +81,18 @@ Player* Speed_Mode::PreviousTurn()
 */
 
 void Speed_Mode::SwitchTurn() {
+    auto now = std::chrono::steady_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - turnStartTime).count();
+
+    if (currentPlayer == &player1) {
+        remainingTimePlayer1 -= elapsed;
+    } else {
+        remainingTimePlayer2 -= elapsed;
+    }
+
     currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+
+    StartTurnTimer();
 }
 
 void Speed_Mode::CheckWinner() {
@@ -161,7 +172,7 @@ void Speed_Mode::TimerBasedPlay() {
     while (!validMove && !isGameOver) {
         auto now = steady_clock::now();
         int elapsed = duration_cast<seconds>(now - turnStartTime).count();
-        
+
         if (currentPlayer == &player1) {
             remainingTimePlayer1 -= elapsed;
         } else {
