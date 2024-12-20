@@ -137,7 +137,7 @@ bool Speed_Mode::CheckTimer()
             return false;
         }
     }
-
+    StartTurnTimer();
     return true;
 }
 
@@ -205,4 +205,14 @@ void Speed_Mode::ConfigureTimeLimit(int seconds)
     timeLimit = seconds;
     remainingTimePlayer1 = seconds;
     remainingTimePlayer2 = seconds;
+}
+
+void Speed_Mode::HandleTimeout(Player* player) {
+    std::cout << player->getName() << " ran out of time and loses!\n";
+    isGameOver = true;
+}
+
+void Speed_Mode::DisplayTimeRemaining() const {
+    std::cout << player1.getName() << ": " << remainingTimePlayer1 << " seconds\n";
+    std::cout << player2.getName() << ": " << remainingTimePlayer2 << " seconds\n";
 }

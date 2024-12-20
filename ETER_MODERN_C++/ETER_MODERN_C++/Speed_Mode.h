@@ -22,6 +22,7 @@ private:
     bool CheckTimer();
     void ResetTimers();
     void TimerBasedPlay();
+    void HandleTimeout(Player* player);
 
 public:
     Speed_Mode();
@@ -39,4 +40,5 @@ public:
 
     void ConfigureTimeLimit(int seconds);
     void InitGame(std::string name1, std::string name2) override;
+    void DisplayTimeRemaining() const;
 };
