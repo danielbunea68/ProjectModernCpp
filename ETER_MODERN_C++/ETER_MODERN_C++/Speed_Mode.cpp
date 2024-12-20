@@ -153,25 +153,40 @@ void Speed_Mode::ResetGame() {
 
 void Speed_Mode::TimerBasedPlay() {
     using namespace std::chrono;
-    auto start = steady_clock::now();
+    StartTurnTimer();
 
     int row, col;
     bool validMove = false;
 
-    do {
+    while (!validMove && !isGameOver) {
         auto now = steady_clock::now();
-        auto elapsed = duration_cast<seconds>(now - start).count();
+        int elapsed = duration_cast<seconds>(now - turnStartTime).count();
+        
+        if (currentPlayer == &player1) {
+            remainingTimePlayer1 -= elapsed;
+        } else {
+            remainingTimePlayer2 -= elapsed;
+        }
 
-        if (elapsed > 10) {
-            std::cout << currentPlayer->getName() << " ran out of time!\n";
+        if (remainingTimePlayer1 <= 0 || remainingTimePlayer2 <= 0) {
+            std::cout << currentPlayer->getName() << " ran out of time and loses the game!\n";
+            isGameOver = true;
             return;
         }
 
-        std::cout << "Enter row and column (within 10 seconds): ";
+        std::cout << "Remaining time for " << currentPlayer->getName() << ": "
+                  << (currentPlayer == &player1 ? remainingTimePlayer1 : remainingTimePlayer2) << " seconds.\n";
+
+        std::cout << "Enter row and column for your move: ";
         std::cin >> row >> col;
 
         validMove = board.MakeMove(row, col, currentPlayer->PlayCard(0));
-    } while (!validMove);
+
+        if (!validMove) {
+            std::cout << "Invalid move. Try again!\n";
+        }
+        turnStartTime = steady_clock::now();
+    }
 }
 
 void Speed_Mode::ConfigureTimeLimit(int seconds)
