@@ -62,9 +62,10 @@ void Speed_Mode::InitGame(std::string name1, std::string name2) {
         player1.AddCard(Card(value, player1.getColor()));
         player2.AddCard(Card(value, player2.getColor()));
     }
-    currentPlayer = &player1;
-    remainingTimePlayer1 = timeLimit;
-    remainingTimePlayer2 = timeLimit;
+
+    currentPlayer = &player1; // Set the first player
+    ResetTimers(); // Ensure timers are reset at the start of the game
+    isGameOver = false;
 }
 
 /*
@@ -98,6 +99,10 @@ void Speed_Mode::StartTurnTimer()
     turnStartTime = std::chrono::steady_clock::now();
 }
 
+void Speed_Mode::ResetTimers() {
+    remainingTimePlayer1 = timeLimit;
+    remainingTimePlayer2 = timeLimit;
+}
 bool Speed_Mode::CheckTimer()
 {
     using namespace std::chrono;

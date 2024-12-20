@@ -20,6 +20,8 @@ private:
     void CheckWinner();
     void StartTurnTimer();
     bool CheckTimer();
+    void ResetTimers();
+    void TimerBasedPlay();
 
 public:
     Speed_Mode();
@@ -35,6 +37,6 @@ public:
     void PlayGame() override;
     void ResetGame() override;
 
-    void TimerBasedPlay();
     void ConfigureTimeLimit(int seconds);
+    void InitGame(std::string name1, std::string name2) override;
 };
