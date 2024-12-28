@@ -9,7 +9,6 @@
 
 #include "Card.h"
 #include "Bomb.h"
-#include "Element_Mode.h"
 
 enum class WizardPower
 {
@@ -37,8 +36,8 @@ private:
 	std::vector<Card> removedCards;
 	std::pair<int, int> m_winncords;
 	static std::vector<WizardPower> assignedPowers;
-	bool elementPowerUsed = false;  
-	Element_Mode::Putere elementPower;
+	//bool elementPowerUsed = false;  
+	//Element_Mode::Putere elementPower;
 
 	Bomb* bomb = nullptr;
 
@@ -107,11 +106,12 @@ public:
 	/// 
 	void ClearCards();
 
+	/*
 	void setElementPowerUsed();
 	bool getElementPowerUsed();
 	Element_Mode::Putere getElementPower();
 
-
+	*/
 	bool isTurn = false;
 
 	int selectedIndex = 0;

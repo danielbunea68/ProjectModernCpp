@@ -190,18 +190,19 @@ void Tournament_Mode::Wizard_Element(std::string name1, std::string name2)
                         std::cout << "Action canceled.\n";
                     }
                 }
-                else if (!useWizardPower && !currentPlayer->getElementPowerUsed()) {
+                else if (!useWizardPower /* && !currentPlayer->getElementPowerUsed()*/) 
+                {
                     char confirmChoice;
                     std::cout << "Are you sure you want to use your Element power? (y/n): ";
                     std::cin >> confirmChoice;
 
                     if (confirmChoice == 'y' || confirmChoice == 'Y') 
                     {
-                        Element_Mode::Putere power = currentPlayer->getElementPower(); 
+                        //Element_Mode::Putere power = currentPlayer->getElementPower(); 
 
-                        elementGame.ActivatePower(power);
+                        //elementGame.ActivatePower(power);
 
-                        currentPlayer->setElementPowerUsed();
+                        //currentPlayer->setElementPowerUsed();
                         break;
                     }
                     else {

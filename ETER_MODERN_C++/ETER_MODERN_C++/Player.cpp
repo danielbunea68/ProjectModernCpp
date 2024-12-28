@@ -221,6 +221,8 @@ void Player::ClearCards()
 	m_cards.clear();
 }
 
+/*
+
 void Player::setElementPowerUsed()
 {
 	elementPowerUsed = true;
@@ -235,5 +237,6 @@ Element_Mode::Putere Player::getElementPower()
 {
 	return elementPower;
 }
+*/
 
 
