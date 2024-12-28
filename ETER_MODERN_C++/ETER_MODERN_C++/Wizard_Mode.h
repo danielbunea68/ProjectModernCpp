@@ -14,19 +14,23 @@ private :
     Player* currentPlayer;
     int player1Wins = 0, player2Wins = 0;
 
+public :
+    
+    Board& GetBoard();
+
     void removeOpponentCard(int row, int col);
     void removeRow(int row);
     void coverOpponentCard(int row, int col);
     void createPit(int row, int col);
     void moveOwnStack(int fromRow, int fromCol, int toRow, int toCol);
-    void grantExtraEterCard(int row ,int col);
+    void grantExtraEterCard(int row, int col);
     void moveOpponentStack(int fromRow, int fromCol, int toRow, int toCol);
     void moveEdgeRow(int row);
 
     std::string GetWizardPowerName(WizardPower power);
     void SwitchTurn();
 
-public :
+
     Wizard_Mode();
 
     ~Wizard_Mode();

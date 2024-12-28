@@ -54,7 +54,6 @@ private:
 	bool player1UsedAnyPower = false;
 	bool player2UsedAnyPower = false;
 	int player1Wins = 0, player2Wins = 0;
-	void SwitchTurn();
 
 	std::string GetPowerName(Putere power);
 	std::string GetPowerDescription(Putere power);
@@ -64,6 +63,7 @@ private:
 
 public:
 
+	void SwitchTurn();
 	Element_Mode();
 	Element_Mode(Putere putere);
 	//Rule of Five 

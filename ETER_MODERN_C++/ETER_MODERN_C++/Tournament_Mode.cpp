@@ -147,7 +147,7 @@ void Tournament_Mode::PlayGameChosen(std::string name1, std::string name2)
 	 
 }
 
-void Tournament_Mode::Wizard_Element(std::string name1, std::string name2)
+void Tournament_Mode::Wizard_Element(std::string name1, std::string name2) 
 {
     Wizard_Mode wizardGame;
     Element_Mode elementGame;
@@ -155,22 +155,17 @@ void Tournament_Mode::Wizard_Element(std::string name1, std::string name2)
     wizardGame.InitGame(name1, name2);
     elementGame.InitGame(name1, name2);
 
-    std::unordered_set<std::string> Powers;
     int totalRounds = 5;
     Player* currentPlayer = wizardGame.CurrentTurn();
+    bool isover = false;
 
     while (totalRounds > 0 && !isover) {
         std::cout << "\nRound " << 6 - totalRounds << " begins!\n";
 
         bool useWizardPower = totalRounds % 2 == 0;
-        if (useWizardPower) {
-            std::cout << currentPlayer->getName() << " is using a Wizard power.\n";
-        }
-        else {
-            std::cout << currentPlayer->getName() << " is using an Element power.\n";
-        }
+        std::cout << currentPlayer->getName()
+            << (useWizardPower ? " is using a Wizard power.\n" : " is using an Element power.\n");
 
-        // Unified menu for gameplay
         while (true) {
             std::cout << "\n" << currentPlayer->getName() << "'s turn.\n";
             std::cout << "Choose an action:\n";
@@ -188,80 +183,64 @@ void Tournament_Mode::Wizard_Element(std::string name1, std::string name2)
 
                     if (confirmChoice == 'y' || confirmChoice == 'Y') {
                         WizardPower power = currentPlayer->getWizardPower();
-                        ActivatePower(power);
                         currentPlayer->setPowerUsed();
                         break;
                     }
                     else {
-                        std::cout << "Action canceled. Returning to the main menu.\n";
+                        std::cout << "Action canceled.\n";
                     }
                 }
-                else if (!useWizardPower && !Powers.empty()) {
-                    std::cout << "Available Element powers:\n";
-                    int powerIndex = 1;
-                    for (const auto& power : Powers) {
-                        std::cout << powerIndex++ << ": " << power << "\n";
-                    }
+                else if (!useWizardPower && !currentPlayer->getElementPowerUsed()) {
+                    char confirmChoice;
+                    std::cout << "Are you sure you want to use your Element power? (y/n): ";
+                    std::cin >> confirmChoice;
 
-                    std::cout << "Select a power to use or 0 to cancel: ";
-                    int powerChoice;
-                    std::cin >> powerChoice;
+                    if (confirmChoice == 'y' || confirmChoice == 'Y') 
+                    {
+                        Element_Mode::Putere power = currentPlayer->getElementPower(); 
 
-                    if (powerChoice > 0 && powerChoice <= Powers.size()) {
-                        auto selectedPower = std::next(Powers.begin(), powerChoice - 1);
-                        ActivatePower(*selectedPower);
-                        Powers.erase(selectedPower);
+                        elementGame.ActivatePower(power);
+
+                        currentPlayer->setElementPowerUsed();
                         break;
                     }
                     else {
-                        std::cout << "Action canceled. Returning to the main menu.\n";
+                        std::cout << "Action canceled.\n";
                     }
                 }
                 else {
-                    std::cout << "No powers available to use or power already used this turn.\n";
+                    std::cout << "Power already used or unavailable.\n";
                 }
             }
             else if (choice == 1) {
+                // Play card logic here
                 currentPlayer->ShowHand();
                 int cardIndex = -1;
                 while (!currentPlayer->HasCardAtIndex(cardIndex)) {
-                    std::cout << currentPlayer->getName() << ", choose a card index to play: ";
+                    std::cout << "Choose a card index to play: ";
                     std::cin >> cardIndex;
                 }
 
                 Card chosenCard = currentPlayer->PlayCard(cardIndex);
-                if (currentPlayer->CanPlaceCardFaceDown()) {
-                    char answer;
-                    std::cout << "Do you want to play this card face down? (y/n): ";
-                    std::cin >> answer;
-                    if (answer == 'y' || answer == 'Y') {
-                        chosenCard.setFaceDown(true);
-                    }
-                }
-
                 int row, col;
                 int result;
                 do {
-                    std::cout << "Enter the row and column to place the card (0, 1, or 2).\n";
-                    if (!wizardGame.IsDefinitiveBoard()) 
-                    {
-                        std::cout << "If the board is not definitive, you may also enter (-1, 3) to place the card in a special position.\n";
-                    }
+                    std::cout << "Enter row and column to place the card: ";
                     std::cin >> row >> col;
-                    result = wizardGame.CanMakeMove(row, col, chosenCard);
+                    result = wizardGame.GetBoard().CanMakeMove(row, col, chosenCard);
                 } while (result == 0);
 
                 if (result == 1) {
-                    wizardGame.MakeMove(row, col, chosenCard);
+                    wizardGame.GetBoard().MakeMove(row, col, chosenCard);
                     break;
                 }
             }
             else if (choice == 3) {
-                std::cout << "Turn ended. Switching to next player.\n";
+                std::cout << "Turn ended.\n";
                 break;
             }
             else {
-                std::cout << "Invalid choice! Please select a valid action.\n";
+                std::cout << "Invalid choice.\n";
             }
         }
 
@@ -275,11 +254,9 @@ void Tournament_Mode::Wizard_Element(std::string name1, std::string name2)
             break;
         }
 
-        wizardGame.ResetGame();
-        elementGame.ResetGame();
-        currentPlayer = (currentPlayer == wizardGame.CurrentTurn())
-            ? elementGame.CurrentTurn()
-            : wizardGame.CurrentTurn();
+        wizardGame.SwitchTurn();
+        elementGame.SwitchTurn();
+        currentPlayer = wizardGame.CurrentTurn();
         totalRounds--;
     }
 
@@ -287,6 +264,9 @@ void Tournament_Mode::Wizard_Element(std::string name1, std::string name2)
         std::cout << "Hybrid mode ended without a decisive winner!\n";
     }
 }
+
+
+
 
 
 void Tournament_Mode::DisplayTournamentBoard() {
