@@ -180,7 +180,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Speed_Mode.cpp" />
-    <ClCompile Include="Wizard_Card.cpp" />
     <ClCompile Include="Wizard_Mode.cpp" />
     <ClCompile Include="Match.cpp" />
     <ClCompile Include="Player.cpp" />

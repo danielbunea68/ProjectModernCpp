@@ -147,6 +147,58 @@ void Tournament_Mode::PlayGameChosen(std::string name1, std::string name2)
 	 
 }
 
+void Tournament_Mode::Wizard_Element(std::string name1, std::string name2)
+{
+
+	Wizard_Mode wizardGame;
+	Element_Mode elementGame;
+
+	wizardGame.InitGame(name1, name2);
+	elementGame.InitGame(name1, name2);
+
+	std::unordered_set<std::string> Powers;
+
+	int totalRounds = 5;
+	Player* currentPlayer = wizardGame.CurrentTurn();
+
+	while (totalRounds > 0 && !isover) {
+		std::cout << "\nRound " << 6 - totalRounds << " begins!\n";
+
+		bool useWizardPower = totalRounds % 2 == 0;
+		if (useWizardPower) 
+		{
+			std::cout << currentPlayer->getName() << " is using a Wizard power.\n";
+			wizardGame.PlayGame();
+		}
+		else {
+			std::cout << currentPlayer->getName() << " is using an Element power.\n";
+			elementGame.PlayGame();
+		}
+
+		int x = currentPlayer->getWinnCords().first;
+		int y = currentPlayer->getWinnCords().second;
+		tournament_board[x][y] = currentPlayer->getColor();
+
+		isover = CheckWinner(currentPlayer->getColor());
+		if (isover) {
+			std::cout << currentPlayer->getName() << " wins the hybrid mode!\n";
+			break;
+		}
+
+		wizardGame.ResetGame();
+		elementGame.ResetGame();
+		currentPlayer = (currentPlayer == wizardGame.CurrentTurn())
+			? elementGame.CurrentTurn()
+			: wizardGame.CurrentTurn();
+		totalRounds--;
+	}
+
+	if (!isover) 
+	{
+		std::cout << "Hybrid mode ended without a decisive winner!\n";
+	}
+}
+
 void Tournament_Mode::DisplayTournamentBoard() {
     std::cout << "\nCurrent Tournament Board:\n";
     for (const auto& row : tournament_board) {

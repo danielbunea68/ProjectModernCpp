@@ -39,6 +39,6 @@ public:
     void ResetGame() override;
 
     void ConfigureTimeLimit(int seconds);
-    void InitGame(std::string name1, std::string name2) override;
+    //void InitGame(std::string name1, std::string name2) override;
     void DisplayTimeRemaining() const;
 };
