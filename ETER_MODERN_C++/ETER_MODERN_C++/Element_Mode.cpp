@@ -1729,65 +1729,64 @@ void Element_Mode::Granita()
 void Element_Mode::Avalansa(int row1, int col1, int row2, int col2)
 {
 	if (!((row1 == row2 && abs(col1 - col2) == 1) || (col1 == col2 && abs(row1 - row2) == 1))) {
-		std::cout << "Teancurile nu sunt adiacente. Alegerea este invalidă.\n";
+		std::cout << "Teancurile nu sunt adiacente. Alegerea este invalida.\n";
 		return;
 	}
 
 	if (board.IsEmpty(row1, col1) || board.IsEmpty(row2, col2)) {
-		std::cout << "Una sau ambele poziții selectate sunt goale. Alegerea este invalidă.\n";
+		std::cout << "Una sau ambele pozitii selectate sunt goale. Alegerea este invalida.\n";
 		return;
 	}
 
-	int shiftRow1 = row1, shiftCol1 = col1;
-	int shiftRow2 = row2, shiftCol2 = col2;
+	if (board.IsEmpty(row1, col1 - 1)) {
 
-	if (row1 == row2) {
-		if (board.IsEmpty(row1, col1 - 1)) {
-			shiftCol1 = col1 - 1;
-		}
-		else if (board.IsEmpty(row1, col1 + 1)) {
-			shiftCol1 = col1 + 1;
-		}
-
-		if (board.IsEmpty(row2, col2 - 1)) {
-			shiftCol2 = col2 - 1;
-		}
-		else if (board.IsEmpty(row2, col2 + 1)) {
-			shiftCol2 = col2 + 1;
-		}
+		board.MoveStack(row1, col1, row1, col1 - 1);
+		std::cout << "Teancul de la (" << row1 << ", " << col1 << ") a fost mutat la (" << row1 << ", " << col1 - 1 << ").\n";
 	}
-	else {
-		if (board.IsEmpty(row1 - 1, col1)) {
-			shiftRow1 = row1 - 1;
-		}
-		else if (board.IsEmpty(row1 + 1, col1)) {
-			shiftRow1 = row1 + 1;
-		}
+	else if (board.IsEmpty(row1, col1 + 1)) {
 
-		if (board.IsEmpty(row2 - 1, col2)) {
-			shiftRow2 = row2 - 1;
-		}
-		else if (board.IsEmpty(row2 + 1, col2)) {
-			shiftRow2 = row2 + 1;
-		}
+		board.MoveStack(row1, col1, row1, col1 + 1);
+		std::cout << "Teancul de la (" << row1 << ", " << col1 << ") a fost mutat la (" << row1 << ", " << col1 + 1 << ").\n";
 	}
+	else if (board.IsEmpty(row1 - 1, col1)) {
 
-	if ((shiftRow1 != row1 || shiftCol1 != col1) && board.IsEmpty(shiftRow1, shiftCol1)) {
-		board.MoveStack(row1, col1, shiftRow1, shiftCol1);
-		std::cout << "Teancul de la (" << row1 << ", " << col1 << ") a fost mutat la (" << shiftRow1 << ", " << shiftCol1 << ").\n";
+		board.MoveStack(row1, col1, row1 - 1, col1);
+		std::cout << "Teancul de la (" << row1 << ", " << col1 << ") a fost mutat la (" << row1 - 1 << ", " << col1 << ").\n";
+	}
+	else if (board.IsEmpty(row1 + 1, col1)) {
+
+		board.MoveStack(row1, col1, row1 + 1, col1);
+		std::cout << "Teancul de la (" << row1 << ", " << col1 << ") a fost mutat la (" << row1 + 1 << ", " << col1 << ").\n";
 	}
 	else {
 		std::cout << "Teancul de la (" << row1 << ", " << col1 << ") nu poate fi mutat.\n";
 	}
 
-	if ((shiftRow2 != row2 || shiftCol2 != col2) && board.IsEmpty(shiftRow2, shiftCol2)) {
-		board.MoveStack(row2, col2, shiftRow2, shiftCol2);
-		std::cout << "Teancul de la (" << row2 << ", " << col2 << ") a fost mutat la (" << shiftRow2 << ", " << shiftCol2 << ").\n";
+	if (board.IsEmpty(row2, col2 - 1)) 
+	{
+		board.MoveStack(row2, col2, row2, col2 - 1);
+		std::cout << "Teancul de la (" << row2 << ", " << col2 << ") a fost mutat la (" << row2 << ", " << col2 - 1 << ").\n";
+	}
+	else if (board.IsEmpty(row2, col2 + 1)) {
+
+		board.MoveStack(row2, col2, row2, col2 + 1);
+		std::cout << "Teancul de la (" << row2 << ", " << col2 << ") a fost mutat la (" << row2 << ", " << col2 + 1 << ").\n";
+	}
+	else if (board.IsEmpty(row2 - 1, col2)) {
+
+		board.MoveStack(row2, col2, row2 - 1, col2);
+		std::cout << "Teancul de la (" << row2 << ", " << col2 << ") a fost mutat la (" << row2 - 1 << ", " << col2 << ").\n";
+	}
+	else if (board.IsEmpty(row2 + 1, col2)) {
+
+		board.MoveStack(row2, col2, row2 + 1, col2);
+		std::cout << "Teancul de la (" << row2 << ", " << col2 << ") a fost mutat la (" << row2 + 1 << ", " << col2 << ").\n";
 	}
 	else {
 		std::cout << "Teancul de la (" << row2 << ", " << col2 << ") nu poate fi mutat.\n";
 	}
 }
+
 
 void Element_Mode::Bolovan(int row, int col, int cardIndex)
 {
@@ -1801,6 +1800,15 @@ void Element_Mode::Bolovan(int row, int col, int cardIndex)
 	{
 		std::cout << currentPlayer->getName() << ", alegi un index de card valid: ";
 		std::cin >> cardIndex;
+
+		// Limit the number of attempts to prevent infinite loop (optional)
+		static int attemptCount = 0;
+		attemptCount++;
+		if (attemptCount > 3)
+		{
+			std::cout << "Ai depășit numărul maxim de încercări. Runda ta s-a încheiat.\n";
+			return; // Exit after 3 invalid attempts
+		}
 	}
 
 	Card cardToCover = currentPlayer->PlayCard(cardIndex);
@@ -1811,3 +1819,4 @@ void Element_Mode::Bolovan(int row, int col, int cardIndex)
 
 	std::cout << "Iluzia de la poziția (" << row << ", " << col << ") a fost acoperită cu o carte.\n";
 }
+
