@@ -136,6 +136,65 @@ void CardsWidget::DrawBomb(QPainter& painter, int i) {
 	}
 }
 
+void CardsWidget::DrawPower(QPainter& painter, int i)
+{
+	if (!player->hasPower) return;
+
+	auto power = player->getWizardPower();
+
+	// Definirea dreptunghiului celulei
+	QRect cell(i * cellWidth, 0, cellWidth, cellHeight);
+
+	// Încarcă imaginea corespunzătoare valorii și culorii
+	QString imagePath = "./images/bomb_" + QString::number(bomb->getId()) + ".png";
+	QPixmap cardImage(imagePath);
+
+	// Desenează imaginea dacă există, altfel desenează fundalul și valoarea
+	if (!cardImage.isNull()) {
+		int rotationAngle = bomb->getRotationAngle();  // You need to implement how to get the rotation angle of the bomb (e.g., 0, 90, 180, or 270 degrees)
+
+		// Save the painter's state before applying rotation
+		painter.save();
+
+		// Move the painter's origin to the center of the cell to rotate around it
+		painter.translate(cell.center());
+
+		// Rotate the painter by the specified angle (counterclockwise)
+		painter.rotate(rotationAngle);
+
+		// Move the painter back to top-left corner of the cell after rotation
+		painter.translate(-cell.center());
+
+		// Draw the rotated image
+		painter.drawPixmap(cell, cardImage.scaled(cell.size(), Qt::KeepAspectRatio));
+
+		// Restore the painter's state (i.e., revert the transformations)
+		painter.restore();
+	}
+	else {
+		QColor backgroundColor(QString::fromStdString("white"));
+		painter.fillRect(cell, backgroundColor);
+		painter.setPen(Qt::white);
+
+		QFont font = painter.font();
+		font.setPointSize(16);
+		painter.setFont(font);
+
+		painter.setPen(Qt::black);
+		QString cardValue = QString::fromStdString("bomb_" + std::to_string(bomb->getId()));
+		painter.drawText(cell, Qt::AlignCenter, cardValue);
+	}
+
+	// Desenează bordura neagră în jurul celulei
+	painter.setPen(Qt::black);
+	painter.drawRect(cell);
+
+	if (player->selectedBomb && player->isTurn) {
+		painter.setPen(QPen(Qt::green, 3));
+		painter.drawRect(cell);
+	}
+}
+
 void CardsWidget::mousePressEvent(QMouseEvent* event)
 {
 	int clickedIndex = event->position().x() / cellWidth; // Determină indexul pe baza poziției x a click-ului

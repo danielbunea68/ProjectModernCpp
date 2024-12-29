@@ -24,6 +24,22 @@ protected:
 
 	void DrawCard(QPainter& painter, int i);
 	void DrawBomb(QPainter& painter, int i);
+	void DrawPower(QPainter& painter, int i);
+
+	QString enumToString(WizardPower value) {
+		switch (value) {
+		case WizardPower::MoveEdgeRow: return "MoveEdgeRow";
+		case WizardPower::RemoveOpponentCard: return "RemoveOpponentCard";
+		case WizardPower::RemoveRow: return "RemoveRow";
+		case WizardPower::CoverOpponentCard: return "CoverOpponentCard";
+		case WizardPower::CreatePit: return "CreatePit";
+		case WizardPower::MoveOwnStack: return "MoveOwnStack";
+		case WizardPower::ExtraEterCard: return "ExtraEterCard";
+		case WizardPower::MoveOpponentStack: return "MoveOpponentStack";
+		default: return "Unknown";
+		}
+
+	}
 private:
 
 	int cellWidth{};
