@@ -84,6 +84,27 @@ public:
 			}
 		}
 	}
+
+	void usePower(Player* player, int row, int col) {
+		player->hasPower = false;
+		player->selectedPower = false;
+		WizardPower power = currentPlayer->getWizardPower();
+		ActivatePower(power , row , col );
+
+		currentPlayer->setPowerUsed();
+	}
+
+	void ActivatePower(WizardPower power, int row , int col );
+	void removeOpponentCard(int row, int col);
+	void removeRow(int row);
+	void coverOpponentCard(int row, int col);
+	void createPit(int row, int col);
+	void moveOwnStack(int fromRow, int fromCol, int toRow, int toCol);
+	void moveOpponentStack(int fromRow, int fromCol, int toRow, int toCol);
+	void moveEdgeRow(int row);
+	void grantExtraEterCard(int row, int col);
+
+
 };
 
 

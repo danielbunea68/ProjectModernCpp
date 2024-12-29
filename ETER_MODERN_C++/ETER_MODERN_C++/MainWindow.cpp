@@ -6,7 +6,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
 
 	QHBoxLayout* layout = new QHBoxLayout(mainWidget);
 
-	game = new Game();
+	// Instantiate Tournament, Wizard, Elemental games
+	game = new Game(); // Change this based on the desired game mode
 	game->InitGame("Player1", "Player2");
 
 	BoardWidget* boardWidget = new BoardWidget();

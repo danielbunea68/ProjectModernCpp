@@ -135,6 +135,262 @@ void Game::SwitchTurn()
 	
 }
 
+void Game::ActivatePower(WizardPower power, int row , int col )
+{
+	switch (power)
+	{
+	case WizardPower::RemoveOpponentCard:
+	{
+		removeOpponentCard(row, col);
+		break;
+	}
+
+	case WizardPower::RemoveRow:
+	{
+		removeRow(row);
+		break;
+	}
+
+	case WizardPower::CoverOpponentCard:
+	{
+		coverOpponentCard(row, col);
+		break;
+	}
+
+	case WizardPower::CreatePit:
+	{
+		createPit(row, col);
+		break;
+	}
+
+	case WizardPower::MoveOwnStack:
+	{
+		int fromRow1, fromCol1;
+		int toRow2, toCol2;
+
+		moveOwnStack(fromRow1, fromCol1, toRow2, toCol2);
+		break;
+	}
+
+	case WizardPower::ExtraEterCard:
+	{
+		grantExtraEterCard(row, col);
+		break;
+	}
+
+	case WizardPower::MoveOpponentStack:
+	{
+		int fromRow, fromCol;
+		int toRow, toCol;
+
+		moveOpponentStack(fromRow, fromCol, toRow, toCol);
+		break;
+	}
+
+	case WizardPower::MoveEdgeRow:
+	{
+		moveEdgeRow(row);
+		break;
+	}
+
+	default:
+		std::cout << "Unknown power.\n";
+		break;
+	}
+}
+
+void Game::removeOpponentCard(int row, int col)
+{
+	if (!board.IsValidPosition(row, col) || board.IsEmpty(row, col) || board.TopCard(row, col).getColor() == currentPlayer->getColor()) {
+		std::cout << "Cannot remove card at (" << row << ", " << col << "). Invalid position or not an opponent's card.\n";
+		return;
+	}
+
+	board.Remove(row, col);
+	std::cout << "Removed opponent's card at (" << row << ", " << col << ").\n";
+}
+
+void Game::removeRow(int row)
+{
+	if (board.GetSize() > row) {
+		bool hasPlayerCard = false;
+		for (int col = 0; col < board.GetSize(); ++col) {
+			if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() == currentPlayer->getColor()) {
+				hasPlayerCard = true;
+				break;
+			}
+		}
+		if (hasPlayerCard) {
+			for (int col = 0; col < board.GetSize(); ++col) {
+				while (!board.IsEmpty(row, col)) {
+					RemoveCard(row, col);
+				}
+			}
+			std::cout << "Row " << row << " removed.\n";
+		}
+	}
+}
+
+void Game::coverOpponentCard(int row, int col)
+{
+	if (!board.IsValidPosition(row, col) || board.IsEmpty(row, col) || board.TopCard(row, col).getColor() == currentPlayer->getColor()) {
+		std::cout << "Cannot cover card at (" << row << ", " << col << "). Invalid position or not an opponent's card.\n";
+		return;
+	}
+
+	currentPlayer->ShowHand();
+	int cardIndex = -1;
+	std::cout << "Choose a lower card from hand to cover opponent's card: ";
+	while (!currentPlayer->HasCardAtIndex(cardIndex)) {
+		std::cin >> cardIndex;
+	}
+
+	Card chosenCard = currentPlayer->PlayCard(cardIndex);
+	if (chosenCard.getValue() < board.TopCard(row, col).getValue()) {
+		board.AddCard(row, col, chosenCard);
+		std::cout << "Covered opponent's card with " << chosenCard.getValue() << ".\n";
+	}
+	else {
+		std::cout << "Cannot cover with card of equal or higher value.\n";
+		currentPlayer->AddCard(chosenCard);
+	}
+}
+
+void Game::createPit(int row, int col)
+{
+	if (!board.IsValidPosition(row, col))
+	{
+		std::cout << "Cannot create pit at (" << row << ", " << col << "). Invalid position.\n";
+		return;
+	}
+
+	if (board.IsBlockedCell(row, col))
+	{
+		std::cout << "Cannot create pit at (" << row << ", " << col << "). This cell is already a pit.\n";
+		return;
+	}
+
+	auto& boardGrid = board.GetBoard();
+	while (!board.IsEmpty(row, col))
+	{
+		boardGrid[row][col].pop();
+	}
+
+	board.BlockCell(row, col);
+
+	std::cout << "Pit created at (" << row << ", " << col << "). All cards removed, and no cards can be placed here.\n";
+}
+
+void Game::moveOwnStack(int fromRow, int fromCol, int toRow, int toCol)
+{
+	if (!board.IsValidPosition(fromRow, fromCol))
+	{
+		std::cout << "Invalid source position (" << fromRow << ", " << fromCol << ").\n";
+		return;
+	}
+
+	if (board.IsEmpty(fromRow, fromCol))
+	{
+		std::cout << "There is no stack at the specified source position (" << fromRow << ", " << fromCol << ").\n";
+		return;
+	}
+
+	if (board.TopCard(fromRow, fromCol).getColor() != currentPlayer->getColor())
+	{
+		std::cout << "The stack at (" << fromRow << ", " << fromCol << ") does not belong to you.\n";
+		return;
+	}
+
+	if (!board.IsValidPosition(toRow, toCol))
+	{
+		std::cout << "Invalid destination position (" << toRow << ", " << toCol << ").\n";
+		return;
+	}
+
+	if (!board.IsEmpty(toRow, toCol))
+	{
+		std::cout << "The destination position (" << toRow << ", " << toCol << ") is not empty.\n";
+		return;
+	}
+
+	std::deque<Card> stack;
+
+	while (!board.IsEmpty(fromRow, fromCol))
+	{
+		stack.push_back(board.TopCard(fromRow, fromCol));
+		board.Remove(fromRow, fromCol);
+	}
+
+	while (!stack.empty()) {
+		board.AddCard(toRow, toCol, stack.back());
+		stack.pop_back();
+	}
+
+	std::cout << "Moved your stack from (" << fromRow << ", " << fromCol << ") to (" << toRow << ", " << toCol << ").\n";
+}
+
+void Game::moveOpponentStack(int fromRow, int fromCol, int toRow, int toCol)
+{
+	if (board.IsEmpty(fromRow, fromCol))
+	{
+		std::cout << "There is no stack at the specified source position (" << fromRow << ", " << fromCol << ").\n";
+		return;
+	}
+
+	if (board.TopCard(fromRow, fromCol).getColor() == currentPlayer->getColor())
+	{
+		std::cout << "You cannot move your own stack!\n";
+		return;
+	}
+
+	if (!board.IsEmpty(toRow, toCol))
+	{
+		std::cout << "The destination position (" << toRow << ", " << toCol << ") is not empty.\n";
+		return;
+	}
+
+	std::deque<Card> tempStack;
+
+	while (!board.IsEmpty(fromRow, fromCol))
+	{
+		Card topCard = board.TopCard(fromRow, fromCol);
+		RemoveCard(fromRow, fromCol);
+		tempStack.push_back(topCard);
+	}
+
+	while (!tempStack.empty())
+	{
+		board.AddCard(toRow, toCol, tempStack.back());
+		tempStack.pop_back();
+	}
+	std::cout << "Moved stack from (" << fromRow << ", " << fromCol << ") to (" << toRow << ", " << toCol << ").\n";
+}
+
+void Game::moveEdgeRow(int row)
+{
+	int newRow;
+	std::cout << "Enter the new edge row position: ";
+	std::cin >> newRow;
+
+	if (board.GetSize() > row && board.GetSize() > newRow && row != newRow) {
+		for (int col = 0; col < board.GetSize(); ++col) {
+			if (!board.IsEmpty(row, col)) {
+				Card card = board.TopCard(row, col);
+				RemoveCard(row, col);
+				board.MakeMove(newRow, col, card);
+			}
+		}
+		std::cout << "Moved row " << row << " to edge row " << newRow << ".\n";
+	}
+}
+
+void Game::grantExtraEterCard(int row, int col)
+{
+	Card extraCard(5, currentPlayer->getColor(), "Eter");
+	currentPlayer->AddCard(extraCard);
+	board.MakeMove(row, col, extraCard);
+}
+
 void Game::RemoveCard(int row, int col) //aici
 {
 	board.Remove(row, col);  // Use the board's Remove function

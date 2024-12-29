@@ -119,6 +119,12 @@ void BoardWidget::mousePressEvent(QMouseEvent* event) {
 		game->useBomb(player);
 		player->hasBomb = false;
 	}
+	else if (player->hasPower && player->selectedPower)
+	{
+		game->usePower(player, row , col );
+		player->hasPower = false;
+	}
+
 	else {
 		if (selectedIndex < 0 || selectedIndex > handSize) return;
 		Card selectedCard = game->CurrentTurn()->PlayCard(selectedIndex);
