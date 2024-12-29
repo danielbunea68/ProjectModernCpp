@@ -86,6 +86,28 @@ void Game::InitGame(std::string name1, std::string name2)
 	player1.isTurn = true;
 }
 
+void Game::InitGameWizard(std::string name1, std::string name2)
+{
+	player1.setName(name1);
+	player2.setName(name2);
+	board.SetSize(4);
+	std::vector<int> values = { 1, 1, 2, 2, 2, 3, 3, 3, 4 };
+	player1.setColor("red");
+	player2.setColor("blue");
+	for (const auto& value : values) {
+		player1.AddCard(Card(value, player1.getColor()));
+		player2.AddCard(Card(value, player2.getColor()));
+	}
+	player1.AddCard(Card(5, player1.getColor(), "Eter"));
+	player2.AddCard(Card(5, player2.getColor(), "Eter"));
+
+	player1.setRandomWizardPower();
+	player2.setRandomWizardPower();
+
+
+	currentPlayer = &player1;
+}
+
 int Game::GetScore(std::string color)
 {
 	int score = 0;

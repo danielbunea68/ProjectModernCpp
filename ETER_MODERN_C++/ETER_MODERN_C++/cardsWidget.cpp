@@ -191,6 +191,15 @@ void CardsWidget::mousePressEvent(QMouseEvent* event)
 	else if (clickedIndex == n && player->hasBomb) {
 		player->selectedIndex = -1;
 		player->selectedBomb = true;
+		player->selectedPower = false ;
 		update();
+	}
+	else if (clickedIndex == n+1 && player->hasPower)
+	{
+		player->selectedIndex = -1;
+		player->selectedPower = true;
+		player->selectedBomb = false;
+		update();
+
 	}
 }

@@ -30,6 +30,7 @@ public:
 
 	void InitGame(std::string name1, std::string name2)override;
 
+	void InitGameWizard(std::string name1, std::string name2);
 	int GetScore(std::string color);
 
 	Player* CurrentTurn() override;
