@@ -115,16 +115,24 @@ void BoardWidget::mousePressEvent(QMouseEvent* event) {
 	int handSize = game->CurrentTurn()->getCards().size();
 	auto player = game->CurrentTurn();
 
-	if (player->hasBomb && player->selectedBomb) {
+	if (player->hasPower && player->selectedPower)
+	{
+		auto power = player->getWizardPower();
+		if (!secondClick && (power == WizardPower::MoveOwnStack || power == WizardPower::MoveEdgeRow|| power == WizardPower::MoveOpponentStack)) {
+			secondClick = true;
+			prevRow = row;
+			prevCol = col;
+			return;
+		}
+		game->usePower(player, prevRow, prevCol, row, col);
+
+		secondClick = false;
+		player->hasPower = false;
+	}
+	else if (player->hasBomb && player->selectedBomb) {
 		game->useBomb(player);
 		player->hasBomb = false;
 	}
-	else if (player->hasPower && player->selectedPower)
-	{
-		game->usePower(player, row , col );
-		player->hasPower = false;
-	}
-
 	else {
 		if (selectedIndex < 0 || selectedIndex > handSize) return;
 		Card selectedCard = game->CurrentTurn()->PlayCard(selectedIndex);

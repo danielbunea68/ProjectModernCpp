@@ -37,6 +37,9 @@ private:
     int cellWidth{};
     int cellHeight{};
     int boardSize{};
+    int prevRow;
+    int prevCol;
+    bool secondClick = false;
     Game* game;
     Board board;
     QPoint boardCellFromMouse(const QPoint& pos) const;
