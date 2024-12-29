@@ -28,14 +28,14 @@ protected:
 
 	QString enumToString(WizardPower value) {
 		switch (value) {
-		case WizardPower::MoveEdgeRow: return "MoveEdgeRow";
-		case WizardPower::RemoveOpponentCard: return "RemoveOpponentCard";
-		case WizardPower::RemoveRow: return "RemoveRow";
-		case WizardPower::CoverOpponentCard: return "CoverOpponentCard";
-		case WizardPower::CreatePit: return "CreatePit";
-		case WizardPower::MoveOwnStack: return "MoveOwnStack";
-		case WizardPower::ExtraEterCard: return "ExtraEterCard";
-		case WizardPower::MoveOpponentStack: return "MoveOpponentStack";
+		case WizardPower::MoveEdgeRow: return "8";
+		case WizardPower::RemoveOpponentCard: return "1";
+		case WizardPower::RemoveRow: return "5";
+		case WizardPower::CoverOpponentCard: return "2";
+		case WizardPower::CreatePit: return "6";
+		case WizardPower::MoveOwnStack: return "3";
+		case WizardPower::ExtraEterCard: return "7";
+		case WizardPower::MoveOpponentStack: return "4";
 		default: return "Unknown";
 		}
 
