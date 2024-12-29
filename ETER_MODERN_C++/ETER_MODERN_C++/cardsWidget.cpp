@@ -31,11 +31,15 @@ void CardsWidget::DrawQueue(QPainter& painter)
 void CardsWidget::DrawCards(QPainter& painter)
 {
 	int n = player->getCards().size();
-	for (int i = 0; i <= n; ++i) {
+	for (int i = 0; i <= n+1; ++i) {
 		if (i == n) {
+			DrawPower(painter, i);
+		}
+		else if (i == n + 1)
+		{
 			DrawBomb(painter, i);
 		}
-		else {
+		else  {
 			DrawCard(painter, i);
 		}
 	}
@@ -79,7 +83,7 @@ void CardsWidget::DrawCard(QPainter& painter, int i) {
 }
 
 void CardsWidget::DrawPower (QPainter& painter, int i) {
-	if (!player->hasBomb) return;
+	if (!player->hasPower) return;
 
 	auto power = player->getWizardPower();
 
@@ -121,7 +125,7 @@ void CardsWidget::DrawPower (QPainter& painter, int i) {
 
 void CardsWidget::DrawBomb(QPainter& painter, int i)
 {
-	if (!player->hasPower) return;
+	if (!player->hasBomb) return;
 
 	auto bomb = player->getBomb();
 
@@ -188,13 +192,13 @@ void CardsWidget::mousePressEvent(QMouseEvent* event)
 		player->selectedBomb = false;
 		update();
 	}
-	else if (clickedIndex == n && player->hasBomb) {
+	else if (clickedIndex == n + 1 && player->hasBomb) {
 		player->selectedIndex = -1;
 		player->selectedBomb = true;
 		player->selectedPower = false ;
 		update();
 	}
-	else if (clickedIndex == n+1 && player->hasPower)
+	else if (clickedIndex == n && player->hasPower)
 	{
 		player->selectedIndex = -1;
 		player->selectedPower = true;

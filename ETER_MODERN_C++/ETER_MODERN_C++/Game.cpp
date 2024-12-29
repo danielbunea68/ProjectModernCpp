@@ -157,7 +157,7 @@ void Game::SwitchTurn()
 	
 }
 
-void Game::ActivatePower(WizardPower power, int row , int col )
+void Game::ActivatePower(WizardPower power, int prevRow, int prevCol, int row , int col )
 {
 	switch (power)
 	{
@@ -187,10 +187,8 @@ void Game::ActivatePower(WizardPower power, int row , int col )
 
 	case WizardPower::MoveOwnStack:
 	{
-		int fromRow1, fromCol1;
-		int toRow2, toCol2;
 
-		moveOwnStack(fromRow1, fromCol1, toRow2, toCol2);
+		moveOwnStack(prevRow, prevCol, row, col);
 		break;
 	}
 
@@ -202,10 +200,8 @@ void Game::ActivatePower(WizardPower power, int row , int col )
 
 	case WizardPower::MoveOpponentStack:
 	{
-		int fromRow, fromCol;
-		int toRow, toCol;
 
-		moveOpponentStack(fromRow, fromCol, toRow, toCol);
+		moveOpponentStack(prevRow, prevCol, row, col);
 		break;
 	}
 

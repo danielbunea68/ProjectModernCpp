@@ -161,6 +161,7 @@ void Player::setRandomWizardPower()
 	} while (std::find(assignedPowers.begin(), assignedPowers.end(), power) != assignedPowers.end());
 
 	m_wizard_power = power;
+	hasPower = true;
 	assignedPowers.push_back(power);
 }
 

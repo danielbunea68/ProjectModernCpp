@@ -196,6 +196,14 @@
     <Image Include="..\images\4_red.png" />
     <Image Include="..\images\eter_blue.png" />
     <Image Include="..\images\eter_red.png" />
+    <Image Include="images\power_1.png" />
+    <Image Include="images\power_2.png" />
+    <Image Include="images\power_3.png" />
+    <Image Include="images\power_4.png" />
+    <Image Include="images\power_5.png" />
+    <Image Include="images\power_6.png" />
+    <Image Include="images\power_7.png" />
+    <Image Include="images\power_8.png" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resources.qrc" />
