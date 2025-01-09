@@ -47,7 +47,7 @@ public:
 	bool hasBomb = false;
 
 	bool hasPower = false;
-	bool selectedPower = false; 
+	bool selectedPower = false;
 
 
 	void rotateBomb(std::string direction) {

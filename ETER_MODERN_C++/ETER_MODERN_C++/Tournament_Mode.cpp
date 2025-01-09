@@ -105,9 +105,10 @@ int Tournament_Mode::NumberOfTokens(std::string color)
 	return nr;
 }
 
-void Tournament_Mode::PlayGameChosen(std::string name1, std::string name2)
+void Tournament_Mode::PlayGameChosen(std::string name1, std::string name2) 
 {
-	game->InitGame(name1, name2);
+
+    game->InitGame(name1, name2);
 	Player* player=nullptr;
 	Player* second_player = nullptr;
 	int number_of_games = 5; 

@@ -1,4 +1,4 @@
-/*
+
 #include "Game.h"
 #include "IGame.h"
 #include "Element_Mode.h"
@@ -35,7 +35,7 @@ int main() {
     char mode;
     std::cout << "Choose a game mode: \nTraining (t)\nWizard Mode (w)\nElemental Cards (e)\nTournament Mode (T)\n";
     std::cin >> mode;
-
+    int ok = 0;
     switch (mode) {
     case 't':
         std::cout << "You chose Training mode.\n";
@@ -52,6 +52,7 @@ int main() {
     case 'T':
         std::cout << "You chose Tournament Mode.\n";
         game_special = new Tournament_Mode();  // Instantiate the Tournament Mode
+        ok = 1; 
         break;
     default:
         std::cout << "Invalid option! Defaulting to Training mode.\n";
@@ -60,29 +61,47 @@ int main() {
     }
 
     // Initialize the game with player names
-    game->InitGame(name1, name2);
-    bool keepPlaying = true;
 
-    // Main game loop
-    while (keepPlaying) {
-        game->PlayGame();  // Run the main game logic
+    if (ok == 1)
+    {
+        char c; 
+        std::cout << "choose your game";
+        std::cin >> c; 
+        game_special->setmode(c); /// steteaza modul de joc 
+        game_special->choseGame();/// creeaza obiectul 
+    
 
-        char answer = 'n';
-        std::cout << "Do you want to play again? y/[n]\n";
-        std::cin >> answer;
-        if (answer == 'y') {
-            game->ResetGame();  // Reset the game if the player chooses to play again
-        }
-        else {
-            break;  // Exit the loop if the player chooses not to play again
-        }
+        game_special->PlayGameChosen(name1,name2);
+
+
     }
+    else
+    {
 
-    std::cout << "Game over. Thanks for playing!\n";  // End of game message
+
+        game->InitGame(name1, name2);
+        bool keepPlaying = true;
+
+        // Main game loop
+        while (keepPlaying) {
+            game->PlayGame();  // Run the main game logic
+
+            char answer = 'n';
+            std::cout << "Do you want to play again? y/[n]\n";
+            std::cin >> answer;
+            if (answer == 'y') {
+                game->ResetGame();  // Reset the game if the player chooses to play again
+            }
+            else {
+                break;  // Exit the loop if the player chooses not to play again
+            }
+        }
+
+        std::cout << "Game over. Thanks for playing!\n";  // End of game message
+    }
     return 0;
 }
-*/
-
+/*
 
 #include "Game.h"
 #include "IGame.h"
@@ -113,3 +132,4 @@ int main(int argc, char* argv[]) {
 	return app.exec();
 
 }
+*/

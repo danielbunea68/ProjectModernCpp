@@ -107,10 +107,16 @@ void Board::Display()
 					std::cout << board[i][j].top().getValue();
 				}
 			}
-			if (j < GetSize() - 1) std::cout << " | ";
+			if (j < GetSize() ) std::cout << " | ";
 		}
 		std::cout << "\n";
-		if (i < GetSize() - 1) std::cout << "----------------------\n";
+		/// 8 
+		if (i < GetSize()) {
+			if (GetSize() > 3) std::cout << "-------------------------------\n";
+			else 
+			std::cout << "-----------------------\n";
+			
+		}
 	}
 	std::cout << "\n";
 }
