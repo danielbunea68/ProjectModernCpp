@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "Wizard_Mode.h"
 #include "Element_Mode.h"
+#include "Combined_Mode.h"
 
 #include <vector>
 #include <string>

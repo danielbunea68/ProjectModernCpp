@@ -153,6 +153,7 @@
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="Card.h" />
     <QtMoc Include="CardsWidget.h" />
+    <ClInclude Include="Combined_Mode.h" />
     <ClInclude Include="Element_Mode.h" />
     <ClInclude Include="Explosion_Card.h" />
     <ClInclude Include="Game.h" />
@@ -172,6 +173,7 @@
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="CardsWidget.cpp" />
+    <ClCompile Include="Combined_Mode.cpp" />
     <ClCompile Include="Element_Mode.cpp" />
     <ClCompile Include="Explosion_Card.cpp" />
     <ClCompile Include="Game.cpp" />
