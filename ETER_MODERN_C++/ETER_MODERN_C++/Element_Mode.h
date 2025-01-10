@@ -55,13 +55,14 @@ private:
 	bool player2UsedAnyPower = false;
 	int player1Wins = 0, player2Wins = 0;
 
+public:
+
 	std::string GetPowerName(Putere power);
 	std::string GetPowerDescription(Putere power);
 	void InitializePowers();
-	bool CanUsePower(Putere power); 
+	bool CanUsePower(Putere power);
 	void UsePower(Putere power);
-
-public:
+	std::vector<Putere> GetAvailablePowers();
 
 	void SwitchTurn();
 	Element_Mode();

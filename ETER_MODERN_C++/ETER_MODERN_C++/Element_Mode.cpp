@@ -147,6 +147,11 @@ void Element_Mode::UsePower(Putere power)
 	std::cout << "Power " << static_cast<int>(power) << " has been used and is no longer available.\n";
 }
 
+std::vector<Element_Mode::Putere> Element_Mode::GetAvailablePowers()
+{
+	return availablePowers;
+}
+
 Element_Mode::Element_Mode()
 {
     currentPlayer = NULL;

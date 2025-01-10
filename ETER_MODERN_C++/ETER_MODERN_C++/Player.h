@@ -36,13 +36,12 @@ private:
 	std::vector<Card> removedCards;
 	std::pair<int, int> m_winncords;
 	static std::vector<WizardPower> assignedPowers;
-	//bool elementPowerUsed = false;  
-	//Element_Mode::Putere elementPower;
 
 	Bomb* bomb = nullptr;
 
 public:
 	bool powerUsed = false;
+	bool elementPowerUsed = false;
 	bool selectedBomb = false;
 	bool hasBomb = false;
 
@@ -95,27 +94,21 @@ public:
 	std::pair<int, int> getWinnCords() const;
 
 	void ShowHand();
-	Card PlayCard(int cardIndex);/// ii updataeaza vectorul de carti 
+	Card PlayCard(int cardIndex);
 	bool HasCardAtIndex(int cardIndex);
 	void UseAbilty();
 	void AddCard(Card card);
-	std::vector<Card>getCards() const;;
-	/// 
-
+	std::vector<Card>getCards() const;
 
 	void AddToRemovedCards(const Card& card);
 	void RemoveFromRemovedCards(const Card& card);
 	const std::vector<Card>& GetRemovedCards() const;
 
-	/// 
 	void ClearCards();
 
-	/*
-	void setElementPowerUsed();
-	bool getElementPowerUsed();
-	Element_Mode::Putere getElementPower();
+	bool getElementPowerUsed() const { return elementPowerUsed; }
+	void setElementPowerUsed(bool used) { elementPowerUsed = used; }
 
-	*/
 	bool isTurn = false;
 
 	int selectedIndex = 0;
