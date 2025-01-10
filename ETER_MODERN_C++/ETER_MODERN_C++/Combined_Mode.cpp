@@ -1,9 +1,10 @@
 #include "Combined_Mode.h"
+#include "Element_Mode.h"
 #include <iostream>
 
 Combined_Mode::Combined_Mode() : totalRounds(5) 
 {
-    unifiedBoard.SetSize(4); // Initialize a 4x4 board
+    unifiedBoard.SetSize(4);
 }
 
 void Combined_Mode::InitGame(std::string name1, std::string name2) {
@@ -13,14 +14,14 @@ void Combined_Mode::InitGame(std::string name1, std::string name2) {
 }
 
 void Combined_Mode::PlayGame() {
-    Player* currentPlayer = wizardGame.CurrentTurn();  // Get the first player (wizardGame's current turn)
+    Player* currentPlayer = wizardGame.CurrentTurn();
     bool isGameOver = false;
 
-    while (totalRounds > 0 && !isGameOver) {
+    while (totalRounds > 0 && !isGameOver) 
+    {
         std::cout << "\nRound " << (6 - totalRounds) << " begins!\n";
         unifiedBoard.Display();
 
-        // Let both players have their turn
         for (int i = 0; i < 2; ++i) {
             std::cout << currentPlayer->getName() << "'s turn.\n";
 
@@ -30,7 +31,7 @@ void Combined_Mode::PlayGame() {
             std::cin >> choice;
 
             switch (choice) {
-            case 1: { // Play a card
+            case 1: {
                 currentPlayer->ShowHand();
                 int cardIndex = -1;
                 while (!currentPlayer->HasCardAtIndex(cardIndex)) {
@@ -60,7 +61,7 @@ void Combined_Mode::PlayGame() {
 
                     std::cin >> row >> col;
                     result = unifiedBoard.CanMakeMove(row, col, chosenCard);
-                } while (result == 0);  // If the move is invalid, continue to ask for input
+                } while (result == 0); 
 
                 if (result == 1) {
                     unifiedBoard.MakeMove(row, col, chosenCard);
@@ -71,41 +72,110 @@ void Combined_Mode::PlayGame() {
                 }
                 break;
             }
-            case 2: { // Use Wizard power
+            case 2: {
                 if (!currentPlayer->getPowerUsed()) {
-                    wizardGame.ActivatePower(currentPlayer->getWizardPower());
-                    currentPlayer->setPowerUsed();
-                    std::cout << currentPlayer->getName() << " has used their Wizard power.\n";
-                }
-                else {
-                    std::cout << currentPlayer->getName() << " has already used their Wizard power.\n";
-                }
-                break;
-            }
-            case 3: { // Use Element power
-                if (!currentPlayer->getElementPowerUsed()) {
-                    auto powers = elementGame.GetAvailablePowers();
-                    if (!powers.empty()) {
-                        elementGame.ActivatePower(powers[0]);
-                        currentPlayer->setElementPowerUsed(true);
-                        std::cout << currentPlayer->getName() << " has used their Element power.\n";
+
+                    char confirmChoice;
+                    std::cout << "Are you sure you want to use your power? (y/n): ";
+                    std::cin >> confirmChoice;
+
+                    if (confirmChoice == 'y' || confirmChoice == 'Y') {
+
+                        WizardPower power = currentPlayer->getWizardPower();
+                        wizardGame.ActivatePower(power);
+
+                        currentPlayer->setPowerUsed();
+
+                        std::cout << currentPlayer->getName() << " has used their Wizard power.\n";
+                    }
+                    else {
+                        std::cout << "Action canceled. Returning to the main menu.\n";
                     }
                 }
                 else {
-                    std::cout << currentPlayer->getName() << " has already used their Element power.\n";
+                    std::cout << currentPlayer->getName() << " has already used their Wizard power this turn.\n";
                 }
                 break;
             }
+            case 3: { 
+                if (currentPlayer->getElementPowerUsed()) {
+                    std::cout << currentPlayer->getName() << " has already used their Element power this turn.\n";
+                    break;  
+                }
+
+                auto availablePowers = elementGame.GetAvailablePowers();
+                if (availablePowers.empty()) {
+                    std::cout << "No Element powers available to use.\n";
+                    break; 
+                }
+
+                char usePower;
+                std::cout << currentPlayer->getName() << ", do you want to use your Element power this turn? (y/n): ";
+                std::cin >> usePower;
+
+                if (usePower != 'y' && usePower != 'Y' && usePower != 'n' && usePower != 'N') {
+                    std::cout << "Invalid choice. Exiting Element power menu.\n";
+                    break;
+                }
+
+                if (usePower == 'y' || usePower == 'Y') {
+                    while (true) {
+                        int chosenPowerIndex = -1;
+                        std::cout << "Choose an Element power to apply (or enter 0 to exit):\n";
+                        for (size_t i = 0; i < availablePowers.size(); ++i) {
+                            std::cout << i + 1 << ": " << elementGame.GetPowerName(availablePowers[i]) << "\n - " 
+                                << elementGame.GetPowerDescription(availablePowers[i]) << "\n";
+                        }
+
+                        std::cout << "Enter the number of the power you want to use: ";
+                        std::cin >> chosenPowerIndex;
+
+                        if (chosenPowerIndex == 0) {
+                            std::cout << "Exiting Element power menu.\n";
+                            break;
+                        }
+
+                        if (chosenPowerIndex < 1 || chosenPowerIndex > availablePowers.size()) {
+                            std::cout << "Invalid power choice! Please try again.\n";
+                            continue;
+                        }
+
+                        Element_Mode::Putere selectedPower = availablePowers[chosenPowerIndex - 1];
+
+                        if (elementGame.CanUsePower(selectedPower)) 
+                        {
+                            std::cout << currentPlayer->getName() << " is using the power: " << elementGame.GetPowerName(selectedPower) << "\n";
+
+                            elementGame.ActivatePower(selectedPower);
+
+                            currentPlayer->setElementPowerUsed(true);
+
+                            availablePowers.erase(availablePowers.begin() + (chosenPowerIndex - 1));
+
+                            std::cout << currentPlayer->getName() << " has used their Element power. Turn ends.\n";
+                            break;
+                        }
+                        else {
+                            std::cout << "You cannot use this Element power right now.\n";
+                        }
+                    }
+                }
+                else {
+                    std::cout << "You chose not to use your Element power.\n";
+                }
+                break;
+            }
+
+
+
             default:
                 std::cout << "Invalid choice.\n";
             }
 
-            // Switch turn after player takes action
             SwitchTurn();
-            currentPlayer = wizardGame.CurrentTurn();  // Update the current player after switching turn
+            currentPlayer = wizardGame.CurrentTurn();
         }
 
-        // After both players have completed their turn, move to the next round
         totalRounds--;
     }
 
@@ -115,17 +185,16 @@ void Combined_Mode::PlayGame() {
 }
 
 
-void Combined_Mode::SwitchTurn() {
-    // Log the current players to see if the turn is switching correctly
+void Combined_Mode::SwitchTurn() 
+{
+
     Player* currentWizardPlayer = wizardGame.CurrentTurn();
     Player* currentElementPlayer = elementGame.CurrentTurn();
     std::cout << "Switching turn from " << currentWizardPlayer->getName() << " and " << currentElementPlayer->getName() << "\n";
 
-    // Switch turn in the wizard game and element game
     wizardGame.SwitchTurn();
     elementGame.SwitchTurn();
 
-    // Log the new players after switching
     currentWizardPlayer = wizardGame.CurrentTurn();
     currentElementPlayer = elementGame.CurrentTurn();
     std::cout << "New turn: " << currentWizardPlayer->getName() << " and " << currentElementPlayer->getName() << "\n";
