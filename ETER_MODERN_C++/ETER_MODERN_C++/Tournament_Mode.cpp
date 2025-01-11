@@ -58,7 +58,7 @@ void Tournament_Mode::choseGame()
 	case 'e':
 		game = new Element_Mode();
 			break;
-    case 'a': 
+    case 'x': 
         game = new Combined_Mode();
         break;
 	default:

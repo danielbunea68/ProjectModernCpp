@@ -41,9 +41,6 @@ public:
 
 	void PlayGameChosen(std::string name1, std::string name2);
 
-	void Wizard_Element(std::string name1, std::string name2);
-
-
 	void updateBoard(int row, int col, std::string color);
     void DisplayTournamentBoard();
 };

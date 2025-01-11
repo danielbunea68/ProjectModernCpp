@@ -17,7 +17,6 @@ private :
 public :
     
     Board& GetBoard();
-
     void removeOpponentCard(int row, int col);
     void removeRow(int row);
     void coverOpponentCard(int row, int col);
