@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "Wizard_Mode.h"
 #include "Element_Mode.h"
+#include "Combined_Mode.h"
 
 #include <vector>
 #include <string>
@@ -39,9 +40,6 @@ public:
 	int NumberOfTokens(std::string color);
 
 	void PlayGameChosen(std::string name1, std::string name2);
-
-	void Wizard_Element(std::string name1, std::string name2);
-
 
 	void updateBoard(int row, int col, std::string color);
     void DisplayTournamentBoard();

@@ -65,7 +65,7 @@ int main() {
     if (ok == 1)
     {
         char c; 
-        std::cout << "choose your game";
+        std::cout << "Choose your game (Choose x for element + wizard): ";
         std::cin >> c; 
         game_special->setmode(c); /// steteaza modul de joc 
         game_special->choseGame();/// creeaza obiectul 

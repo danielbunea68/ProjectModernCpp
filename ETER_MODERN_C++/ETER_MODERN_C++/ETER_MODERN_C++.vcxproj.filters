@@ -57,6 +57,9 @@
     <ClInclude Include="Bomb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Combined_Mode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -72,9 +75,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Explosion_Card.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Wizard_Card.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Element_Mode.cpp">
@@ -111,6 +111,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bomb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Combined_Mode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -154,6 +157,30 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="..\images\1_red.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="images\power_1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="images\power_2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="images\power_3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="images\power_4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="images\power_5.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="images\power_6.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="images\power_7.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="images\power_8.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
