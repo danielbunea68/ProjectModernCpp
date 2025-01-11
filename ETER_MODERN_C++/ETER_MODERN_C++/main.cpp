@@ -4,6 +4,7 @@
 #include "Element_Mode.h"
 #include "Wizard_Mode.h"
 #include "Tournament_Mode.h"
+#include "Combined_Mode.h"
 #include <iostream>
 
 int main() {
@@ -54,6 +55,10 @@ int main() {
         game_special = new Tournament_Mode();  // Instantiate the Tournament Mode
         ok = 1; 
         break;
+    case 'c':
+        std::cout << "You chose Combined mode.\n";
+        game = new Combined_Mode();  // Instantiate the Combined Mode
+        break;
     default:
         std::cout << "Invalid option! Defaulting to Training mode.\n";
         game = new Game();  // Default to Game mode if an invalid option is selected
@@ -70,15 +75,10 @@ int main() {
         game_special->setmode(c); /// steteaza modul de joc 
         game_special->choseGame();/// creeaza obiectul 
     
-
         game_special->PlayGameChosen(name1,name2);
-
-
     }
     else
     {
-
-
         game->InitGame(name1, name2);
         bool keepPlaying = true;
 
