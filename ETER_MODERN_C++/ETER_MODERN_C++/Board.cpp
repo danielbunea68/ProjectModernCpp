@@ -518,7 +518,7 @@ void Board::ShiftBoard(int &row, int &col)
 			row++;
 			ShiftDown();
 		}
-		else if (row > 2) {
+		else if (row > m_size - 1) {
 			row--;
 			ShiftUp();
 		}
@@ -527,7 +527,7 @@ void Board::ShiftBoard(int &row, int &col)
 			col++;
 			ShiftRight();
 		}
-		else if (col > 2) {
+		else if (col > m_size - 1) {
 			col--;
 			ShiftLeft();
 		}

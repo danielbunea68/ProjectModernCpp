@@ -541,9 +541,10 @@ void Wizard_Mode::PlayGame()
             int result;
 
             do {
-                std::cout << "Enter the row and column to place the card (0, 1, or 2).\n";
+                std::string lastPlace = board.GetSize() == 3 ? "" : " or 3";
+                std::cout << "Enter the row and column to place the card (0, 1, 2" + lastPlace + ").\n";
                 if (!board.IsDefinitiveBoard()) {
-                    std::cout << "If the board is not definitive, you may also enter (-1, 3) to place the card in a special position.\n";
+                    std::cout << "The board is not definitive, you may also enter (-1, " + std::to_string(board.GetSize()) + ") to place the card in a special position.\n";
                 }
 
                 std::cin >> row >> col;
