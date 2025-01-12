@@ -131,6 +131,7 @@ void Game::InitGame(std::string name1, std::string name2) {
 	}
 
 	currentPlayer = player1.get();
+	player1->isTurn = true;
 }
 
 //void Game::InitGameWizard(std::string name1, std::string name2)

@@ -22,12 +22,24 @@ void BoardWidget::setGame(Game* gameInstance)
 
 void BoardWidget::DrawBoard(QPainter& painter)
 {
-	for (int i = 0; i <= boardSize; ++i) {
-		painter.drawLine(0, i * cellHeight, width(), i * cellHeight); // Horizontal
-	}
-	for (int i = 0; i <= boardSize; ++i) {
-		painter.drawLine(i * cellWidth, 0, i * cellWidth, height()); // Vertical
-	}
+	//for (int i = 0; i <= boardSize; ++i) {
+	//	painter.drawLine(0, i * cellHeight, width(), i * cellHeight); // Horizontal
+	//}
+	//for (int i = 0; i <= boardSize; ++i) {
+	//	painter.drawLine(i * cellWidth, 0, i * cellWidth, height()); // Vertical
+	//}
+	auto indices = std::views::iota(0, boardSize + 1);
+
+	// Draw horizontal lines
+	std::ranges::for_each(indices, [&](int i) {
+		painter.drawLine(0, i * cellHeight, width(), i * cellHeight);
+		});
+
+	// Draw vertical lines
+	std::ranges::for_each(indices, [&](int i) {
+		painter.drawLine(i * cellWidth, 0, i * cellWidth, height());
+		});
+
 }
 
 void BoardWidget::DrawCards(QPainter& painter)
