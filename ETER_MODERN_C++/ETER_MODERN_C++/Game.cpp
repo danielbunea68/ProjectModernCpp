@@ -1,111 +1,179 @@
 ﻿#include "Game.h"
 #include "Explosion_Card.h"
 
+//Game::Game()
+//{
+//
+//	currentPlayer = NULL;
+//
+//}
+
+//Game::Game(const Game& other)
+//{
+//	board = other.board;
+//	player1 = other.player1;
+//	player2 = other.player2;
+//	if (other.currentPlayer == &other.player1)
+//		currentPlayer = &player1;
+//	else if (other.currentPlayer == &other.player2)
+//		currentPlayer = &player2;
+//	else
+//		currentPlayer = nullptr;
+//}
+//
+//Game& Game::operator=(const Game& other)
+//{
+//	if (this == &other)
+//		return *this; // Handle self-assignment
+//
+//	board = other.board;
+//	player1 = other.player1;
+//	player2 = other.player2;
+//
+//	// Deep copy for currentPlayer
+//	if (other.currentPlayer == &other.player1)
+//		currentPlayer = &player1;
+//	else if (other.currentPlayer == &other.player2)
+//		currentPlayer = &player2;
+//	else
+//		currentPlayer = nullptr;
+//
+//	return *this;
+//}
+//
+//Game::Game(Game&& other) noexcept
+//{
+//	board = std::move(other.board);
+//	player1 = std::move(other.player1);
+//	player2 = std::move(other.player2);
+//	currentPlayer = other.currentPlayer == &other.player1 ? &player1 :
+//		other.currentPlayer == &other.player2 ? &player2 : nullptr;
+//	other.currentPlayer = nullptr;
+//
+//}
+//
+//Game& Game::operator=(Game&& other) noexcept
+//{
+//	if (this == &other)
+//		return *this; // Handle self-assignment
+//
+//	board = std::move(other.board);
+//	player1 = std::move(other.player1);
+//	player2 = std::move(other.player2);
+//
+//	// Move currentPlayer
+//	currentPlayer = (other.currentPlayer == &other.player1) ? &player1 :
+//		(other.currentPlayer == &other.player2) ? &player2 : nullptr;
+//
+//	other.currentPlayer = nullptr;
+//
+//	return *this;
+//}
 Game::Game()
-{
+	: player1(std::make_unique<Player>()), player2(std::make_unique<Player>()), currentPlayer(nullptr) {}
 
-	currentPlayer = NULL;
 
-}
-
-Game::Game(const Game& other)
-{
-	board = other.board;
-	player1 = other.player1;
-	player2 = other.player2;
-	if (other.currentPlayer == &other.player1)
-		currentPlayer = &player1;
-	else if (other.currentPlayer == &other.player2)
-		currentPlayer = &player2;
-	else
-		currentPlayer = nullptr;
-}
-
-Game& Game::operator=(const Game& other)
-{
-	if (this == &other)
-		return *this; // Handle self-assignment
-
-	board = other.board;
-	player1 = other.player1;
-	player2 = other.player2;
-
-	// Deep copy for currentPlayer
-	if (other.currentPlayer == &other.player1)
-		currentPlayer = &player1;
-	else if (other.currentPlayer == &other.player2)
-		currentPlayer = &player2;
-	else
-		currentPlayer = nullptr;
-
-	return *this;
-}
 
 Game::Game(Game&& other) noexcept
-{
-	board = std::move(other.board);
-	player1 = std::move(other.player1);
-	player2 = std::move(other.player2);
-	currentPlayer = other.currentPlayer == &other.player1 ? &player1 :
-		other.currentPlayer == &other.player2 ? &player2 : nullptr;
+	: board(std::move(other.board)), player1(std::move(other.player1)), player2(std::move(other.player2)),
+	currentPlayer(other.currentPlayer) {
 	other.currentPlayer = nullptr;
-
 }
 
-Game& Game::operator=(Game&& other) noexcept
-{
-	if (this == &other)
-		return *this; // Handle self-assignment
-
-	board = std::move(other.board);
-	player1 = std::move(other.player1);
-	player2 = std::move(other.player2);
-
-	// Move currentPlayer
-	currentPlayer = (other.currentPlayer == &other.player1) ? &player1 :
-		(other.currentPlayer == &other.player2) ? &player2 : nullptr;
-
-	other.currentPlayer = nullptr;
-
+Game& Game::operator=(const Game& other) {
+	if (this != &other) {
+		board = other.board;
+		player1 = std::make_unique<Player>(*other.player1);
+		player2 = std::make_unique<Player>(*other.player2);
+		currentPlayer = (other.currentPlayer == other.player1.get()) ? player1.get() : player2.get();
+	}
 	return *this;
 }
 
-void Game::InitGame(std::string name1, std::string name2)
-{
-	player1.setName(name1);
-	player2.setName(name2);
-	board.SetSize(3);
-	std::vector<int> values = { 1, 1, 2, 2, 3, 3, 4 };
-	player1.setColor("red");
-	player2.setColor("blue");
-	for (const auto& value : values) {
-		player1.AddCard(Card(value, player1.getColor()));
-		player2.AddCard(Card(value, player2.getColor()));
+Game& Game::operator=(Game&& other) noexcept {
+	if (this != &other) {
+		board = std::move(other.board);
+		player1 = std::move(other.player1);
+		player2 = std::move(other.player2);
+		currentPlayer = other.currentPlayer;
+		other.currentPlayer = nullptr;
 	}
-	currentPlayer = &player1;
-	player1.isTurn = true;
+	return *this;
 }
 
+//void Game::InitGame(std::string name1, std::string name2)
+//{
+//	player1.setName(name1);
+//	player2.setName(name2);
+//	board.SetSize(3);
+//	std::vector<int> values = { 1, 1, 2, 2, 3, 3, 4 };
+//	player1.setColor("red");
+//	player2.setColor("blue");
+//	for (const auto& value : values) {
+//		player1.AddCard(Card(value, player1.getColor()));
+//		player2.AddCard(Card(value, player2.getColor()));
+//	}
+//	currentPlayer = &player1;
+//	player1.isTurn = true;
+//}
+void Game::InitGame(std::string name1, std::string name2) {
+	player1->setName(name1);
+	player2->setName(name2);
+	board.SetSize(3);
+	player1->setColor("red");
+	player2->setColor("blue");
+
+	// Adding cards to the players
+	std::vector<int> values = { 1, 1, 2, 2, 3, 3, 4 };
+	for (const auto& value : values) {
+		player1->AddCard(Card(value, player1->getColor()));
+		player2->AddCard(Card(value, player2->getColor()));
+	}
+
+	currentPlayer = player1.get();
+}
+
+//void Game::InitGameWizard(std::string name1, std::string name2)
+//{
+//	player1.setName(name1);
+//	player2.setName(name2);
+//	board.SetSize(4);
+//	std::vector<int> values = { 1, 1, 2, 2, 2, 3, 3, 3, 4 };
+//	player1.setColor("red");
+//	player2.setColor("blue");
+//	for (const auto& value : values) {
+//		player1.AddCard(Card(value, player1.getColor()));
+//		player2.AddCard(Card(value, player2.getColor()));
+//	}
+//	player1.AddCard(Card(5, player1.getColor(), "Eter"));
+//	player2.AddCard(Card(5, player2.getColor(), "Eter"));
+//
+//	player1.setRandomWizardPower();
+//	player2.setRandomWizardPower();
+//
+//
+//	currentPlayer = &player1;
+//}
 void Game::InitGameWizard(std::string name1, std::string name2)
 {
-	player1.setName(name1);
-	player2.setName(name2);
+	player1->setName(name1);
+	player2->setName(name2);
 	board.SetSize(4);
 	std::vector<int> values = { 1, 1, 2, 2, 2, 3, 3, 3, 4 };
-	player1.setColor("red");
-	player2.setColor("blue");
+	player1->setColor("red");
+	player2->setColor("blue");
 	for (const auto& value : values) {
-		player1.AddCard(Card(value, player1.getColor()));
-		player2.AddCard(Card(value, player2.getColor()));
+		player1->AddCard(Card(value, player1->getColor()));
+		player2->AddCard(Card(value, player2->getColor()));
 	}
-	player1.AddCard(Card(5, player1.getColor(), "Eter"));
-	player2.AddCard(Card(5, player2.getColor(), "Eter"));
+	player1->AddCard(Card(5, player1->getColor(), "Eter"));
+	player2->AddCard(Card(5, player2->getColor(), "Eter"));
 
-	player1.setRandomWizardPower();
-	player2.setRandomWizardPower();
+	player1->setRandomWizardPower();
+	player2->setRandomWizardPower();
 
 
-	currentPlayer = &player1;
+	currentPlayer = player1.get();
 }
 
 int Game::GetScore(std::string color)
@@ -132,29 +200,96 @@ Player* Game::CurrentTurn()
 	return currentPlayer;
 }
 
+//Player* Game::PreviousTurn()
+//{
+//	if (currentPlayer == &player1)
+//		return &player2;
+//	else
+//		return &player1;
+//}
 Player* Game::PreviousTurn()
 {
-	if (currentPlayer == &player1)
-		return &player2;
+	if (currentPlayer == player1.get())
+		return player2.get();
 	else
-		return &player1;
+		return player1.get();
 }
 
+Player* Game::getPlayer1()
+{
+	return player1.get();
+}
+
+Player* Game::getPlayer2()
+{
+	return player2.get();
+}
+
+//void Game::SwitchTurn()
+//{
+//	if (currentPlayer->getName() == player1.getName())
+//	{
+//		currentPlayer = &player2;
+//	}
+//	else
+//	{
+//		currentPlayer = &player1;
+//	}
+//	player1.isTurn = !player1.isTurn;
+//	player2.isTurn = !player2.isTurn;
+//	currentPlayer->selectedIndex = 0;
+//	currentPlayer->selectedBomb = false;
+//	
+//}
 void Game::SwitchTurn()
 {
-	if (currentPlayer->getName() == player1.getName())
+	if (currentPlayer->getName() == player1->getName())
 	{
-		currentPlayer = &player2;
+		currentPlayer = player2.get();
 	}
 	else
 	{
-		currentPlayer = &player1;
+		currentPlayer = player1.get();
 	}
-	player1.isTurn = !player1.isTurn;
-	player2.isTurn = !player2.isTurn;
+	player1->isTurn = !player1->isTurn;
+	player2->isTurn = !player2->isTurn;
 	currentPlayer->selectedIndex = 0;
 	currentPlayer->selectedBomb = false;
-	
+
+}
+
+void Game::useBomb(Player* player)
+{
+	auto bomb = player->getBomb();
+	player->hasBomb = false;
+	player->selectedBomb = false;
+
+	for (int i = 0; i < bomb->board.size(); i++) {
+		for (int j = 0; j < bomb->board.size(); j++) {
+			char action = bomb->board[i][j];
+			switch (action)
+			{
+			case 'r':
+				RemoveCard(i, j);
+				break;
+			case 'u':
+				ReturnCardToPlayer(i, j);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+}
+
+void Game::usePower(Player* player, int prevCol, int prevRow, int row, int col)
+{
+	player->hasPower = false;
+	player->selectedPower = false;
+	WizardPower power = currentPlayer->getWizardPower();
+	ActivatePower(power, prevRow, prevCol, row, col);
+
+	currentPlayer->setPowerUsed();
 }
 
 void Game::ActivatePower(WizardPower power, int prevRow, int prevCol, int row , int col )
@@ -428,7 +563,8 @@ void Game::ReturnCardToPlayer(int row, int col)//aici
 		}
 		else {
 			// Return the card to the other player's hand
-			Player* otherPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+			///Player* otherPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+			Player* otherPlayer = (currentPlayer == player1.get()) ? player2.get() : player1.get();
 			otherPlayer->AddCard(card);  // Add the card to the other player's hand
 			std::cout << "Card returned to " << otherPlayer->getName() << "'s hand.\n";
 		}
@@ -668,12 +804,19 @@ void Game::PlayGame()
 	}
 }
 
+//void Game::ResetGame()
+//{
+//	board.Clear();
+//	player1.ClearCards();
+//	player2.ClearCards();
+//	InitGame(player1.getName(), player2.getName());
+//}
 void Game::ResetGame()
 {
 	board.Clear();
-	player1.ClearCards();
-	player2.ClearCards();
-	InitGame(player1.getName(), player2.getName());
+	player1->ClearCards();
+	player2->ClearCards();
+	InitGame(player1->getName(), player2->getName());
 }
 
 Board Game::getboard()

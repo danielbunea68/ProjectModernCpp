@@ -1,5 +1,26 @@
 #include "Player.h"
 
+void Player::rotateBomb(std::string direction)
+{
+	if (!hasBomb) return;
+
+	if (direction == "left")
+		bomb->rotateLeft();
+	else
+		bomb->rotateRight();
+}
+
+void Player::setBomb(Bomb* bomb)
+{
+	this->bomb = bomb;
+	hasBomb = true;
+}
+
+Bomb* Player::getBomb()
+{
+	return bomb;
+}
+
 Player::Player(const Player& other)
 {
 	m_cards = other.m_cards;
@@ -220,5 +241,16 @@ const std::vector<Card>& Player::GetRemovedCards() const
 void Player::ClearCards()
 {
 	m_cards.clear();
+}
+
+bool Player::getElementPowerUsed() const
+{
+	return elementPowerUsed;
+
+}
+
+void Player::setElementPowerUsed(bool used)
+{
+	elementPowerUsed = used;
 }
 

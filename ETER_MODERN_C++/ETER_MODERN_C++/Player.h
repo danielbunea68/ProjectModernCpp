@@ -9,6 +9,7 @@
 
 #include "Card.h"
 #include "Bomb.h"
+#include"unordered_set"
 
 enum class WizardPower
 {
@@ -25,6 +26,7 @@ enum class WizardPower
 class Player
 {
 private:
+	
 	std::vector<Card> m_cards;
 	//std::vector<Element_Card> m_ElementCards;
 	WizardPower  m_wizard_power;
@@ -36,7 +38,7 @@ private:
 	std::vector<Card> removedCards;
 	std::pair<int, int> m_winncords;
 	static std::vector<WizardPower> assignedPowers;
-
+	///static std::unordered_set<WizardPower> assignedPowers;
 	Bomb* bomb = nullptr;
 
 public:
@@ -49,23 +51,11 @@ public:
 	bool selectedPower = false;
 
 
-	void rotateBomb(std::string direction) {
-		if (!hasBomb) return;
+	void rotateBomb(std::string direction);
 
-		if (direction == "left")
-			bomb->rotateLeft();
-		else
-			bomb->rotateRight();
-	}
+	void setBomb(Bomb* bomb);
 
-	void setBomb(Bomb* bomb) {
-		this->bomb = bomb;
-		hasBomb = true;
-	}
-
-	Bomb* getBomb() {
-		return bomb;
-	}
+	Bomb* getBomb();
 
 public:
 
@@ -93,7 +83,7 @@ public:
 	void setWinnCords(const std::pair<int, int> cords);
 	std::pair<int, int> getWinnCords() const;
 
-	void ShowHand();
+	void ShowHand() ;
 	Card PlayCard(int cardIndex);
 	bool HasCardAtIndex(int cardIndex);
 	void UseAbilty();
@@ -106,8 +96,8 @@ public:
 
 	void ClearCards();
 
-	bool getElementPowerUsed() const { return elementPowerUsed; }
-	void setElementPowerUsed(bool used) { elementPowerUsed = used; }
+	bool getElementPowerUsed() const;
+	void setElementPowerUsed(bool used);
 
 	bool isTurn = false;
 

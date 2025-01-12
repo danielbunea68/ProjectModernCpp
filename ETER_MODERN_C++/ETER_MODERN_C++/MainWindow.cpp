@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), game() {
 
 	// Instantiate Tournament, Wizard, Elemental games
 	game = new Game(); // Change this based on the desired game mode
-	game->InitGameWizard("Player1", "Player2");
+	game->InitGame("Player1", "Player2");
 
 	BoardWidget* boardWidget = new BoardWidget();
 	boardWidget->setGame(game);

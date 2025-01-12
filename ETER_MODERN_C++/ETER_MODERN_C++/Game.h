@@ -9,7 +9,9 @@ class Game :public IGame
 
 private:
 	Board board;
-	Player player1, player2;
+	/*Player player1, player2;*/
+	std::unique_ptr<Player> player1;
+	std::unique_ptr<Player> player2;
 	Player* currentPlayer;
 
 
@@ -36,13 +38,10 @@ public:
 	Player* CurrentTurn() override;
 	Player* PreviousTurn() override;
 
-	Player* getPlayer1() {
-		return &player1;
-	}
-
-	Player* getPlayer2() {
-		return &player2;
-	}
+	Player* getPlayer1();
+	Player* getPlayer2();
+		
+	
 
 	bool IsDraw();
 
@@ -63,37 +62,8 @@ public:
 		player->setBomb(bomb);
 	}
 
-	void useBomb(Player* player) {
-		auto bomb = player->getBomb();
-		player->hasBomb = false;
-		player->selectedBomb = false;
-
-		for (int i = 0; i < bomb->board.size(); i++) {
-			for (int j = 0; j < bomb->board.size(); j++) {
-				char action = bomb->board[i][j];
-				switch (action)
-				{
-				case 'r':
-					RemoveCard(i, j);
-					break;
-				case 'u':
-					ReturnCardToPlayer(i, j);
-					break;
-				default:
-					break;
-				}
-			}
-		}
-	}
-
-	void usePower(Player* player, int prevCol , int prevRow , int row, int col) {
-		player->hasPower = false;
-		player->selectedPower = false;
-		WizardPower power = currentPlayer->getWizardPower();
-		ActivatePower(power ,prevRow, prevCol, row , col );
-
-		currentPlayer->setPowerUsed();
-	}
+	void useBomb(Player* player);
+	void usePower(Player* player, int prevCol, int prevRow, int row, int col);
 
 	void ActivatePower(WizardPower power,int prevRow, int prevCol, int row , int col );
 	void removeOpponentCard(int row, int col);

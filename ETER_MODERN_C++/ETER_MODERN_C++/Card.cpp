@@ -112,14 +112,3 @@ bool Card::operator==(const Card& other) const
 {
 	return m_color == other.getColor() && m_value == other.getValue();
 }
-
-
-
-
-
-
-
-
-
-
-

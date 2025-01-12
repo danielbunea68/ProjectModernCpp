@@ -1,6 +1,7 @@
 #include "Board.h"
 #include "Game.h"
 #include <iostream>
+#include "ranges"
 
 Board::Board(const Board& other)
 {
@@ -85,13 +86,14 @@ std::vector<std::vector<std::stack<Card>>>& Board::GetBoard()
 	return board;
 }
 
-bool Board::IsEmpty(int row, int col)
+bool Board::IsEmpty(int row, int col) const
 {
-	return row >= 0 && row < GetSize() && col >= 0 && col < GetSize() && board[row][col].empty();
+	return IsValidPosition(row,col) && board[row][col].empty(); ///modificat
 }
 
-void Board::Display()
+void Board::Display() const
 {
+	
 	for (int i = 0; i < m_size; i++) {
 		for (int j = 0; j < m_size; j++) {
 			if (board[i][j].empty()) {
@@ -119,6 +121,9 @@ void Board::Display()
 		}
 	}
 	std::cout << "\n";
+	
+	
+
 }
 
 int Board::CanMakeMove(int row, int col, Card chosenCard)
@@ -164,7 +169,7 @@ int Board::CanMakeMove(int row, int col, Card chosenCard)
 	return board[row][col].top().getValue() < chosenCard.getValue();
 }
 
-bool Board::IsValidPosition(int row, int col) {
+bool Board::IsValidPosition(int row, int col) const {
 	return row >= 0 && row < GetSize() && col >= 0 && col < GetSize();
 }
 
@@ -486,7 +491,7 @@ bool Board::IsFaceDown(int row, int col) const
 	return topCard.getIsFaceDown();
 }
 
-int Board::CountDistinctCards()
+int Board::CountDistinctCards()const 
 {
 	int count = 0;
 	for (auto row : board) {
@@ -578,5 +583,20 @@ inline void Board::ShiftDown() {
 
 inline bool Board::IsDefinitiveBoard() {
 	return bottomRow - topRow >= m_size - 1 || rightCol - leftCol >= m_size - 1;
+}
+
+void Board::UpdateLimits()
+{
+	for (int i = 0; i < m_size; i++) {
+		for (int j = 0; j < m_size; j++) {
+			if (!board[i][j].empty()) {
+				bottomRow = std::max(bottomRow, i);
+				topRow = std::min(topRow, i);
+				leftCol = std::min(leftCol, j);
+				rightCol = std::max(rightCol, j);
+			}
+
+		}
+	}
 }
 

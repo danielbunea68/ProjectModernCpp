@@ -5,6 +5,7 @@
 
 #include "Card.h"
 #include "Explosion_Card.h"
+#include "ranges"
 
 class Board
 {
@@ -30,18 +31,20 @@ public:
 	Board& operator=(const Board& other);
 	Board(Board&& other) noexcept;
 	Board& operator=(Board&& other) noexcept;
+
 	void SetSize(int size);
 	int  GetSize() const;
-	std::vector<std::vector<std::stack<Card>>>& GetBoard();
-	Card TopCard(int row, int col) const;//aici am lucrat
-	bool IsEmpty(int row, int col);
-	void Display();
+
+	std::vector<std::vector<std::stack<Card>>>& GetBoard() ;///->aici pun const
+	Card TopCard(int row, int col) const;
+	bool IsEmpty(int row, int col)const;
+	void Display()const;
 	bool MakeMove(int row, int col, Card card);
 	bool CheckWinner(std::string color);
 	bool CheckIsBomb();
 	bool IsDraw();
 	bool CheckNeighbours(int row, int col);
-	bool IsValidPosition(int row, int col);
+	bool IsValidPosition(int row, int col)const;
 	bool IsCoveredByOpponent(int row, int col, const std::string& currentPlayerColor);
 	int CanMakeMove(int row, int col, Card chosenCard);
 	int GetStackSize(int row, int col);
@@ -53,7 +56,7 @@ public:
 	void UpdateCard(int row, int col, const Card& card);
 	bool HasCoveredCard(int row, int col, const std::string& color);
 	bool IsFaceDown(int row, int col) const;
-	int CountDistinctCards();
+	int CountDistinctCards()const;
 	bool IsBlockedCell(int row, int col) const;
 	void BlockCell(int row, int col);
 
@@ -65,19 +68,7 @@ public:
 
 	bool IsDefinitiveBoard();
 
-	void UpdateLimits() {
-		for (int i = 0; i < m_size; i++) {
-			for (int j = 0; j < m_size; j++) {
-				if (!board[i][j].empty()) {
-					bottomRow = std::max(bottomRow, i);
-					topRow = std::min(topRow, i);
-					leftCol = std::min(leftCol, j);
-					rightCol = std::max(rightCol, j);
-				}
-
-			}
-		}
-	}
+	void UpdateLimits();
 
 	void Clear();
 };
