@@ -1,7 +1,8 @@
 #include "Board.h"
 #include "Game.h"
 #include <iostream>
-#include "ranges"
+#include <ranges>
+
 
 Board::Board(const Board& other)
 {
@@ -93,7 +94,7 @@ bool Board::IsEmpty(int row, int col) const
 
 void Board::Display() const
 {
-	
+	/*
 	for (int i = 0; i < m_size; i++) {
 		for (int j = 0; j < m_size; j++) {
 			if (board[i][j].empty()) {
@@ -120,7 +121,43 @@ void Board::Display() const
 			
 		}
 	}
+	std::cout << "\n";*/
+	auto indices = std::views::iota(0, m_size); // Range of indices for rows and columns
+
+	// Lambda to format each cell
+	auto formatCell = [&](int i, int j) -> std::string {
+		if (board[i][j].empty()) {
+			return "     ";
+		}
+		else {
+			std::string result = board[i][j].top().getColor() + " ";
+			if (board[i][j].top().getIsFaceDown()) {
+				result += "x";
+			}
+			else {
+				result += std::to_string(board[i][j].top().getValue());
+			}
+			return result;
+		}
+		};
+
+
+	std::ranges::for_each(indices, [&](int i) {
+		// Print row
+		std::ranges::for_each(indices, [&](int j) {
+			std::cout << formatCell(i, j);
+			if (j < m_size - 1) std::cout << " | ";
+			});
+		std::cout << "\n";
+
+		// Print separator
+		if (i < m_size - 1) {
+			std::cout << (m_size > 3 ? "-------------------------------\n" : "-----------------------\n");
+		}
+		});
+
 	std::cout << "\n";
+
 	
 	
 
@@ -226,19 +263,28 @@ bool Board::CheckWinner(std::string color)
 		};
 
 	// Check rows for a win
-	for (int i = 0; i < boardSize; ++i) {
-		bool rowWin = true;
-		for (int j = 0; j < boardSize; ++j) {
-			if (!hasTopCardWithColor(i, j)) {
-				rowWin = false;
-				break;
-			}
-		}
-		if (rowWin) return true;
-	}
+	//for (int i = 0; i < boardSize; ++i) {
+	//	bool rowWin = true;
+	//	for (int j = 0; j < boardSize; ++j) {
+	//		if (!hasTopCardWithColor(i, j)) {
+	//			rowWin = false;
+	//			break;
+	//		}
+	//	}
+	//	if (rowWin) return true;
+	//}
+	auto rows = std::views::iota(0, boardSize); // Range of row indices
+
+	bool rowWin= std::ranges::any_of(rows, [&](int i) {
+		auto columns = std::views::iota(0, boardSize); // Range of column indices
+		return std::ranges::all_of(columns, [&](int j) {
+			return hasTopCardWithColor(i, j);
+			});
+		});
+	if (rowWin) return true;
 
 	// Check columns for a win
-	for (int j = 0; j < boardSize; ++j) {
+	/*for (int j = 0; j < boardSize; ++j) {
 		bool colWin = true;
 		for (int i = 0; i < boardSize; ++i) {
 			if (!hasTopCardWithColor(i, j)) {
@@ -247,26 +293,48 @@ bool Board::CheckWinner(std::string color)
 			}
 		}
 		if (colWin) return true;
-	}
+	}*/
 
-	// Check main diagonal (top-left to bottom-right)
-	bool mainDiagonalWin = true;
-	for (int i = 0; i < boardSize; ++i) {
-		if (!hasTopCardWithColor(i, i)) {
-			mainDiagonalWin = false;
-			break;
-		}
-	}
+	auto columns = std::views::iota(0, boardSize); // Range of column indices
+	bool colWin = std::ranges::any_of(columns, [&](int j) {
+		auto rows = std::views::iota(0, boardSize); // Range of row indices
+		return std::ranges::all_of(rows, [&](int i) {
+			return hasTopCardWithColor(i, j);
+			});
+		});
+	if (colWin) return true;
+
+
+
+	//// Check main diagonal (top-left to bottom-right)
+	//bool mainDiagonalWin = true;
+	//for (int i = 0; i < boardSize; ++i) {
+	//	if (!hasTopCardWithColor(i, i)) {
+	//		mainDiagonalWin = false;
+	//		break;
+	//	}
+	//}
+	//if (mainDiagonalWin) return true;
+
+	auto indices = std::views::iota(0, boardSize); 
+	bool mainDiagonalWin =  std::ranges::all_of(indices, [&](int i) {
+		return hasTopCardWithColor(i, i);
+		});
 	if (mainDiagonalWin) return true;
 
 	// Check anti-diagonal (top-right to bottom-left)
-	bool antiDiagonalWin = true;
+	/*bool antiDiagonalWin = true;
 	for (int i = 0; i < boardSize; ++i) {
 		if (!hasTopCardWithColor(i, boardSize - 1 - i)) {
 			antiDiagonalWin = false;
 			break;
 		}
 	}
+	if (antiDiagonalWin) return true;*/
+	auto indices = std::views::iota(0, boardSize); 
+	bool antiDiagonalWin= std::ranges::all_of(indices, [&](int i) {
+		return hasTopCardWithColor(i, boardSize - 1 - i);
+		});
 	if (antiDiagonalWin) return true;
 
 	// No winning formation found
