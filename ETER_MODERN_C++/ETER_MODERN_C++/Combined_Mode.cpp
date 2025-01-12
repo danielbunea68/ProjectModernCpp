@@ -1063,6 +1063,185 @@ void Combined_Mode::Flacari()
     std::cout << currentPlayer->getName() << " placed card with value " << chosenCard.getValue() << " at (" << row << ", " << col << ").\n";
 }
 
+void Combined_Mode::Lava()
+{
+    std::unordered_map<int, int> visibleCardCount;
+
+    for (int row = 0; row < board.GetSize(); ++row)
+    {
+        for (int col = 0; col < board.GetSize(); ++col)
+        {
+            if (!board.IsEmpty(row, col))
+            {
+                Card topCard = board.TopCard(row, col);
+                if (!topCard.getIsFaceDown())
+                {
+                    visibleCardCount[topCard.getValue()]++;
+                }
+            }
+        }
+    }
+
+    std::vector<int> eligibleNumbers;
+    for (const auto& pair : visibleCardCount)
+    {
+        if (pair.second >= 2)
+        {
+            eligibleNumbers.push_back(pair.first);
+        }
+    }
+
+    if (eligibleNumbers.empty())
+    {
+        std::cout << "No number has at least two visible cards.\n";
+        return;
+    }
+
+    std::cout << "Choose a number from the following visible numbers with at least two cards:\n";
+    for (int number : eligibleNumbers)
+    {
+        std::cout << number << " ";
+    }
+    std::cout << "\nYour choice: ";
+
+    int chosenNumber;
+    while (true)
+    {
+        std::cin >> chosenNumber;
+
+        if (std::cin.fail() || std::find(eligibleNumbers.begin(), eligibleNumbers.end(), chosenNumber) == eligibleNumbers.end())
+        {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid choice. Please choose a number from the list: ";
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    for (int row = 0; row < board.GetSize(); ++row)
+    {
+        for (int col = 0; col < board.GetSize(); ++col)
+        {
+            if (!board.IsEmpty(row, col))
+            {
+                Card topCard = board.TopCard(row, col);
+                if (!topCard.getIsFaceDown() && topCard.getValue() == chosenNumber)
+                {
+                    std::cout << "Returning card with value " << chosenNumber
+                        << " at position (" << row << ", " << col << ").\n";
+                    ReturnCardToPlayer(row, col);
+                }
+            }
+        }
+    }
+}
+
+void Combined_Mode::DinCenusa()
+{
+    const auto& removedCards = currentPlayer->GetRemovedCards();
+
+    if (removedCards.empty()) {
+        std::cout << "No removed cards available to play.\n";
+        return;
+    }
+
+
+    std::cout << "Removed cards:\n";
+    for (size_t i = 0; i < removedCards.size(); ++i)
+    {
+        const Card& card = removedCards[i];
+        std::cout << i << ": Value " << card.getValue() << ", Color " << card.getColor() << "\n";
+    }
+
+
+    int cardIndex = -1;
+    while (cardIndex < 0 || cardIndex >= static_cast<int>(removedCards.size()))
+    {
+        std::cout << "Choose a card index to play: ";
+        std::cin >> cardIndex;
+    }
+
+    Card chosenCard = removedCards[cardIndex];
+    currentPlayer->RemoveFromRemovedCards(chosenCard);
+
+
+    int row = -1, col = -1;
+    int result = board.CanMakeMove(row, col, chosenCard);
+    while (result == 0)
+    {
+        std::cout << "Enter row and column (0-" << (board.GetSize() - 1) << ") to place the card: ";
+        std::cin >> row >> col;
+        result = board.CanMakeMove(row, col, chosenCard);
+    }
+
+    if (result == 1)
+    {
+        currentPlayer->setLastMove(row, col);
+        board.MakeMove(row, col, chosenCard);
+        std::cout << "Card played successfully!\n";
+    }
+    else
+    {
+        std::cout << "Unable to play the card.\n";
+    }
+}
+
+void Combined_Mode::Scantei()
+{
+    int row = -1, col = -1;
+    bool coveredCardFound = false;
+
+    for (int r = 0; r < board.GetSize(); ++r)
+    {
+        for (int c = 0; c < board.GetSize(); ++c)
+        {
+            if (board.HasCoveredCard(r, c, currentPlayer->getColor()) && board.IsCoveredByOpponent(r, c, currentPlayer->getColor()))
+            {
+                row = r;
+                col = c;
+                coveredCardFound = true;
+                break;
+            }
+        }
+        if (coveredCardFound)
+            break;
+    }
+
+    if (!coveredCardFound)
+    {
+        std::cout << "No covered card found that is owned by you and covered by the opponent.\n";
+        return;
+    }
+
+    std::cout << "Covered card found at position (" << row << ", " << col << ").\n";
+
+    int newRow, newCol;
+    std::cout << "Enter new row and column to place the card: ";
+    std::cin >> newRow >> newCol;
+
+    while (!board.IsValidPosition(newRow, newCol) || !board.IsEmpty(newRow, newCol))
+    {
+        std::cout << "Invalid position. Enter new row and column: ";
+        std::cin >> newRow >> newCol;
+    }
+
+    Card card = board.TopCard(row, col);
+    board.Remove(row, col);
+
+    if (board.MakeMove(newRow, newCol, card))
+    {
+        std::cout << "Card moved to new position (" << newRow << ", " << newCol << ").\n";
+    }
+    else
+    {
+        std::cout << "Failed to place card at the new position. Returning the card to the original position.\n";
+        board.MakeMove(row, col, card);
+    }
+}
+
 
 
 

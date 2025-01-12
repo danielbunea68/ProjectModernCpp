@@ -61,4 +61,7 @@ public:
     void ActivateControlledExplosion();
     void  DestroyLastOpponentCard();
     void Flacari();
+    void Lava();
+    void DinCenusa();
+    void Scantei();
 };
