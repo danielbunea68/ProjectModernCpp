@@ -13,7 +13,6 @@ private:
     Board board;
     int totalRounds;
     Element_Mode elementgame;
-    Wizard_Mode wizardgame;
 
     bool player1UsedAnyPower;
     bool player2UsedAnyPower;
@@ -39,4 +38,14 @@ public:
     void ReturnCardToPlayer(int row, int col) override;
     void CreatePit(int row, int col) override;
     Player* PreviousTurn() override;
+    std::string GetWizardPowerName(WizardPower power);
+    void ActivatePower(WizardPower power);
+    void removeOpponentCard(int row, int col);
+    void removeRow(int row);
+    void coverOpponentCard(int row, int col);
+    void createPit(int row, int col);
+    void moveOwnStack(int fromRow, int fromCol, int toRow, int toCol);
+    void grantExtraEterCard(int row, int col);
+    void moveOpponentStack(int fromRow, int fromCol, int toRow, int toCol);
+    void moveEdgeRow(int row);
 };
