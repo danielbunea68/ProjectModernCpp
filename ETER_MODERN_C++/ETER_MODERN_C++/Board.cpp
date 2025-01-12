@@ -331,7 +331,8 @@ bool Board::CheckWinner(std::string color)
 		}
 	}
 	if (antiDiagonalWin) return true;*/
-	auto indices = std::views::iota(0, boardSize); 
+	
+	
 	bool antiDiagonalWin= std::ranges::all_of(indices, [&](int i) {
 		return hasTopCardWithColor(i, boardSize - 1 - i);
 		});
@@ -344,7 +345,7 @@ bool Board::CheckWinner(std::string color)
 bool Board::CheckIsBomb()
 {
 	int nr = 0;
-	for (int i = 0; i < GetSize(); i++)
+	/*for (int i = 0; i < GetSize(); i++)
 	{
 		bool verif = true;
 
@@ -358,22 +359,43 @@ bool Board::CheckIsBomb()
 
 			nr++;
 		}
-	}
+	}*/
+	auto indices1 = std::views::iota(0, static_cast<int>(board.size())); // Range of row indices
 
-	for (int j = 0; j < GetSize(); j++)
+	// Count rows where all cells are non-empty
+	std::ranges::for_each(indices1, [&](int i) {
+		auto row = board[i];
+		if (std::ranges::all_of(row, [](const std::stack<Card>& stack) {
+			return !stack.empty();
+			})) {
+			nr++; // Incrementăm dacă rândul este complet
+		}
+		});
+
+
+	/*for (int j = 0; j < GetSize(); j++)
+{
+	bool verif = true;
+
+	for (int i = 0; i < GetSize(); i++)
 	{
-		bool verif = true;
-
-		for (int i = 0; i < GetSize(); i++)
-		{
-			if (board[i][j].empty())
-				verif = false;
-		}
-		if (verif)
-		{
-			nr++;
-		}
+		if (board[i][j].empty())
+			verif = false;
 	}
+	if (verif)
+	{
+		nr++;
+	}
+}*/
+	auto indices2 = std::views::iota(0, static_cast<int>(board.size()));
+	std::ranges::for_each(indices2, [&](int j) {
+		auto col = board[j];
+		if (std::ranges::all_of(col, [](const std::stack<Card>& stack) {
+			return !stack.empty();
+			})) {
+			nr++; 
+		}
+		});
 
 	if (nr == 2)
 		return true;
