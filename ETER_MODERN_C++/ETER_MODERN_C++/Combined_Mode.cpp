@@ -170,7 +170,7 @@ bool Combined_Mode::UsePower() {
                 for (size_t i = 0; i < elementPowers.size(); ++i) {
                     std::cout << i + 1 << ": " << GetPowerName(elementPowers[i])
                         << "\n - " << GetPowerDescription(elementPowers[i]) << "\n";
-                }
+                } 
 
                 int chosenElementPowerIndex;
                 std::cout << "Enter the number of the power you want to use: ";
