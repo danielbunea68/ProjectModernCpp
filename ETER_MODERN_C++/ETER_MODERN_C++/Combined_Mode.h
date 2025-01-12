@@ -58,4 +58,7 @@ public:
     bool CanUsePower(Element_Mode::Putere power);
     void UsePower1(Element_Mode::Putere power);
     void ActivatePower1(Element_Mode::Putere power);
+    void ActivateControlledExplosion();
+    void  DestroyLastOpponentCard();
+    void Flacari();
 };

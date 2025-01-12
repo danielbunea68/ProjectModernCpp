@@ -973,14 +973,99 @@ void Combined_Mode::ActivatePower1(Element_Mode::Putere power)
 
     usedPowers.insert(power);
 
-    auto it = std::find(availablePowers.begin(), availablePowers.end(), power);
-    if (it != availablePowers.end())
+    auto it = std::find(elementPowers.begin(), elementPowers.end(), power);
+    if (it != elementPowers.end())
     {
-        availablePowers.erase(it);
+        elementPowers.erase(it);
     }
 
     SwitchTurn();
 }
+
+void Combined_Mode::ActivateControlledExplosion()
+{
+    Explosion_Card explosionCard(4);
+    explosionCard.activateExplosion();
+}
+
+void Combined_Mode::DestroyLastOpponentCard()
+{
+    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+    std::pair<int, int> move = opponent->getLastMove();
+
+    int row = move.first;
+    int col = move.second;
+
+    bool cardFound = false;
+
+    Card card1 = board.TopCard(row, col);
+    if (card1.getColor() == opponent->getColor())
+        board.Remove(row, col);
+}
+
+void Combined_Mode::Flacari()
+{
+    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+    bool cardRevealed = false;
+
+    for (int row = 0; row < board.GetSize(); ++row)
+    {
+        for (int col = 0; col < board.GetSize(); ++col)
+        {
+            if (!board.IsEmpty(row, col))
+            {
+                Card topCard = board.TopCard(row, col);
+
+                if (topCard.getColor() == opponent->getColor() && topCard.getIsFaceDown())
+                {
+                    topCard.setFaceDown(false);
+                    board.UpdateCard(row, col, topCard);
+                    std::cout << "Flăcări activated: Card at (" << row << ", " << col
+                        << ") belonging to " << opponent->getName()
+                        << " is now face-up.\n";
+                    cardRevealed = true;
+                    break;
+                }
+            }
+        }
+        if (cardRevealed) break;
+    }
+
+    if (!cardRevealed)
+    {
+        std::cout << "No face-down cards belonging to the opponent were found.\n";
+    }
+
+    currentPlayer->ShowHand();
+    int cardIndex = -1;
+    while (!currentPlayer->HasCardAtIndex(cardIndex))
+    {
+        std::cout << currentPlayer->getName() << ", choose a card index to play: ";
+        std::cin >> cardIndex;
+    }
+    Card chosenCard = currentPlayer->PlayCard(cardIndex);
+
+    int row = -1, col = -1;
+    do
+    {
+        std::cout << "Enter row and column (0 to " << board.GetSize() - 1 << ") to place the card: ";
+        std::cin >> row >> col;
+
+        if (!board.IsEmpty(row, col))
+        {
+            std::cout << "Position (" << row << ", " << col << ") is not empty! Try again.\n";
+        }
+    } while (!board.IsEmpty(row, col));
+
+    currentPlayer->setLastMove(row, col);
+    board.MakeMove(row, col, chosenCard);
+
+    std::cout << currentPlayer->getName() << " placed card with value " << chosenCard.getValue() << " at (" << row << ", " << col << ").\n";
+}
+
+
+
+
 
 
 
