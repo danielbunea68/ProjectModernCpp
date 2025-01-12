@@ -1985,7 +1985,7 @@ void Combined_Mode::Bolovan(int row, int col, int cardIndex)
 
     std::cout << "Iluzia de la poziția (" << row << ", " << col << ") a fost acoperită cu o carte.\n";
 }
-
+ 
 
 
 
