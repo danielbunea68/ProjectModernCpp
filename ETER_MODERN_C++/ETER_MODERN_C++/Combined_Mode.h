@@ -80,4 +80,7 @@ public:
     void Cascada();
     void Sprijin();
     void Sfaramare();
+    void Granita();
+    void Avalansa(int row1, int col1, int row2, int col2);
+    void Bolovan(int row, int col, int cardIndex);
 };

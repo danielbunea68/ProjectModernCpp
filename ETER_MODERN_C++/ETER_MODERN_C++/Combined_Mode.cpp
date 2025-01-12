@@ -1849,6 +1849,143 @@ void Combined_Mode::Sfaramare()
         << ") now has a value of " << card.getValue() << ".\n";
 }
 
+void Combined_Mode::Granita()
+{
+    Card neutralCard(0, "neutral");
+    int row = -1, col = -1;
+
+    std::cout << "Choose a position to place the neutral card to define a boundary.\n";
+    do
+    {
+        std::cout << "Enter the row and column (0 to " << board.GetSize() - 1 << "): ";
+        std::cin >> row >> col;
+
+        if (!board.IsEmpty(row, col))
+        {
+            std::cout << "Position (" << row << ", " << col << ") is not empty! Try again.\n";
+        }
+    } while (!board.IsEmpty(row, col));
+
+    board.MakeMove(row, col, neutralCard);
+    std::cout << "Neutral card placed at (" << row << ", " << col << ").\n";
+
+    int cardIndex = -1;
+    while (!currentPlayer->HasCardAtIndex(cardIndex))
+    {
+        std::cout << currentPlayer->getName() << ", choose a card index to play: ";
+        std::cin >> cardIndex;
+    }
+
+    Card chosenCard = currentPlayer->PlayCard(cardIndex);
+
+    int playRow, playCol;
+    do
+    {
+        std::cout << "Enter the row and column to place the card (0 to " << board.GetSize() - 1 << "): ";
+        std::cin >> playRow >> playCol;
+
+        if (!board.IsEmpty(playRow, playCol))
+        {
+            std::cout << "Position (" << playRow << ", " << playCol << ") is not empty! Try again.\n";
+        }
+    } while (!board.IsEmpty(playRow, playCol));
+
+    board.MakeMove(playRow, playCol, chosenCard);
+    std::cout << "Card placed by " << currentPlayer->getName() << " at (" << playRow << ", " << playCol << ").\n";
+}
+
+void Combined_Mode::Avalansa(int row1, int col1, int row2, int col2)
+{
+    if (!((row1 == row2 && abs(col1 - col2) == 1) || (col1 == col2 && abs(row1 - row2) == 1))) {
+        std::cout << "Teancurile nu sunt adiacente. Alegerea este invalida.\n";
+        return;
+    }
+
+    if (board.IsEmpty(row1, col1) || board.IsEmpty(row2, col2)) {
+        std::cout << "Una sau ambele pozitii selectate sunt goale. Alegerea este invalida.\n";
+        return;
+    }
+
+    if (board.IsEmpty(row1, col1 - 1)) {
+
+        board.MoveStack(row1, col1, row1, col1 - 1);
+        std::cout << "Teancul de la (" << row1 << ", " << col1 << ") a fost mutat la (" << row1 << ", " << col1 - 1 << ").\n";
+    }
+    else if (board.IsEmpty(row1, col1 + 1)) {
+
+        board.MoveStack(row1, col1, row1, col1 + 1);
+        std::cout << "Teancul de la (" << row1 << ", " << col1 << ") a fost mutat la (" << row1 << ", " << col1 + 1 << ").\n";
+    }
+    else if (board.IsEmpty(row1 - 1, col1)) {
+
+        board.MoveStack(row1, col1, row1 - 1, col1);
+        std::cout << "Teancul de la (" << row1 << ", " << col1 << ") a fost mutat la (" << row1 - 1 << ", " << col1 << ").\n";
+    }
+    else if (board.IsEmpty(row1 + 1, col1)) {
+
+        board.MoveStack(row1, col1, row1 + 1, col1);
+        std::cout << "Teancul de la (" << row1 << ", " << col1 << ") a fost mutat la (" << row1 + 1 << ", " << col1 << ").\n";
+    }
+    else {
+        std::cout << "Teancul de la (" << row1 << ", " << col1 << ") nu poate fi mutat.\n";
+    }
+
+    if (board.IsEmpty(row2, col2 - 1))
+    {
+        board.MoveStack(row2, col2, row2, col2 - 1);
+        std::cout << "Teancul de la (" << row2 << ", " << col2 << ") a fost mutat la (" << row2 << ", " << col2 - 1 << ").\n";
+    }
+    else if (board.IsEmpty(row2, col2 + 1)) {
+
+        board.MoveStack(row2, col2, row2, col2 + 1);
+        std::cout << "Teancul de la (" << row2 << ", " << col2 << ") a fost mutat la (" << row2 << ", " << col2 + 1 << ").\n";
+    }
+    else if (board.IsEmpty(row2 - 1, col2)) {
+
+        board.MoveStack(row2, col2, row2 - 1, col2);
+        std::cout << "Teancul de la (" << row2 << ", " << col2 << ") a fost mutat la (" << row2 - 1 << ", " << col2 << ").\n";
+    }
+    else if (board.IsEmpty(row2 + 1, col2)) {
+
+        board.MoveStack(row2, col2, row2 + 1, col2);
+        std::cout << "Teancul de la (" << row2 << ", " << col2 << ") a fost mutat la (" << row2 + 1 << ", " << col2 << ").\n";
+    }
+    else {
+        std::cout << "Teancul de la (" << row2 << ", " << col2 << ") nu poate fi mutat.\n";
+    }
+}
+
+void Combined_Mode::Bolovan(int row, int col, int cardIndex)
+{
+    if (!board.IsFaceDown(row, col))
+    {
+        std::cout << "Poziția (" << row << ", " << col << ") nu conține o iluzie.\n";
+        return;
+    }
+
+    while (cardIndex < 0 || cardIndex >= currentPlayer->getCards().size())
+    {
+        std::cout << currentPlayer->getName() << ", alegi un index de card valid: ";
+        std::cin >> cardIndex;
+
+        static int attemptCount = 0;
+        attemptCount++;
+        if (attemptCount > 3)
+        {
+            std::cout << "Ai depășit numărul maxim de încercări. Runda ta s-a încheiat.\n";
+            return;
+        }
+    }
+
+    Card cardToCover = currentPlayer->PlayCard(cardIndex);
+
+    cardToCover.setFaceDown(true);
+
+    board.AddCard(row, col, cardToCover);
+
+    std::cout << "Iluzia de la poziția (" << row << ", " << col << ") a fost acoperită cu o carte.\n";
+}
+
 
 
 
