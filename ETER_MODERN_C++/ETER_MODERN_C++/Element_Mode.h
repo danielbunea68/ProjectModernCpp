@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <vector>
 #include <random>
+#include <memory>
 #include "IGame.h"
 #include "Board.h"
 #include "Player.h"
@@ -43,12 +44,15 @@ public:
 	};
 
 private:
-	Putere tipPutere;
+    Putere tipPutere;
+
+    std::unique_ptr<Player> player1;
+    std::unique_ptr<Player> player2;
+    Player* currentPlayer = nullptr;
 	std::unordered_set<Putere> usedPowers;
 	std::vector<Putere> availablePowers;
 	Board board;
-	Player player1, player2;
-	Player* currentPlayer;
+
 	int blockedRowForNextTurn = -1;
 	bool gameWithIllusions;
 	bool player1UsedAnyPower = false;
@@ -69,8 +73,8 @@ public:
 	Element_Mode(Putere putere);
 	//Rule of Five 
 	~Element_Mode();
-	Element_Mode(const Element_Mode& other);
-	Element_Mode& operator=(const Element_Mode& other);
+    Element_Mode(const Element_Mode& other) = delete;
+    Element_Mode& operator=(const Element_Mode& other) = delete;
 	Element_Mode(Element_Mode&& other) noexcept;
 	Element_Mode& operator=(Element_Mode&& other) noexcept;
 	//Rule of Five ^^^

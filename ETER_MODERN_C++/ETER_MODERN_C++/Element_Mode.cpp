@@ -1,18 +1,20 @@
 ﻿#pragma once
 #include "Element_Mode.h"
 #include "Explosion_Card.h"
-
 #include "Board.h"
-
+#include <memory>
+#include <algorithm>
+#include <iostream>
+#include <random>
 void Element_Mode::SwitchTurn()
 {
 	if (currentPlayer->getName() == player1.getName())
 	{
-		currentPlayer = &player2;
+		currentPlayer = player2.get();
 	}
 	else
 	{
-		currentPlayer = &player1;
+		currentPlayer = player1.get();
 	}
 
 	if (blockedRowForNextTurn != -1) 
@@ -154,7 +156,10 @@ std::vector<Element_Mode::Putere> Element_Mode::GetAvailablePowers()
 
 Element_Mode::Element_Mode()
 {
-    currentPlayer = NULL;
+    player1 = std::make_unique<Player>();
+    player2 = std::make_unique<Player>();
+
+    currentPlayer = player1.get();
 }
 
 void Element_Mode::InitGame(std::string name1, std::string name2)
@@ -173,7 +178,7 @@ void Element_Mode::InitGame(std::string name1, std::string name2)
 
 	player2.AddCard(Card(1, player2.getColor(), "Eter"));
 
-	currentPlayer = &player1;
+	currentPlayer = player1;
 }
 
 void Element_Mode::PlayGame()
@@ -188,7 +193,7 @@ void Element_Mode::PlayGame()
 	{
 		board.Display();
 		currentPlayer->ShowHand();
-		bool& currentPlayerUsedAnyPower = (currentPlayer == &player1) ? player1UsedAnyPower : player2UsedAnyPower;
+		bool& currentPlayerUsedAnyPower = (currentPlayer == player1.get() ) ? player1UsedAnyPower : player2UsedAnyPower;
 
 		if (currentPlayerUsedAnyPower)
 		{
@@ -519,7 +524,7 @@ void Element_Mode::ReturnCardToPlayer(int row, int col)
             std::cout << "Card returned to " << currentPlayer->getName() << "'s hand.\n";
         }
         else {
-            Player* otherPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+            Player* otherPlayer = (currentPlayer == player1.get() ) ? player2.get() : player1.get() ;
             otherPlayer->AddCard(card);  
             std::cout << "Card returned to " << otherPlayer->getName() << "'s hand.\n";
         }
@@ -534,7 +539,7 @@ void Element_Mode::ReturnCardToPlayer(int row, int col)
 void Element_Mode::DestroyLastOpponentCard() 
 {
 	// Identify the opponent
-	Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+	Player* opponent = (currentPlayer == player1.get() ) ? player2.get() : player1.get() ;
 	std::pair<int, int> move = opponent->getLastMove();
 
 	int row = move.first;
@@ -581,9 +586,9 @@ Player* Element_Mode::CurrentTurn()
 Player* Element_Mode::PreviousTurn()
 {
 	if (currentPlayer->getName() == player1.getName())
-		return &player2;
+		return player2.get();
 	else
-		return &player1;
+		return player1.get() ;
 }
  
 Element_Mode::Element_Mode(Putere putere) : tipPutere(putere) {}
@@ -594,7 +599,7 @@ Element_Mode::~Element_Mode()
 }
 
 Element_Mode::Element_Mode(const Element_Mode& other) : tipPutere(other.tipPutere), board(other.board), 
-player1(other.player1), player2(other.player2), currentPlayer((other.currentPlayer == &other.player1) ? &player1 : &player2), 
+player1(other.player1), player2(other.player2), currentPlayer((other.currentPlayer == &other.player1) ? player1.get()  : player2.get()),
 blockedRowForNextTurn(other.blockedRowForNextTurn) 
 {
 	std::cout << "Element_Mode copy constructor called.\n";
@@ -610,7 +615,7 @@ Element_Mode& Element_Mode::operator=(const Element_Mode& other)
 	board = other.board;
 	player1 = other.player1;
 	player2 = other.player2;
-	currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+	currentPlayer = (other.currentPlayer == &other.player1) ? player1.get()  : player2.get();
 	blockedRowForNextTurn = other.blockedRowForNextTurn;
 
 	std::cout << "Element_Mode copy assignment operator called.\n";
@@ -621,7 +626,7 @@ Element_Mode& Element_Mode::operator=(const Element_Mode& other)
 Element_Mode::Element_Mode(Element_Mode&& other) noexcept : tipPutere(std::move(other.tipPutere)), 
 board(std::move(other.board)), 
 player1(std::move(other.player1)), player2(std::move(other.player2)), 
-currentPlayer((other.currentPlayer == &other.player1) ? &player1 : &player2), 
+currentPlayer((other.currentPlayer == &other.player1) ? player1.get()  : player2.get()),
 blockedRowForNextTurn(other.blockedRowForNextTurn)
 {
 	other.currentPlayer = nullptr;
@@ -640,7 +645,7 @@ Element_Mode& Element_Mode::operator=(Element_Mode&& other) noexcept
 	board = std::move(other.board);
 	player1 = std::move(other.player1);
 	player2 = std::move(other.player2);
-	currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+	currentPlayer = (other.currentPlayer == &other.player1) ? player1.get()  : player2.get();
 	blockedRowForNextTurn = other.blockedRowForNextTurn;
 
 	other.currentPlayer = nullptr;
@@ -860,7 +865,7 @@ void Element_Mode::ActivateControlledExplosion()
 
 void Element_Mode::Flacari()
 {
-	Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+	Player* opponent = (currentPlayer == player1.get() ) ? player2.get() : player1.get() ;
 	bool cardRevealed = false;
 
 	for (int row = 0; row < board.GetSize(); ++row)
@@ -1102,7 +1107,7 @@ void Element_Mode::Scantei()
 
 void Element_Mode::Viscol()
 {
-	Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+	Player* opponent = (currentPlayer == player1.get() ) ? player2.get() : player1.get() ;
 	std::vector<std::pair<int, int>> visibleCards;
 
 	for (int row = 0; row < board.GetSize(); ++row)
@@ -1638,7 +1643,7 @@ void Element_Mode::Sprijin()
 
 void Element_Mode::Sfaramare()
 {
-    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+    Player* opponent = (currentPlayer == player1.get() ) ? player2.get() : player1.get() player1.get() ;
 
     std::vector<std::pair<int, int>> eligibleCards;
     for (int row = 0; row < board.GetSize(); ++row) {
