@@ -180,7 +180,7 @@ void Game::InitGameWizard(std::string name1, std::string name2)
 int Game::GetScore(std::string color)
 {
 	int score = 0;
-	for (int i = 0; i < board.GetSize(); i++)
+	/*for (int i = 0; i < board.GetSize(); i++)
 	{
 		for (int j = 0; j < board.GetSize(); j++)
 		{
@@ -192,7 +192,20 @@ int Game::GetScore(std::string color)
 
 			}
 		}
-	}
+	}*/
+	std::ranges::for_each(board.GetBoard(), [&](const std::vector<std::stack<Card>>& row) {
+		// Iterăm prin fiecare coloană din rândul curent
+		std::ranges::for_each(row, [&](const std::stack<Card>& cell) {
+			if (!cell.empty() && cell.top().getColor() == color) {
+				if (cell.top().getIsFaceDown()) {
+					score++; // Dacă este față în jos, incrementăm cu 1
+				}
+				else {
+					score += cell.top().getValue(); // Dacă nu este față în jos, adăugăm valoarea cărții
+				}
+			}
+			});
+		});
 	return score;
 }
 
@@ -281,6 +294,7 @@ void Game::useBomb(Player* player)
 			}
 		}
 	}
+
 }
 
 void Game::usePower(Player* player, int prevCol, int prevRow, int row, int col)
