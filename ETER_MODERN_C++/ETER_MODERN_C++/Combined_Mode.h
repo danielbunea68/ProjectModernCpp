@@ -12,6 +12,7 @@ private:
     Player* currentPlayer;
     Board board;
     int totalRounds;
+    std::unordered_set<Element_Mode::Putere> usedPowers;
 
     bool player1UsedAnyPower;
     bool player2UsedAnyPower;
@@ -54,4 +55,7 @@ public:
 
     std::string GetPowerName(Element_Mode::Putere power);
     std::string GetPowerDescription(Element_Mode::Putere power);
+    bool CanUsePower(Element_Mode::Putere power);
+    void UsePower1(Element_Mode::Putere power);
+    void ActivatePower1(Element_Mode::Putere power);
 };

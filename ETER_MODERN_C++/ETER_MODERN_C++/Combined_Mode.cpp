@@ -159,7 +159,8 @@ bool Combined_Mode::UsePower() {
             return false;
         }
     }
-    else if (powerChoice == 2 && !elementPowers.empty()) {
+    else if (powerChoice == 2 && !elementPowers.empty()) 
+    {
         char useElementPower;
         std::cout << currentPlayer->getName() << ", do you want to use your Element Power this turn? y/[n]: ";
         std::cin >> useElementPower;
@@ -187,8 +188,9 @@ bool Combined_Mode::UsePower() {
                     if (CanUsePower(selectedElementPower)) {
                         std::cout << "Activating Element Power: "
                             << GetPowerName(selectedElementPower) << "\n";
-                        ActivatePower(selectedElementPower);
-                        UsePower(selectedElementPower);
+                        ActivatePower1(selectedElementPower);
+                        UsePower1(selectedElementPower);
+
 
                         elementPowers.erase(elementPowers.begin() + (chosenElementPowerIndex - 1));
                         currentPlayerUsedPower = true;
@@ -771,6 +773,216 @@ std::string Combined_Mode::GetPowerDescription(Element_Mode::Putere power)
     }
 
 }
+
+bool Combined_Mode::CanUsePower(Element_Mode::Putere power)
+{
+     return std::find(elementPowers.begin(), elementPowers.end(), power) != elementPowers.end() && usedPowers.find(power) == usedPowers.end();
+}
+
+void Combined_Mode::UsePower1(Element_Mode::Putere power)
+{
+    usedPowers.insert(power);
+    std::cout << "Power " << static_cast<int>(power) << " has been used and is no longer available.\n";
+}
+
+void Combined_Mode::ActivatePower1(Element_Mode::Putere power)
+{
+    if (!CanUsePower(power))
+    {
+        std::cout << "This power is either unavailable or already used.\n";
+        return;
+    }
+
+    if (usedPowers.find(power) != usedPowers.end())
+    {
+        std::cout << "This power has already been used in this match.\n";
+        return;
+    }
+
+    switch (power)
+    {
+    case Element_Mode::Putere::ExplozieControlata:
+        std::cout << "Activating Controlled Explosion: The board explodes!" << std::endl;
+        ActivateControlledExplosion();
+        break;
+    case Element_Mode::Putere::Distrugere:
+        std::cout << "Activating Destruction: Removes the last card played by the opponent." << std::endl;
+        DestroyLastOpponentCard();
+        break;
+    case Element_Mode::Putere::Flacari:
+        std::cout << "Activating Flames: Reveals the opponent's illusion and allows you to play a card." << std::endl;
+        Flacari();
+        break;
+    case Element_Mode::Putere::Lava:
+        std::cout << "Activating Lava: All visible cards with a specific number return to their owners." << std::endl;
+        Lava();
+        break;
+    case Element_Mode::Putere::DinCenusa:
+        std::cout << "Activating From the Ashes: Immediately play an eliminated card." << std::endl;
+        DinCenusa();
+        break;
+    case Element_Mode::Putere::Scantei:
+        std::cout << "Activating Sparks: Play a card covered by the opponent in a different position." << std::endl;
+        Scantei();
+        break;
+    case Element_Mode::Putere::Viscol:
+        std::cout << "Activating Blizzard: Return a visible opponent's card to their hand." << std::endl;
+        Viscol();
+        break;
+    case Element_Mode::Putere::Vijelie:
+        std::cout << "Activating Storm: All covered cards return to their owners." << std::endl;
+        Vijelie();
+        break;
+    case Element_Mode::Putere::Uragan:
+        std::cout << "Activating Hurricane: Shift a fully occupied row." << std::endl;
+
+        int row;
+        std::cout << "Enter the row number you want to shift (0-indexed): ";
+        std::cin >> row;
+
+        try
+        {
+            Uragan(row);
+        }
+        catch (const std::exception& ex)
+        {
+            std::cerr << "Error activating Hurricane: " << ex.what() << std::endl;
+        }
+        break;
+    case Element_Mode::Putere::Rafala:
+        std::cout << "Activating Gust: Move a visible card adjacent to a smaller-numbered card." << std::endl;
+
+        int row1, col, targetRow, targetCol;
+        std::cout << "Enter the row and column of the card to move (0-indexed): ";
+        std::cin >> row1 >> col;
+
+        std::cout << "Enter the row and column of the target position (0-indexed): ";
+        std::cin >> targetRow >> targetCol;
+
+        try
+        {
+            ActivateRafala(row1, col, targetRow, targetCol);
+        }
+        catch (const std::exception& ex)
+        {
+            std::cerr << "Error activating Gust: " << ex.what() << std::endl;
+        }
+        break;
+    case Element_Mode::Putere::Miraj:
+        std::cout << "Activating Mirage: Replace your placed illusion with another illusion." << std::endl;
+
+        int cardIndex;
+
+        std::cout << "Enter the index of the card from your hand to replace the illusion: ";
+        std::cin >> cardIndex;
+
+        try {
+            ActivateMiraj(cardIndex);
+        }
+        catch (const std::exception& ex)
+        {
+            std::cerr << "Error activating Mirage: " << ex.what() << std::endl;
+        }
+        break;
+    case Element_Mode::Putere::Furtuna:
+        std::cout << "Activating Storm: Remove a stack of cards with 2 or more cards from the game." << std::endl;
+        ActivateFurtuna();
+        break;
+    case Element_Mode::Putere::Maree:
+        std::cout << "Activating Tide: Swap the positions of two stacks of cards." << std::endl;
+        SwapStacks();
+        break;
+    case Element_Mode::Putere::Ceata:
+        std::cout << "Activating Mist: Play another illusion." << std::endl;
+        Ceata();
+        break;
+    case Element_Mode::Putere::Val:
+        std::cout << "Activating Wave: Move a stack to an adjacent empty position and play a card on the new empty position." << std::endl;
+        Val();
+        break;
+    case Element_Mode::Putere::VartejDeApa:
+        std::cout << "Activating Whirlpool: Move 2 cards separated by an empty space onto that space." << std::endl;
+        VartejDeApa();
+        break;
+    case Element_Mode::Putere::Tsunami:
+        std::cout << "Activating Tsunami: Block a row for the opponent on the next turn." << std::endl;
+        ActivateTsunami();
+        break;
+    case Element_Mode::Putere::Cascada:
+        std::cout << "Activating Cascade: Stacks on a row fall towards one edge to form a new stack." << std::endl;
+        Cascada();
+        break;
+    case Element_Mode::Putere::Sprijin:
+        std::cout << "Activating Support: The value of one of your cards (1/2/3) increases by 1." << std::endl;
+        Sprijin();
+        break;
+    case Element_Mode::Putere::Cutremur:
+        std::cout << "Activating Earthquake: Remove all visible cards with the number 1 from the board." << std::endl;
+        Cutremur();
+        break;
+    case Element_Mode::Putere::Sfaramare:
+        std::cout << "Activating Shatter: The value of an opponent's card (2/3/4) decreases by 1." << std::endl;
+        Sfaramare();
+        break;
+    case Element_Mode::Putere::Granite:
+        std::cout << "Activating Granite: Place a neutral card that defines a boundary." << std::endl;
+        Granita();
+        break;
+    case Element_Mode::Putere::Avalansa:
+        std::cout << "Activated: Avalanche - Shifts two adjacent stacks." << std::endl;
+
+        int row3, col3, row4, col4;
+        std::cout << "Enter the coordinates of the first stack (row and column 0-indexed): ";
+        std::cin >> row3 >> col3;
+
+        std::cout << "Enter the coordinates of the second stack (row and column 0-indexed): ";
+        std::cin >> row4 >> col4;
+
+        try
+        {
+            Avalansa(row3, col3, row4, col4);
+        }
+        catch (const std::exception& ex)
+        {
+            std::cerr << "Error activating Avalanche: " << ex.what() << std::endl;
+        }
+        break;
+    case Element_Mode::Putere::Bolovan:
+        std::cout << "Activated: Boulder - Covers an illusion without revealing it." << std::endl;
+
+        int row5, col5, cardIndex1;
+        std::cout << "Enter the coordinates of the stack (row and column 0-indexed): ";
+        std::cin >> row5 >> col5;
+
+        std::cout << "Enter the index of the card in the stack (0-indexed): ";
+        std::cin >> cardIndex1;
+
+        try
+        {
+            Bolovan(row5, col5, cardIndex1);
+        }
+        catch (const std::exception& ex)
+        {
+            std::cerr << "Error activating Boulder: " << ex.what() << std::endl;
+        }
+        break;
+    default:
+        std::cout << "Unknown power!" << std::endl;
+        break;
+    }
+
+    usedPowers.insert(power);
+
+    auto it = std::find(availablePowers.begin(), availablePowers.end(), power);
+    if (it != availablePowers.end())
+    {
+        availablePowers.erase(it);
+    }
+
+    SwitchTurn();
+}
+
+
 
 
 
