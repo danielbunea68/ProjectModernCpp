@@ -205,28 +205,53 @@ void Wizard_Mode::moveEdgeRow(int row) {
 }
 
 
+//void Wizard_Mode::InitGame(std::string name1, std::string name2)
+//{
+//    player1.setName(name1);
+//    player2.setName(name2);
+//    board.SetSize(4);
+//    std::vector<int> values = { 1, 1, 2, 2, 2, 3, 3, 3, 4 };
+//    player1.setColor("red");
+//    player2.setColor("blue");
+//    for (const auto& value : values) {
+//        player1.AddCard(Card(value, player1.getColor()));
+//        player2.AddCard(Card(value, player2.getColor()));
+//    }
+//    player1.AddCard(Card(5, player1.getColor(), "Eter"));
+//    player2.AddCard(Card(5, player2.getColor(), "Eter"));
+//
+//    player1.setRandomWizardPower();
+//    player2.setRandomWizardPower();
+//
+//    std::cout << player1.getName() << " has the power: " << GetWizardPowerName(player1.getWizardPower()) << std::endl;
+//    std::cout << player2.getName() << " has the power: " << GetWizardPowerName(player2.getWizardPower()) << std::endl;
+//
+//    currentPlayer = &player1;
+//}
 void Wizard_Mode::InitGame(std::string name1, std::string name2)
 {
-    player1.setName(name1);
-    player2.setName(name2);
     board.SetSize(4);
+
     std::vector<int> values = { 1, 1, 2, 2, 2, 3, 3, 3, 4 };
-    player1.setColor("red");
-    player2.setColor("blue");
+    player1->setName(name1);
+    player2->setName(name2);
+    player1->setColor("red");
+    player2->setColor("blue");
+
     for (const auto& value : values) {
-        player1.AddCard(Card(value, player1.getColor()));
-        player2.AddCard(Card(value, player2.getColor()));
+        player1->AddCard(Card(value, player1->getColor()));
+        player2->AddCard(Card(value, player2->getColor()));
     }
-    player1.AddCard(Card(5, player1.getColor(), "Eter"));
-    player2.AddCard(Card(5, player2.getColor(), "Eter"));
+    player1->AddCard(Card(5, player1->getColor(), "Eter"));
+    player2->AddCard(Card(5, player2->getColor(), "Eter"));
 
-    player1.setRandomWizardPower();
-    player2.setRandomWizardPower();
+    player1->setRandomWizardPower();
+    player2->setRandomWizardPower();
 
-    std::cout << player1.getName() << " has the power: " << GetWizardPowerName(player1.getWizardPower()) << std::endl;
-    std::cout << player2.getName() << " has the power: " << GetWizardPowerName(player2.getWizardPower()) << std::endl;
+    std::cout << player1->getName() << " has the power: " << GetWizardPowerName(player1->getWizardPower()) << std::endl;
+    std::cout << player2->getName() << " has the power: " << GetWizardPowerName(player2->getWizardPower()) << std::endl;
 
-    currentPlayer = &player1;
+    currentPlayer = player1.get();
 }
 
 Player* Wizard_Mode::CurrentTurn()
@@ -234,15 +259,22 @@ Player* Wizard_Mode::CurrentTurn()
     return currentPlayer;
 }
 
+//Player* Wizard_Mode::PreviousTurn()
+//{
+//
+//    if (currentPlayer->getName() == player1.getName())
+//        return &player2;
+//    else
+//        return &player1;
+//}
 Player* Wizard_Mode::PreviousTurn()
 {
 
-    if (currentPlayer->getName() == player1.getName())
-        return &player2;
+    if (currentPlayer->getName() == player1->getName())
+        return player2.get();
     else
-        return &player1;
+        return player1.get();
 }
-
 
 std::string Wizard_Mode::GetWizardPowerName(WizardPower power)
 {
@@ -269,20 +301,34 @@ std::string Wizard_Mode::GetWizardPowerName(WizardPower power)
     }
 }
 
+//void Wizard_Mode::SwitchTurn()
+//{
+//    if (currentPlayer->getName() == player1.getName())
+//    {
+//        currentPlayer = &player2;
+//    }
+//    else
+//    {
+//        currentPlayer = &player1;
+//    }
+//}
 void Wizard_Mode::SwitchTurn()
 {
-    if (currentPlayer->getName() == player1.getName())
+    if (currentPlayer->getName() == player1->getName())
     {
-        currentPlayer = &player2;
+        currentPlayer = player2.get();
     }
     else
     {
-        currentPlayer = &player1;
+        currentPlayer = player1.get();
     }
 }
 
+
 Wizard_Mode::Wizard_Mode()
 {
+    player1 = std::make_unique<Player>();
+    player2 = std::make_unique<Player>();
     currentPlayer = NULL;
 }
 
@@ -290,17 +336,32 @@ Wizard_Mode::~Wizard_Mode()
 {
 }
 
-Wizard_Mode::Wizard_Mode(const Wizard_Mode& other) : board(other.board), player1(other.player1), player2(other.player2), 
-currentPlayer(other.currentPlayer) {}
+//Wizard_Mode::Wizard_Mode(const Wizard_Mode& other) : board(other.board), player1(other.player1), player2(other.player2), 
+//currentPlayer(other.currentPlayer) {}
+Wizard_Mode::Wizard_Mode(const Wizard_Mode& other) : board(other.board), player1(std::make_unique<Player>()), player2(std::make_unique<Player>()), currentPlayer(nullptr)
+{}
 
-Wizard_Mode& Wizard_Mode::operator=(const Wizard_Mode& other) 
+
+
+//Wizard_Mode& Wizard_Mode::operator=(const Wizard_Mode& other) 
+//{
+//    if (this != &other) 
+//    {   
+//        board = other.board; 
+//        player1 = other.player1;  
+//        player2 = other.player2;  
+//        currentPlayer = other.currentPlayer; 
+//    }
+//    return *this;
+//}
+Wizard_Mode& Wizard_Mode::operator=(const Wizard_Mode& other)
 {
-    if (this != &other) 
-    {   
-        board = other.board; 
-        player1 = other.player1;  
-        player2 = other.player2;  
-        currentPlayer = other.currentPlayer; 
+    if (this != &other)
+    {
+        board = other.board;
+        player1 = std::make_unique<Player>(*other.player1);
+        player2 = std::make_unique<Player>(*other.player2);
+        currentPlayer = other.currentPlayer;
     }
     return *this;
 }
@@ -457,7 +518,8 @@ void Wizard_Mode::ReturnCardToPlayer(int row, int col)
         }
         else 
         {
-            Player* otherPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+           /* Player* otherPlayer = (currentPlayer == &player1) ? &player2 : &player1;*/
+            Player* otherPlayer = (currentPlayer == player1.get()) ? player2.get() : player1.get();
             otherPlayer->AddCard(card);
             std::cout << "Card returned to " << otherPlayer->getName() << "'s hand.\n";
         }
@@ -679,7 +741,7 @@ void Wizard_Mode::PlayGame()
 
 
             }
-            if (board.CheckWinner(chosenCard.getColor()))
+          /*  if (board.CheckWinner(chosenCard.getColor()))
             {
                 std::pair<int, int> cords(row, col);
                 currentPlayer->setWinnCords(cords);
@@ -711,10 +773,43 @@ void Wizard_Mode::PlayGame()
                     SwitchTurn();
                 }
                 break;
+            }*/
+            if (board.CheckWinner(chosenCard.getColor()))
+            {
+                std::pair<int, int> cords(row, col);
+                currentPlayer->setWinnCords(cords);
+                board.Display();
+                std::cout << currentPlayer->getName() << " wins this round!\n";
+
+                if (currentPlayer->getName() == player1->getName())
+                    player1Wins++;
+                else
+                    player2Wins++;
+
+                if (player1Wins == 3)
+                {
+                    std::cout << player1->getName() << " wins the game with 3 round wins!\n";
+                    gameOver = true;
+                }
+                else if (player2Wins == 3)
+                {
+                    std::cout << player2->getName() << " wins the game with 3 round wins!\n";
+                    gameOver = true;
+                }
+                else
+                {
+                    board.Clear();
+                    player1->setRandomWizardPower();
+                    player2->setRandomWizardPower();
+                    std::cout << player1->getName() << " has the power: " << GetWizardPowerName(player1->getWizardPower()) << std::endl;
+                    std::cout << player2->getName() << " has the power: " << GetWizardPowerName(player2->getWizardPower()) << std::endl;
+                    SwitchTurn();
+                }
+                break;
             }
             else if (board.IsDraw())
             {
-                board.Display();
+                /*board.Display();
                 std::cout << "It's a draw!\n";
 
                 if (player1Wins == 3)
@@ -736,7 +831,31 @@ void Wizard_Mode::PlayGame()
                     std::cout << player2.getName() << " has the power: " << GetWizardPowerName(player2.getWizardPower()) << std::endl;
                     SwitchTurn();
                 }
+                break;*/
+                board.Display();
+                std::cout << "It's a draw!\n";
+
+                if (player1Wins == 3)
+                {
+                    std::cout << player1->getName() << " wins the game with 3 round wins!\n";
+                    gameOver = true;
+                }
+                else if (player2Wins == 3)
+                {
+                    std::cout << player2->getName() << " wins the game with 3 round wins!\n";
+                    gameOver = true;
+                }
+                else
+                {
+                    board.Clear();
+                    player1->setRandomWizardPower();
+                    player2->setRandomWizardPower();
+                    std::cout << player1->getName() << " has the power: " << GetWizardPowerName(player1->getWizardPower()) << std::endl;
+                    std::cout << player2->getName() << " has the power: " << GetWizardPowerName(player2->getWizardPower()) << std::endl;
+                    SwitchTurn();
+                }
                 break;
+
             }
             else
             {
@@ -748,10 +867,18 @@ void Wizard_Mode::PlayGame()
         std::cout << "Game over! Thanks for playing.\n";
 }
 
+//void Wizard_Mode::ResetGame()
+//{
+//    board.Clear();
+//    player1.ClearCards();
+//    player2.ClearCards();
+//    InitGame(player1.getName(), player2.getName());
+//}
+
 void Wizard_Mode::ResetGame()
 {
     board.Clear();
-    player1.ClearCards();
-    player2.ClearCards();
-    InitGame(player1.getName(), player2.getName());
+    player1->ClearCards();
+    player2->ClearCards();
+    InitGame(player1->getName(), player2->getName());
 }

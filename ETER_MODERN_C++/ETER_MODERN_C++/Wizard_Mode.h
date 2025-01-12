@@ -10,7 +10,9 @@ class Wizard_Mode : public IGame
 
 private :
     Board board;
-    Player player1, player2;
+   /// Player player1, player2;
+    std::unique_ptr<Player> player1;
+    std::unique_ptr<Player> player2;
     Player* currentPlayer;
     int player1Wins = 0, player2Wins = 0;
 

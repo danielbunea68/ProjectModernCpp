@@ -1,4 +1,4 @@
-/*
+
 #include "Game.h"
 #include "IGame.h"
 #include "Element_Mode.h"
@@ -101,33 +101,33 @@ int main() {
     }
     return 0;
 }
-*/
-#include "Game.h"
-#include "IGame.h"
-#include "Element_Mode.h"
-#include "Wizard_Mode.h"
-#include "Tournament_Mode.h"
-#include <iostream>
 
-#include <QApplication>
-#include <QMainWindow>
-#include <QFrame>
-#include <QGridLayout>
-#include <QPainter>
-#include <QWidget>
-#include <QMouseEvent>
-#include <MainWindow.h>
-
-int main(int argc, char* argv[]) {
-	QApplication app(argc, argv);
-    Q_INIT_RESOURCE(resources);
-    
-
-
-	MainWindow window;
-	window.resize(1200, 400);
-	window.show();
-
-	return app.exec();
-
-}
+//#include "Game.h"
+//#include "IGame.h"
+//#include "Element_Mode.h"
+//#include "Wizard_Mode.h"
+//#include "Tournament_Mode.h"
+//#include <iostream>
+//
+//#include <QApplication>
+//#include <QMainWindow>
+//#include <QFrame>
+//#include <QGridLayout>
+//#include <QPainter>
+//#include <QWidget>
+//#include <QMouseEvent>
+//#include <MainWindow.h>
+//
+//int main(int argc, char* argv[]) {
+//	QApplication app(argc, argv);
+//    Q_INIT_RESOURCE(resources);
+//    
+//
+//
+//	MainWindow window;
+//	window.resize(1200, 400);
+//	window.show();
+//
+//	return app.exec();
+//
+//}
