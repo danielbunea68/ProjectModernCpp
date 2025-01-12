@@ -1438,6 +1438,130 @@ void Combined_Mode::Uragan(int row)
     std::cout << "Uragan activated: Moved cards from row " << row << " to row " << newRow << ".\n";
 }
 
+void Combined_Mode::SwapStacks()
+{
+    int row1, col1, row2, col2;
+
+    std::cout << "Enter the row and column of the first stack to swap: ";
+    std::cin >> row1 >> col1;
+    std::cout << "Enter the row and column of the second stack to swap: ";
+    std::cin >> row2 >> col2;
+
+    board.SwapStacks(row1, col1, row2, col2);
+}
+
+void Combined_Mode::Ceata()
+{
+    for (int row = 0; row < board.GetSize(); ++row)
+    {
+        for (int col = 0; col < board.GetSize(); ++col)
+        {
+            if (board.HasCoveredCard(row, col, currentPlayer->getColor()))
+            {
+                std::cout << currentPlayer->getName() << " already has an active illusion on the board!\n";
+                return;
+            }
+        }
+    }
+
+    currentPlayer->ShowHand();
+
+    int cardIndex = -1;
+    while (!currentPlayer->HasCardAtIndex(cardIndex)) {
+        std::cout << currentPlayer->getName() << ", choose a card index to play as an illusion: ";
+        std::cin >> cardIndex;
+    }
+
+    Card chosenCard = currentPlayer->PlayCard(cardIndex);
+    chosenCard.setFaceDown(true);
+
+    int row = -1, col = -1;
+    while (true)
+    {
+        std::cout << "Enter row and column (0 - " << board.GetSize() - 1 << ") to place the illusion: ";
+        std::cin >> row >> col;
+
+        if (row < 0 || row >= board.GetSize() || col < 0 || col >= board.GetSize())
+        {
+            std::cout << "Invalid position! Row and column must be within the board boundaries.\n";
+            continue;
+        }
+
+        if (board.CanMakeMove(row, col, chosenCard) == 1)
+        {
+            break;
+        }
+        else
+        {
+            std::cout << "Invalid move! That position is occupied or not valid for an illusion.\n";
+        }
+    }
+
+    currentPlayer->setLastMove(row, col);
+    board.MakeMove(row, col, chosenCard);
+
+    std::cout << currentPlayer->getName() << " played an illusion at position (" << row << ", " << col << ").\n";
+}
+
+void Combined_Mode::Val()
+{
+    board.Display();
+
+    std::cout << currentPlayer->getName() << ", choose the source row and column: ";
+    int srcRow, srcCol;
+    std::cin >> srcRow >> srcCol;
+
+    if (!board.IsValidPosition(srcRow, srcCol) || board.IsEmpty(srcRow, srcCol))
+    {
+        std::cout << "Invalid source position. Try again.\n";
+        return;
+    }
+
+    std::cout << "Choose the destination row and column: ";
+    int destRow, destCol;
+    std::cin >> destRow >> destCol;
+
+    if (!board.IsValidPosition(destRow, destCol) || !board.IsEmpty(destRow, destCol))
+    {
+        std::cout << "Invalid destination position. Try again.\n";
+        return;
+    }
+
+    if (!board.AreAdjacent(srcRow, srcCol, destRow, destCol))
+    {
+        std::cout << "The destination position must be adjacent to the source position. Try again.\n";
+        return;
+    }
+
+    board.MoveStack(srcRow, srcCol, destRow, destCol);
+    std::cout << "Moved stack from (" << srcRow << ", " << srcCol << ") to (" << destRow << ", " << destCol << ").\n";
+
+    currentPlayer->ShowHand();
+    std::cout << "Choose a card index to play on the new empty position: ";
+    int cardIndex;
+    std::cin >> cardIndex;
+
+    if (!currentPlayer->HasCardAtIndex(cardIndex))
+    {
+        std::cout << "Invalid card index. Try again.\n";
+        return;
+    }
+
+    Card cardToPlay = currentPlayer->PlayCard(cardIndex);
+    if (board.CanMakeMove(srcRow, srcCol, cardToPlay))
+    {
+        board.MakeMove(srcRow, srcCol, cardToPlay);
+        std::cout << "Played card on the new empty position at (" << srcRow << ", " << srcCol << ").\n";
+    }
+    else
+    {
+        std::cout << "Cannot place the card on the new empty position. Returning card to your hand.\n";
+        currentPlayer->AddCard(cardToPlay);
+    }
+}
+
+
+
 
 
 

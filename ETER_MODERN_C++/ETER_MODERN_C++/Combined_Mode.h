@@ -70,4 +70,7 @@ public:
     void ActivateMiraj(int cardIndex);
     void ActivateFurtuna();
     void Uragan(int row);
+    void SwapStacks();
+    void Ceata();
+    void Val();
 };
