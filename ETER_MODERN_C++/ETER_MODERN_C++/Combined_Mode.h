@@ -77,4 +77,7 @@ public:
     void VartejDeApa();
     void ActivateTsunami();
     void Cutremur();
+    void Cascada();
+    void Sprijin();
+    void Sfaramare();
 };
