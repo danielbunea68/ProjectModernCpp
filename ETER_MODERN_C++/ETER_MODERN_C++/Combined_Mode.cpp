@@ -1350,6 +1350,96 @@ void Combined_Mode::ActivateRafala(int row, int col, int targetRow, int targetCo
     }
 }
 
+void Combined_Mode::ActivateMiraj(int cardIndex)
+{
+    if (!currentPlayer->HasCardAtIndex(cardIndex))
+    {
+        std::cout << "Invalid card index in hand for Miraj.\n";
+        return;
+    }
+
+    Card replacementCard = currentPlayer->PlayCard(cardIndex);
+    replacementCard.setFaceDown(true);
+
+    int row = -1, col = -1;
+
+    do
+    {
+        std::cout << "Enter the row (0 to " << board.GetSize() - 1 << ") to place the illusion: ";
+        std::cin >> row;
+        std::cout << "Enter the column (0 to " << board.GetSize() - 1 << ") to place the illusion: ";
+        std::cin >> col;
+    } while (!board.IsValidPosition(row, col) || !board.IsEmpty(row, col));
+
+    board.AddCard(row, col, replacementCard);
+    std::cout << "Miraj applied: Placed an illusion at (" << row << ", " << col << ").\n";
+}
+
+void Combined_Mode::ActivateFurtuna()
+{
+    for (int row = 0; row < board.GetSize(); ++row) 
+    {
+        for (int col = 0; col < board.GetSize(); ++col) 
+        {
+            if (!board.IsEmpty(row, col)) 
+            {
+                std::stack<Card>& stack = board.GetBoard()[row][col];
+                if (stack.size() >= 2) 
+                {
+                    std::cout << "Furtuna applied: Removed stack at (" << row << ", " << col << ").\n";
+                    while (!stack.empty()) 
+                    {
+                        stack.pop();
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Combined_Mode::Uragan(int row)
+{
+    if (row < 0 || row >= board.GetSize()) {
+        std::cout << "Invalid row for Uragan.\n";
+        return;
+    }
+
+    std::vector<Card> rowCards;
+    for (int col = 0; col < board.GetSize(); ++col) {
+        if (!board.IsEmpty(row, col)) {
+            while (!board.GetBoard()[row][col].empty()) {
+                rowCards.push_back(board.GetBoard()[row][col].top());
+                board.GetBoard()[row][col].pop();
+            }
+        }
+    }
+
+    if (rowCards.empty()) {
+        std::cout << "No cards to move in row " << row << ".\n";
+        return;
+    }
+
+    int newRow;
+    std::cout << "Enter the new row to move the cards: ";
+    std::cin >> newRow;
+
+    if (newRow < 0 || newRow >= board.GetSize() || newRow == row) {
+        std::cout << "Invalid row or same row for Uragan.\n";
+        return;
+    }
+
+    for (int col = 0; col < board.GetSize() && !rowCards.empty(); ++col) {
+        if (board.IsEmpty(newRow, col)) {
+            board.AddCard(newRow, col, rowCards.back());
+            rowCards.pop_back();
+        }
+    }
+
+    std::cout << "Uragan activated: Moved cards from row " << row << " to row " << newRow << ".\n";
+}
+
+
+
 
 
 

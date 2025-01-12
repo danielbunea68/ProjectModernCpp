@@ -67,4 +67,7 @@ public:
     void Viscol();
     void Vijelie();
     void ActivateRafala(int row, int col, int targetRow, int targetCol);
+    void ActivateMiraj(int cardIndex);
+    void ActivateFurtuna();
+    void Uragan(int row);
 };
