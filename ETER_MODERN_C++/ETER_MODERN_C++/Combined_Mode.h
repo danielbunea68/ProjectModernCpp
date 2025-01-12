@@ -13,6 +13,7 @@ private:
     Board board;
     int totalRounds;
     std::unordered_set<Element_Mode::Putere> usedPowers;
+    int blockedRowForNextTurn = -1;
 
     bool player1UsedAnyPower;
     bool player2UsedAnyPower;
@@ -73,4 +74,7 @@ public:
     void SwapStacks();
     void Ceata();
     void Val();
+    void VartejDeApa();
+    void ActivateTsunami();
+    void Cutremur();
 };

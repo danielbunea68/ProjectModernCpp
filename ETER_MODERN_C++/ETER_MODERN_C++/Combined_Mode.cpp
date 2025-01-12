@@ -221,7 +221,21 @@ bool Combined_Mode::UsePower() {
 
 void Combined_Mode::SwitchTurn() 
 {
-    currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+    if (currentPlayer->getName() == player1.getName())
+    {
+        currentPlayer = &player2;
+    }
+    else
+    {
+        currentPlayer = &player1;
+    }
+
+    if (blockedRowForNextTurn != -1)
+    {
+        std::cout << "The opponent cannot play on row " << blockedRowForNextTurn << " in this turn.\n";
+    }
+
+    blockedRowForNextTurn = -1;
 }
 
 void Combined_Mode::InitializeWizardPowers() 
@@ -1559,6 +1573,145 @@ void Combined_Mode::Val()
         currentPlayer->AddCard(cardToPlay);
     }
 }
+
+void Combined_Mode::VartejDeApa()
+{
+    int row, col1, col2;
+    std::cout << "Enter the row number (0, 1, 2, or 3): ";
+    std::cin >> row;
+
+    std::cout << "Enter the column number for the first card: ";
+    std::cin >> col1;
+
+    std::cout << "Enter the column number for the second card: ";
+    std::cin >> col2;
+
+    if (col1 == col2 || abs(col1 - col2) != 2)
+    {
+        std::cout << "Invalid positions. The two cards must be separated by exactly one empty space.\n";
+        return;
+    }
+
+    int emptyCol = (col1 + col2) / 2;
+
+    if (board.IsEmpty(row, col1) || board.IsEmpty(row, col2) || !board.IsEmpty(row, emptyCol))
+    {
+        std::cout << "Invalid move. Make sure the chosen positions meet the criteria.\n";
+        return;
+    }
+
+    Card card1 = board.TopCard(row, col1);
+    Card card2 = board.TopCard(row, col2);
+
+    Card topCard, bottomCard;
+    if (card1.getValue() > card2.getValue())
+    {
+        topCard = card1;
+        bottomCard = card2;
+    }
+    else if (card1.getValue() < card2.getValue())
+    {
+        topCard = card2;
+        bottomCard = card1;
+    }
+    else
+    {
+        int choice = 0;
+        while (choice != 1 && choice != 2)
+        {
+            std::cout << "Both cards have the same value.\n";
+            std::cout << "Choose which card goes on top (1 for card at (" << row << "," << col1
+                << "), 2 for card at (" << row << "," << col2 << ")): ";
+            std::cin >> choice;
+
+            if (choice == 1)
+            {
+                topCard = card1;
+                bottomCard = card2;
+            }
+            else if (choice == 2)
+            {
+                topCard = card2;
+                bottomCard = card1;
+            }
+            else
+            {
+                std::cout << "Invalid choice. Please choose 1 or 2.\n";
+            }
+        }
+    }
+
+    board.Remove(row, col1);
+    board.Remove(row, col2);
+    board.MakeMove(row, emptyCol, bottomCard);
+    board.MakeMove(row, emptyCol, topCard);
+
+    std::cout << "Cards moved to position (" << row << "," << emptyCol << ").\n";
+}
+
+void Combined_Mode::ActivateTsunami()
+{
+    std::cout << "Activating Tsunami: Select a row to block for the opponent's next turn.\n";
+
+    std::vector<int> validRows;
+    for (int row = 0; row < board.GetSize(); ++row) {
+        for (int col = 0; col < board.GetSize(); ++col) {
+            if (board.IsEmpty(row, col)) {
+                validRows.push_back(row);
+                break;
+            }
+        }
+    }
+
+    if (validRows.empty()) {
+        std::cout << "No valid rows to block. Tsunami cannot be activated.\n";
+        return;
+    }
+
+    std::cout << "Available rows to block: ";
+    for (size_t i = 0; i < validRows.size(); ++i) {
+        std::cout << validRows[i];
+        if (i < validRows.size() - 1) {
+            std::cout << ", ";
+        }
+    }
+    std::cout << ".\n";
+
+    int chosenRow = -1;
+    while (std::find(validRows.begin(), validRows.end(), chosenRow) == validRows.end()) {
+        std::cout << "Enter the row number to block: ";
+        std::cin >> chosenRow;
+
+        if (std::find(validRows.begin(), validRows.end(), chosenRow) == validRows.end()) {
+            std::cout << "Invalid row. Please select a row with empty spaces.\n";
+        }
+    }
+
+    blockedRowForNextTurn = chosenRow;
+    std::cout << "Row " << chosenRow << " has been blocked for the opponent's next turn.\n";
+}
+
+void Combined_Mode::Cutremur()
+{
+    int boardSize = board.GetSize();
+    for (int row = 0; row < boardSize; ++row)
+    {
+        for (int col = 0; col < boardSize; ++col)
+        {
+            if (!board.IsEmpty(row, col))
+            {
+                Card card = board.TopCard(row, col);
+                if (card.getValue() == 1 && !card.getIsFaceDown())
+                {
+                    std::cout << "Removing card with value 1 at (" << row << ", " << col << ").\n";
+                    board.Remove(row, col);
+                }
+            }
+        }
+    }
+}
+
+
 
 
 
