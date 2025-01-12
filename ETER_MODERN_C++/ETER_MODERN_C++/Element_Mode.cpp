@@ -164,12 +164,12 @@ Element_Mode::Element_Mode()
 
 void Element_Mode::InitGame(std::string name1, std::string name2)
 {
-	player1.setName(name1);
-	player2.setName(name2);
+    player1->setName(name1);
+	player2->setName(name2);
 	board.SetSize(4);
 	std::vector<int> values = { 1, 1, 2,2, 2, 3, 3 ,3, 4 };
-	player1.setColor("red");
-	player2.setColor("blue");
+    player1->setColor("red");
+	player2->setColor("blue");
 	for (const auto& value : values) {
 		player1.AddCard(Card(value, player1.getColor()));
 		player2.AddCard(Card(value, player2.getColor()));
@@ -501,9 +501,9 @@ void Element_Mode::PlayGame()
 void Element_Mode::ResetGame()
 {
 	board.Clear();
-	player1.ClearCards();
-	player2.ClearCards();
-	InitGame(player1.getName(), player2.getName());
+	player1->ClearCards();
+	player2->ClearCards();
+	InitGame(player1->getName(), player2->getName());
 }
 
 void Element_Mode::RemoveCard(int row, int col)
@@ -588,7 +588,7 @@ Player* Element_Mode::PreviousTurn()
 	if (currentPlayer->getName() == player1.getName())
 		return player2.get();
 	else
-		return player1.get() ;
+		return player1.get();
 }
  
 Element_Mode::Element_Mode(Putere putere) : tipPutere(putere) {}
@@ -1169,7 +1169,7 @@ void Element_Mode::Vijelie()
 
 					if (card.getColor() == player1.getColor())
 					{
-						player1.AddCard(card);
+                        player1->AddCard(card);
 						std::cout << "Card returned to " << player1.getName() << "'s hand.\n";
 					}
 					else if (card.getColor() == player2.getColor())
