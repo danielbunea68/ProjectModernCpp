@@ -1,4 +1,4 @@
-#include "Combined_Mode.h"
+﻿#include "Combined_Mode.h"
 #include "Element_Mode.h"
 #include "Wizard_Mode.h"
 #include <iostream>
@@ -168,8 +168,8 @@ bool Combined_Mode::UsePower() {
             while (true) {
                 std::cout << "Choose an Element Power to apply (or enter 0 to exit):\n";
                 for (size_t i = 0; i < elementPowers.size(); ++i) {
-                    std::cout << i + 1 << ": " << elementgame.GetPowerName(elementPowers[i])
-                        << "\n - " << elementgame.GetPowerDescription(elementPowers[i]) << "\n";
+                    std::cout << i + 1 << ": " << GetPowerName(elementPowers[i])
+                        << "\n - " << GetPowerDescription(elementPowers[i]) << "\n";
                 }
 
                 int chosenElementPowerIndex;
@@ -178,17 +178,17 @@ bool Combined_Mode::UsePower() {
 
                 if (chosenElementPowerIndex == 0) {
                     std::cout << "Exiting Element Power menu.\n";
-                    return false;  // Return to action menu
+                    return false;
                 }
 
                 if (chosenElementPowerIndex >= 1 && chosenElementPowerIndex <= elementPowers.size()) {
                     Element_Mode::Putere selectedElementPower = elementPowers[chosenElementPowerIndex - 1];
 
-                    if (elementgame.CanUsePower(selectedElementPower)) {
+                    if (CanUsePower(selectedElementPower)) {
                         std::cout << "Activating Element Power: "
-                            << elementgame.GetPowerName(selectedElementPower) << "\n";
-                        elementgame.ActivatePower(selectedElementPower);
-                        elementgame.UsePower(selectedElementPower);
+                            << GetPowerName(selectedElementPower) << "\n";
+                        ActivatePower(selectedElementPower);
+                        UsePower(selectedElementPower);
 
                         elementPowers.erase(elementPowers.begin() + (chosenElementPowerIndex - 1));
                         currentPlayerUsedPower = true;
@@ -233,8 +233,30 @@ void Combined_Mode::InitializeWizardPowers()
 void Combined_Mode::InitializeElementPowers() 
 {
     std::vector<Element_Mode::Putere> allPowers = {
-        Element_Mode::Putere::ExplozieControlata, Element_Mode::Putere::Distrugere,
-        Element_Mode::Putere::Flacari, Element_Mode::Putere::Lava,
+    Element_Mode::Putere::ExplozieControlata,
+    Element_Mode::Putere::Distrugere,
+    Element_Mode::Putere::Flacari,
+    Element_Mode::Putere::Lava,
+    Element_Mode::Putere::DinCenusa,
+    Element_Mode::Putere::Scantei,
+    Element_Mode::Putere::Viscol,
+    Element_Mode::Putere::Vijelie,
+    Element_Mode::Putere::Uragan,
+    Element_Mode::Putere::Rafala,
+    Element_Mode::Putere::Miraj,
+    Element_Mode::Putere::Furtuna,
+    Element_Mode::Putere::Maree,
+    Element_Mode::Putere::Ceata,
+    Element_Mode::Putere::Val,
+    Element_Mode::Putere::VartejDeApa,
+    Element_Mode::Putere::Tsunami,
+    Element_Mode::Putere::Cascada,
+    Element_Mode::Putere::Sprijin,
+    Element_Mode::Putere::Cutremur,
+    Element_Mode::Putere::Sfaramare,
+    Element_Mode::Putere::Granite,
+    Element_Mode::Putere::Avalansa,
+    Element_Mode::Putere::Bolovan
     };
 
     std::random_device rd;
@@ -243,8 +265,13 @@ void Combined_Mode::InitializeElementPowers()
 
     elementPowers = { allPowers[0], allPowers[1] };
     std::cout << "Element Powers initialized: ";
-    for (const auto& power : elementPowers) {
-        std::cout << elementgame.GetPowerName(power) << " ";
+
+    for (size_t i = 0; i < elementPowers.size(); ++i)
+    {
+        std::cout << GetPowerName(elementPowers[i]);
+        if (i != elementPowers.size() - 1) {
+            std::cout << ", ";
+        }
     }
     std::cout << "\n";
 }
@@ -653,6 +680,96 @@ void Combined_Mode::moveEdgeRow(int row)
         }
         std::cout << "Moved row " << row << " to edge row " << newRow << ".\n";
     }
+}
+
+std::string Combined_Mode::GetPowerName(Element_Mode::Putere power)
+{
+    switch (power)
+    {
+    case Element_Mode::Putere::ExplozieControlata: return "Explozie Controlată";
+    case Element_Mode::Putere::Distrugere:        return "Distrugere";
+    case Element_Mode::Putere::Flacari:           return "Flăcări";
+    case Element_Mode::Putere::Lava:              return "Lava";
+    case Element_Mode::Putere::DinCenusa:        return "Din Cenușă";
+    case Element_Mode::Putere::Scantei:           return "Scântei";
+    case Element_Mode::Putere::Viscol:            return "Viscol";
+    case Element_Mode::Putere::Vijelie:           return "Vijelie";
+    case Element_Mode::Putere::Uragan:            return "Uragan";
+    case Element_Mode::Putere::Rafala:            return "Rafală";
+    case Element_Mode::Putere::Miraj:             return "Miraj";
+    case Element_Mode::Putere::Furtuna:           return "Furtună";
+    case Element_Mode::Putere::Maree:             return "Maree";
+    case Element_Mode::Putere::Ceata:             return "Ceață";
+    case Element_Mode::Putere::Val:               return "Val";
+    case Element_Mode::Putere::VartejDeApa:      return "Vârtej de Apă";
+    case Element_Mode::Putere::Tsunami:           return "Tsunami";
+    case Element_Mode::Putere::Cascada:           return "Cascadă";
+    case Element_Mode::Putere::Sprijin:           return "Sprijin";
+    case Element_Mode::Putere::Cutremur:          return "Cutremur";
+    case Element_Mode::Putere::Sfaramare:         return "Sfărâmare";
+    case Element_Mode::Putere::Granite:           return "Granițe";
+    case Element_Mode::Putere::Avalansa:          return "Avalanșă";
+    case Element_Mode::Putere::Bolovan:           return "Bolovan";
+    default:                                       return "Necunoscută";
+    }
+}
+
+std::string Combined_Mode::GetPowerDescription(Element_Mode::Putere power)
+{
+    switch (power)
+    {
+    case Element_Mode::Putere::ExplozieControlata:
+        return "Detonates the board in a controlled manner, affecting specific areas.";
+    case Element_Mode::Putere::Distrugere:
+        return "Destroys the last card played by the opponent.";
+    case Element_Mode::Putere::Flacari:
+        return "Reveals the opponent's illusion and allows you to play an extra card.";
+    case Element_Mode::Putere::Lava:
+        return "Returns all visible cards of a chosen number to their owners.";
+    case Element_Mode::Putere::DinCenusa:
+        return "Instantly revives and plays one of your eliminated cards.";
+    case Element_Mode::Putere::Scantei:
+        return "Relocates one of the opponent's hidden cards to another position.";
+    case Element_Mode::Putere::Viscol:
+        return "Sends a visible opponent card back to their hand.";
+    case Element_Mode::Putere::Vijelie:
+        return "Returns all covered (face-down) cards to their owners.";
+    case Element_Mode::Putere::Uragan:
+        return "Shifts an entire fully occupied row to a new position.";
+    case Element_Mode::Putere::Rafala:
+        return "Moves a visible card next to a card with a smaller number.";
+    case Element_Mode::Putere::Miraj:
+        return "Swaps your placed illusion with another illusion.";
+    case Element_Mode::Putere::Furtuna:
+        return "Removes from play any stack containing two or more cards.";
+    case Element_Mode::Putere::Maree:
+        return "Swaps the positions of two stacks of cards.";
+    case Element_Mode::Putere::Ceata:
+        return "Allows you to play another illusion.";
+    case Element_Mode::Putere::Val:
+        return "Moves a stack to an adjacent empty spot and lets you play a card on the newly freed space.";
+    case Element_Mode::Putere::VartejDeApa:
+        return "Pulls two cards separated by an empty space into that space.";
+    case Element_Mode::Putere::Tsunami:
+        return "Blocks a row for the opponent during their next turn.";
+    case Element_Mode::Putere::Cascada:
+        return "Collapses a row of stacks towards an edge, forming a new stack.";
+    case Element_Mode::Putere::Sprijin:
+        return "Increases the value of one of your cards (1/2/3) by 1.";
+    case Element_Mode::Putere::Cutremur:
+        return "Removes all visible cards with the value 1 from the board.";
+    case Element_Mode::Putere::Sfaramare:
+        return "Decreases the value of an opponent's card (2/3/4) by 1.";
+    case Element_Mode::Putere::Granite:
+        return "Places a neutral card that defines a boundary.";
+    case Element_Mode::Putere::Avalansa:
+        return "Shifts two adjacent stacks together.";
+    case Element_Mode::Putere::Bolovan:
+        return "Covers an illusion without revealing it.";
+    default:
+        return "Unknown power.";
+    }
+
 }
 
 

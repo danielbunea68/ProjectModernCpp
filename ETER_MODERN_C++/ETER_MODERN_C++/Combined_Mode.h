@@ -12,7 +12,6 @@ private:
     Player* currentPlayer;
     Board board;
     int totalRounds;
-    Element_Mode elementgame;
 
     bool player1UsedAnyPower;
     bool player2UsedAnyPower;
@@ -33,11 +32,13 @@ public:
     Player* CurrentTurn() override;
     void ResetGame() override;
 
-    // Additional methods required by IGame
     void RemoveCard(int row, int col) override;
     void ReturnCardToPlayer(int row, int col) override;
     void CreatePit(int row, int col) override;
     Player* PreviousTurn() override;
+
+    //Functii wizard mode
+
     std::string GetWizardPowerName(WizardPower power);
     void ActivatePower(WizardPower power);
     void removeOpponentCard(int row, int col);
@@ -48,4 +49,9 @@ public:
     void grantExtraEterCard(int row, int col);
     void moveOpponentStack(int fromRow, int fromCol, int toRow, int toCol);
     void moveEdgeRow(int row);
+
+    //Functii element mode
+
+    std::string GetPowerName(Element_Mode::Putere power);
+    std::string GetPowerDescription(Element_Mode::Putere power);
 };
