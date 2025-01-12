@@ -171,14 +171,14 @@ void Element_Mode::InitGame(std::string name1, std::string name2)
     player1->setColor("red");
 	player2->setColor("blue");
 	for (const auto& value : values) {
-		player1.AddCard(Card(value, player1.getColor()));
-		player2.AddCard(Card(value, player2.getColor()));
+		player1->AddCard(Card(value, player1->getColor()));
+		player2->AddCard(Card(value, player2->getColor()));
 	}
-	player1.AddCard(Card(1, player1.getColor(), "Eter"));
+	player1->AddCard(Card(1, player1->getColor(), "Eter"));
 
-	player2.AddCard(Card(1, player2.getColor(), "Eter"));
+	player2->AddCard(Card(1, player2->getColor(), "Eter"));
 
-	currentPlayer = player1;
+	currentPlayer = player1.get();
 }
 
 void Element_Mode::PlayGame()
@@ -598,14 +598,15 @@ Element_Mode::~Element_Mode()
 	std::cout << "Element_Mode destructor called.\n";
 }
 
-Element_Mode::Element_Mode(const Element_Mode& other) : tipPutere(other.tipPutere), board(other.board), 
+/*Element_Mode::Element_Mode(const Element_Mode& other) : tipPutere(other.tipPutere), board(other.board),
 player1(other.player1), player2(other.player2), currentPlayer((other.currentPlayer == &other.player1) ? player1.get()  : player2.get()),
-blockedRowForNextTurn(other.blockedRowForNextTurn) 
+blockedRowForNextTurn(other.blockedRowForNextTurn)
 {
 	std::cout << "Element_Mode copy constructor called.\n";
 }
+*/
 
-Element_Mode& Element_Mode::operator=(const Element_Mode& other)
+/*Element_Mode& Element_Mode::operator=(const Element_Mode& other)
 {
 	if (this == &other) {
 		return *this;
@@ -621,18 +622,29 @@ Element_Mode& Element_Mode::operator=(const Element_Mode& other)
 	std::cout << "Element_Mode copy assignment operator called.\n";
 
 	return *this;
-}
+}*/
 
-Element_Mode::Element_Mode(Element_Mode&& other) noexcept : tipPutere(std::move(other.tipPutere)), 
-board(std::move(other.board)), 
-player1(std::move(other.player1)), player2(std::move(other.player2)), 
-currentPlayer((other.currentPlayer == &other.player1) ? player1.get()  : player2.get()),
-blockedRowForNextTurn(other.blockedRowForNextTurn)
+Element_Mode::Element_Mode(Element_Mode&& other) noexcept
+: tipPutere(std::move(other.tipPutere)),board(std::move(other.board)),player1(std::move(other.player1)),
+player2(std::move(other.player2)),currentPlayer(nullptr),usedPowers(std::move(other.usedPowers)),
+availablePowers(std::move(other.availablePowers)),
+blockedRowForNextTurn(other.blockedRowForNextTurn),
+gameWithIllusions(other.gameWithIllusions),
+player1UsedAnyPower(other.player1UsedAnyPower),
+player2UsedAnyPower(other.player2UsedAnyPower),
+player1Wins(other.player1Wins),
+player2Wins(other.player2Wins)
 {
-	other.currentPlayer = nullptr;
+    if (other.currentPlayer == other.player1.get())
+        currentPlayer = player1.get();
+    else if (other.currentPlayer == other.player2.get())
+        currentPlayer = player2.get();
+    else
+        currentPlayer = nullptr;
 
-	std::cout << "Element_Mode move constructor called.\n";
+    other.currentPlayer = nullptr;
 
+    std::cout << "Element_Mode move constructor called.\n";
 }
 
 Element_Mode& Element_Mode::operator=(Element_Mode&& other) noexcept
@@ -643,10 +655,24 @@ Element_Mode& Element_Mode::operator=(Element_Mode&& other) noexcept
 
 	tipPutere = std::move(other.tipPutere);
 	board = std::move(other.board);
-	player1 = std::move(other.player1);
-	player2 = std::move(other.player2);
-	currentPlayer = (other.currentPlayer == &other.player1) ? player1.get()  : player2.get();
-	blockedRowForNextTurn = other.blockedRowForNextTurn;
+    usedPowers          = std::move(other.usedPowers);
+    availablePowers     = std::move(other.availablePowers);
+    blockedRowForNextTurn = other.blockedRowForNextTurn;
+    gameWithIllusions   = other.gameWithIllusions;
+    player1UsedAnyPower = other.player1UsedAnyPower;
+    player2UsedAnyPower = other.player2UsedAnyPower;
+    player1Wins         = other.player1Wins;
+    player2Wins         = other.player2Wins;
+
+    player1 = std::move(other.player1);
+    player2 = std::move(other.player2);
+
+if (other.currentPlayer == other.player1.get())
+currentPlayer = player1.get();
+else if (other.currentPlayer == other.player2.get())
+currentPlayer = player2.get();
+else
+currentPlayer = nullptr;
 
 	other.currentPlayer = nullptr;
 
@@ -654,7 +680,6 @@ Element_Mode& Element_Mode::operator=(Element_Mode&& other) noexcept
 
 	return *this;
 }
-
 Element_Mode::Putere Element_Mode::GetTipPutere()
 {
 	return tipPutere;
