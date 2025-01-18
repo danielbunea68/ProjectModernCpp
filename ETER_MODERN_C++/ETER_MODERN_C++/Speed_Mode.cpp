@@ -145,29 +145,36 @@ void Speed_Mode::TimerBasedPlay() {
         auto now = steady_clock::now();
         int elapsed = duration_cast<seconds>(now - turnStartTime).count();
 
-        if (currentPlayer == &player1) {
+        // Actualizează timpul rămas pentru jucătorul curent
+        if (currentPlayer == player1.get()) {
             remainingTimePlayer1 -= elapsed;
-        } else {
+        } else if (currentPlayer == player2.get()) {
             remainingTimePlayer2 -= elapsed;
         }
 
+        // Verifică dacă timpul s-a terminat pentru jucătorul curent
         if (remainingTimePlayer1 <= 0 || remainingTimePlayer2 <= 0) {
             std::cout << currentPlayer->getName() << " ran out of time and loses the game!\n";
             isGameOver = true;
             return;
         }
 
+        // Afișează timpul rămas
         std::cout << "Remaining time for " << currentPlayer->getName() << ": "
-                  << (currentPlayer == &player1 ? remainingTimePlayer1 : remainingTimePlayer2) << " seconds.\n";
+                  << (currentPlayer == player1.get() ? remainingTimePlayer1 : remainingTimePlayer2) << " seconds.\n";
 
+        // Cere jucătorului să introducă o mutare
         std::cout << "Enter row and column for your move: ";
         std::cin >> row >> col;
 
+        // Încearcă să facă mutarea
         validMove = board.MakeMove(row, col, currentPlayer->PlayCard(0));
 
         if (!validMove) {
             std::cout << "Invalid move. Try again!\n";
         }
+
+        // Resetează cronometrul pentru următoarea verificare
         turnStartTime = steady_clock::now();
     }
 }
@@ -185,6 +192,6 @@ void Speed_Mode::HandleTimeout(Player* player) {
 }
 
 void Speed_Mode::DisplayTimeRemaining() const {
-    std::cout << player1.getName() << ": " << remainingTimePlayer1 << " seconds\n";
-    std::cout << player2.getName() << ": " << remainingTimePlayer2 << " seconds\n";
+    std::cout << player1->getName() << ": " << remainingTimePlayer1 << " seconds\n";
+    std::cout << player2->getName() << ": " << remainingTimePlayer2 << " seconds\n";
 }
