@@ -5,33 +5,25 @@
 Speed_Mode::Speed_Mode()
     : isGameOver(false), currentPlayer(nullptr), timeLimit(60), remainingTimePlayer1(60), remainingTimePlayer2(60) {}
 
-Speed_Mode::~Speed_Mode() {}
+Speed_Mode::~Speed_Mode()= default;
 
-Speed_Mode::Speed_Mode(const Speed_Mode& other) : board(other.board),
-player1(other.player1), player2(other.player2), currentPlayer(other.currentPlayer == &other.player1 ? &player1 : &player2),
-isGameOver(other.isGameOver) {}
+// Constructor de copiere șters
+Speed_Mode::Speed_Mode(const Speed_Mode& other) = default;
 
-Speed_Mode& Speed_Mode::operator=(const Speed_Mode& other)
-{
-    if (this == &other)
-        return *this;
+// Operator de atribuire șters
+Speed_Mode& Speed_Mode::operator=(const Speed_Mode& other) = default;
 
-    board = other.board;
-    player1 = other.player1;
-    player2 = other.player2;
-    currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
-    isGameOver = other.isGameOver;
-
-    return *this;
-}
 
 Speed_Mode::Speed_Mode(Speed_Mode&& other) noexcept
-:board(std::move(other.board)), player1(std::move(other.player1)), player2(std::move(other.player2)),
- currentPlayer(other.currentPlayer == &other.player1 ? &player1 : &player2), isGameOver(other.isGameOver) 
-{
-    other.currentPlayer = nullptr;
-    other.isGameOver = false;
-}
+: board(std::move(other.board)),
+player1(std::move(other.player1)),
+player2(std::move(other.player2)),
+currentPlayer(other.currentPlayer),
+isGameOver(other.isGameOver),
+timeLimit(other.timeLimit),
+turnStartTime(other.turnStartTime),
+remainingTimePlayer1(other.remainingTimePlayer1),
+remainingTimePlayer2(other.remainingTimePlayer2) {}
 
 Speed_Mode& Speed_Mode::operator=(Speed_Mode&& other) noexcept
 {
@@ -51,21 +43,13 @@ Speed_Mode& Speed_Mode::operator=(Speed_Mode&& other) noexcept
 }
 
 void Speed_Mode::InitGame(std::string name1, std::string name2) {
-    player1.setName(name1);
-    player2.setName(name2);
-    board.SetSize(3);
-    player1.setColor("red");
-    player2.setColor("blue");
-
-    std::vector<int> values = { 1, 1, 2, 3, 3 };
-    for (auto value : values) {
-        player1.AddCard(Card(value, player1.getColor()));
-        player2.AddCard(Card(value, player2.getColor()));
-    }
-
-    currentPlayer = &player1; // Set the first player
-    ResetTimers(); // Ensure timers are reset at the start of the game
+    player1 = std::make_unique<Player>(name1, "Blue");
+    player2 = std::make_unique<Player>(name2, "Red");
+    currentPlayer = player1.get();
     isGameOver = false;
+
+    ResetTimers();
+    std::cout << "Game initialized between " << player1->getName() << " and " << player2->getName() << ".\n";
 }
 
 /*
@@ -81,18 +65,7 @@ Player* Speed_Mode::PreviousTurn()
 */
 
 void Speed_Mode::SwitchTurn() {
-    auto now = std::chrono::steady_clock::now();
-    int elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - turnStartTime).count();
-
-    if (currentPlayer == &player1) {
-        remainingTimePlayer1 -= elapsed;
-    } else {
-        remainingTimePlayer2 -= elapsed;
-    }
-
-    currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
-
-    StartTurnTimer();
+    currentPlayer = (currentPlayer == player1.get()) ? player2.get() : player1.get();
 }
 
 void Speed_Mode::CheckWinner() {
@@ -111,8 +84,8 @@ void Speed_Mode::StartTurnTimer()
 }
 
 void Speed_Mode::ResetTimers() {
-    remainingTimePlayer1 = timeLimit;
-    remainingTimePlayer2 = timeLimit;
+    remainingTimePlayer1 = 300;//5 minute
+    remainingTimePlayer2 = 300;
 }
 bool Speed_Mode::CheckTimer()
 {

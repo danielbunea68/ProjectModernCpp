@@ -7,10 +7,11 @@
 class Speed_Mode : public IGame {
 private:
     Board board;
-    Player player1, player2;
-    Player* currentPlayer;
-    bool isGameOver;
+    std::unique_ptr<Player> player1;
+    std::unique_ptr<Player> player2;
+    Player* currentPlayer = nullptr;
 
+    bool isGameOver;
     int timeLimit;
     std::chrono::steady_clock::time_point turnStartTime;
     int remainingTimePlayer1;
@@ -27,10 +28,10 @@ private:
 public:
     Speed_Mode();
     ~Speed_Mode();
-    Speed_Mode(const Speed_Mode& other);
-    Speed_Mode& operator=(const Speed_Mode& other);
-    Speed_Mode(Speed_Mode&& other) noexcept;
-    Speed_Mode& operator=(Speed_Mode&& other) noexcept;
+    Speed_Mode(const Speed_Mode& other) = delete;
+    Speed_Mode& operator=(const Speed_Mode& other) = delete;
+    Speed_Mode(Speed_Mode&& other) noexcept = default;
+    Speed_Mode& operator=(Speed_Mode&& other) noexcept = default;
 
     void InitGame(std::string name1, std::string name2) override;
     //Player* CurrentTurn() override;
