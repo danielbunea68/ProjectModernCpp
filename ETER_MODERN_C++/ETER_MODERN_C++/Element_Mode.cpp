@@ -8,7 +8,7 @@
 #include <random>
 void Element_Mode::SwitchTurn()
 {
-	if (currentPlayer->getName() == player1.getName())
+	if (currentPlayer->getName() == player1->getName())
 	{
 		currentPlayer = player2.get();
 	}
@@ -439,19 +439,19 @@ void Element_Mode::PlayGame()
 			board.Display();
 			std::cout << currentPlayer->getName() << " wins this round!\n";
 
-			if (currentPlayer->getName() == player1.getName()) 
+			if (currentPlayer->getName() == player1->getName())
 				player1Wins++;
 			else
 				player2Wins++;
 
 			if (player1Wins == 3)
 			{
-				std::cout << player1.getName() << " wins the game with 3 round wins!\n";
+				std::cout << player1->getName() << " wins the game with 3 round wins!\n";
 				gameOver = true;
 			}
 			else if (player2Wins == 3)
 			{
-				std::cout << player2.getName() << " wins the game with 3 round wins!\n";
+				std::cout << player2->getName() << " wins the game with 3 round wins!\n";
 				gameOver = true;
 			}
 			else
@@ -471,12 +471,12 @@ void Element_Mode::PlayGame()
 
 			if (player1Wins == 3)
 			{
-				std::cout << player1.getName() << " wins the game with 3 round wins!\n";
+				std::cout << player1->getName() << " wins the game with 3 round wins!\n";
 				gameOver = true;
 			}
 			else if (player2Wins == 3)
 			{
-				std::cout << player2.getName() << " wins the game with 3 round wins!\n";
+				std::cout << player2->getName() << " wins the game with 3 round wins!\n";
 				gameOver = true;
 			}
 			else
@@ -585,7 +585,7 @@ Player* Element_Mode::CurrentTurn()
 
 Player* Element_Mode::PreviousTurn()
 {
-	if (currentPlayer->getName() == player1.getName())
+	if (currentPlayer->getName() == player1->getName())
 		return player2.get();
 	else
 		return player1.get();
@@ -1192,15 +1192,15 @@ void Element_Mode::Vijelie()
 					Card card = board.TopCard(row, col);
 					board.Remove(row, col);
 
-					if (card.getColor() == player1.getColor())
+					if (card.getColor() == player1->getColor())
 					{
                         player1->AddCard(card);
-						std::cout << "Card returned to " << player1.getName() << "'s hand.\n";
+						std::cout << "Card returned to " << player1->getName() << "'s hand.\n";
 					}
-					else if (card.getColor() == player2.getColor())
+					else if (card.getColor() == player2->getColor())
 					{
-						player2.AddCard(card);
-						std::cout << "Card returned to " << player2.getName() << "'s hand.\n";
+						player2->AddCard(card);
+						std::cout << "Card returned to " << player2->getName() << "'s hand.\n";
 					}
 				}
 			}
@@ -1668,7 +1668,7 @@ void Element_Mode::Sprijin()
 
 void Element_Mode::Sfaramare()
 {
-    Player* opponent = (currentPlayer == player1.get() ) ? player2.get() : player1.get() player1.get() ;
+	Player* opponent = (currentPlayer == player1.get()) ? player2.get() : player1.get();
 
     std::vector<std::pair<int, int>> eligibleCards;
     for (int row = 0; row < board.GetSize(); ++row) {

@@ -702,31 +702,31 @@ std::string Combined_Mode::GetPowerName(Element_Mode::Putere power)
 {
     switch (power)
     {
-    case Element_Mode::Putere::ExplozieControlata: return "Explozie Controlată";
+    case Element_Mode::Putere::ExplozieControlata: return "Explozie Controlata";
     case Element_Mode::Putere::Distrugere:        return "Distrugere";
-    case Element_Mode::Putere::Flacari:           return "Flăcări";
+    case Element_Mode::Putere::Flacari:           return "Flacari";
     case Element_Mode::Putere::Lava:              return "Lava";
-    case Element_Mode::Putere::DinCenusa:        return "Din Cenușă";
-    case Element_Mode::Putere::Scantei:           return "Scântei";
+    case Element_Mode::Putere::DinCenusa:         return "Din Cenusa";
+    case Element_Mode::Putere::Scantei:           return "Scantei";
     case Element_Mode::Putere::Viscol:            return "Viscol";
     case Element_Mode::Putere::Vijelie:           return "Vijelie";
     case Element_Mode::Putere::Uragan:            return "Uragan";
-    case Element_Mode::Putere::Rafala:            return "Rafală";
+    case Element_Mode::Putere::Rafala:            return "Rafala";
     case Element_Mode::Putere::Miraj:             return "Miraj";
-    case Element_Mode::Putere::Furtuna:           return "Furtună";
+    case Element_Mode::Putere::Furtuna:           return "Furtuna";
     case Element_Mode::Putere::Maree:             return "Maree";
-    case Element_Mode::Putere::Ceata:             return "Ceață";
+    case Element_Mode::Putere::Ceata:             return "Ceata";
     case Element_Mode::Putere::Val:               return "Val";
-    case Element_Mode::Putere::VartejDeApa:      return "Vârtej de Apă";
+    case Element_Mode::Putere::VartejDeApa:       return "Vartej de Apa";
     case Element_Mode::Putere::Tsunami:           return "Tsunami";
-    case Element_Mode::Putere::Cascada:           return "Cascadă";
+    case Element_Mode::Putere::Cascada:           return "Cascada";
     case Element_Mode::Putere::Sprijin:           return "Sprijin";
     case Element_Mode::Putere::Cutremur:          return "Cutremur";
-    case Element_Mode::Putere::Sfaramare:         return "Sfărâmare";
-    case Element_Mode::Putere::Granite:           return "Granițe";
-    case Element_Mode::Putere::Avalansa:          return "Avalanșă";
+    case Element_Mode::Putere::Sfaramare:         return "Sfaramare";
+    case Element_Mode::Putere::Granite:           return "Granite";
+    case Element_Mode::Putere::Avalansa:          return "Avalansa";
     case Element_Mode::Putere::Bolovan:           return "Bolovan";
-    default:                                       return "Necunoscută";
+    default:                                       return "Necunoscuta";
     }
 }
 
