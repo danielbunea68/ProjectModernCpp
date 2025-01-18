@@ -89,50 +89,49 @@ void Speed_Mode::ResetTimers() {
 }
 bool Speed_Mode::CheckTimer()
 {
-    using namespace std::chrono;
+    auto now = std::chrono::steady_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - turnStartTime).count();
 
-    auto now = steady_clock::now();
-    int elapsed = duration_cast<seconds>(now - turnStartTime).count();
-
-    if (currentPlayer == &player1) {
+    if (currentPlayer == player1.get()) {
         remainingTimePlayer1 -= elapsed;
-        if (remainingTimePlayer1 <= 0) {
-            std::cout << player1.getName() << " ran out of time and loses the game!\n";
-            isGameOver = true;
-            return false;
-        }
-    }
-    else {
+        return remainingTimePlayer1 > 0;
+    } else {
         remainingTimePlayer2 -= elapsed;
-        if (remainingTimePlayer2 <= 0) {
-            std::cout << player2.getName() << " ran out of time and loses the game!\n";
-            isGameOver = true;
-            return false;
-        }
+        return remainingTimePlayer2 > 0;
     }
-    StartTurnTimer();
-    return true;
 }
 
 void Speed_Mode::PlayGame() {
     while (!isGameOver) {
         board.Display();
-        std::cout << currentPlayer->getName() << "'s turn.\n";
+        StartTurnTimer();
+
+        std::cout << currentPlayer->getName() << "'s turn. Remaining time: ";
+        if (currentPlayer == player1.get()) {
+            std::cout << remainingTimePlayer1 << " seconds\n";
+        } else {
+            std::cout << remainingTimePlayer2 << " seconds\n";
+        }
 
         TimerBasedPlay();
 
-        CheckWinner();
-        if (!isGameOver) {
-            SwitchTurn();
+        if (!CheckTimer()) {
+            HandleTimeout(currentPlayer);
+            break;
         }
+
+        SwitchTurn();
     }
+
+    CheckWinner();
 }
 
 void Speed_Mode::ResetGame() {
-    board.Clear();
-    player1.ClearCards();
-    player2.ClearCards();
-    InitGame(player1.getName(), player2.getName());
+    board.Reset();
+    ResetTimers();
+    currentPlayer = player1.get();
+    isGameOver = false;
+    std::cout << "Game has been reset.\n";
 }
 
 void Speed_Mode::TimerBasedPlay() {
