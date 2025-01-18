@@ -7,9 +7,9 @@
 class Combined_Mode : public IGame
 {
 private:
-    std::unique_ptr<Player> player1;
-    std::unique_ptr<Player> player2;
-    Player* currentPlayer = nullptr;
+    Player player1;
+    Player player2;
+    Player* currentPlayer;
     Board board;
     int totalRounds;
     std::unordered_set<Element_Mode::Putere> usedPowers;

@@ -16,7 +16,7 @@ int main() {
     Tournament_Mode* game_special = nullptr;
 
     char mode;
-    std::cout << "Choose a game mode: \nTraining (t)\nWizard Mode (w)\nElemental Cards (e)\nTournament Mode (T)\n";
+    std::cout << "Choose a game mode: \nTraining (t)\nWizard Mode (w)\nElemental Cards (e)\nTournament Mode (T)\n Speed Mode (s)";
     std::cin >> mode;
     int ok = 0;
     switch (mode) {
@@ -35,6 +35,11 @@ int main() {
     case 'T':
         std::cout << "You chose Tournament Mode.\n";
         game_special = new Tournament_Mode();
+        ok = 1;
+        break;
+    case 's':
+        std::cout << "You chose Speed Mode.\n";
+        game_special = new Speed_Mode();
         ok = 1;
         break;
     case 'c':
