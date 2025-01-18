@@ -278,11 +278,29 @@ void Game::useBomb(Player* player)
 	player->hasBomb = false;
 	player->selectedBomb = false;
 
-	for (int i = 0; i < bomb->board.size(); i++) {
-		for (int j = 0; j < bomb->board.size(); j++) {
+
+
+	//for (int i = 0; i < bomb->board.size(); i++) {
+	//	for (int j = 0; j < bomb->board.size(); j++) {
+	//		char action = bomb->board[i][j];
+	//		switch (action)
+	//		{
+	//		case 'r':
+	//			RemoveCard(i, j);
+	//			break;
+	//		case 'u':
+	//			ReturnCardToPlayer(i, j);
+	//			break;
+	//		default:
+	//			break;
+	//		}
+	//	}
+	//}
+
+	for (auto i : std::views::iota(0, static_cast<int>(bomb->board.size()))) {
+		for (auto j : std::views::iota(0, static_cast<int>(bomb->board.size()))) {
 			char action = bomb->board[i][j];
-			switch (action)
-			{
+			switch (action) {
 			case 'r':
 				RemoveCard(i, j);
 				break;

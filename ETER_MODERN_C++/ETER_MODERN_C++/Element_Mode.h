@@ -48,6 +48,8 @@ private:
 	std::vector<Putere> availablePowers;
 	Board board;
 	Player player1, player2;
+
+
 	Player* currentPlayer;
 	int blockedRowForNextTurn = -1;
 	bool gameWithIllusions;

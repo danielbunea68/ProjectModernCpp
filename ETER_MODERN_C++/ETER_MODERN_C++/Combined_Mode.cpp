@@ -993,7 +993,7 @@ void Combined_Mode::ActivatePower1(Element_Mode::Putere power)
         elementPowers.erase(it);
     }
 
-    SwitchTurn();
+   /// SwitchTurn();
 }
 
 void Combined_Mode::ActivateControlledExplosion()
