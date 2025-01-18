@@ -6,13 +6,107 @@
 #include <algorithm>
 #include <random>
 
+Combined_Mode& Combined_Mode::operator=(Combined_Mode&& other) noexcept
+{
+    if (this != &other) {
+        totalRounds = std::exchange(other.totalRounds, 0);
+        player1UsedAnyPower = std::exchange(other.player1UsedAnyPower, false);
+        player2UsedAnyPower = std::exchange(other.player2UsedAnyPower, false);
+        blockedRowForNextTurn = std::exchange(other.blockedRowForNextTurn, -1);
+        board = std::move(other.board);
+        elementPowers = std::move(other.elementPowers);
+        usedPowers = std::move(other.usedPowers);
+        player1 = std::move(other.player1);
+        player2 = std::move(other.player2);
+
+        // Mutăm pointerul către currentPlayer
+        currentPlayer = (other.currentPlayer == other.player1.get()) ? player1.get() : player2.get();
+
+        // Asigurăm că `other` nu mai are jucători activi
+        other.currentPlayer = nullptr;
+    }
+    return *this;
+}
+
 Combined_Mode::Combined_Mode()
     : totalRounds(5), currentPlayer(nullptr), player1UsedAnyPower(false), player2UsedAnyPower(false) {}
+
+Combined_Mode::~Combined_Mode()
+{
+    player1.reset();
+    player2.reset();
+}
+
+Combined_Mode::Combined_Mode(const Combined_Mode& other) : totalRounds(other.totalRounds),
+player1UsedAnyPower(other.player1UsedAnyPower),
+player2UsedAnyPower(other.player2UsedAnyPower),
+blockedRowForNextTurn(other.blockedRowForNextTurn),
+board(other.board),
+elementPowers(other.elementPowers),
+usedPowers(other.usedPowers)
+{
+    // Copiem jucătorii
+    if (other.player1) {
+        player1 = std::make_unique<Player>(*other.player1);
+    }
+    if (other.player2) {
+        player2 = std::make_unique<Player>(*other.player2);
+    }
+
+    // Asigurăm că `currentPlayer` indică către jucătorul corespunzător
+    currentPlayer = (other.currentPlayer == other.player1.get()) ? player1.get() : player2.get();
+}
+
+Combined_Mode& Combined_Mode::operator=(const Combined_Mode& other)
+{
+    if (this != &other) {
+        totalRounds = other.totalRounds;
+        player1UsedAnyPower = other.player1UsedAnyPower;
+        player2UsedAnyPower = other.player2UsedAnyPower;
+        blockedRowForNextTurn = other.blockedRowForNextTurn;
+        board = other.board;
+        elementPowers = other.elementPowers;
+        usedPowers = other.usedPowers;
+
+        // Copiem jucătorii
+        if (other.player1) {
+            player1 = std::make_unique<Player>(*other.player1);
+        }
+        if (other.player2) {
+            player2 = std::make_unique<Player>(*other.player2);
+        }
+
+        // Asigurăm că `currentPlayer` indică către jucătorul corespunzător
+        currentPlayer = (other.currentPlayer == other.player1.get()) ? player1.get() : player2.get();
+    }
+    return *this;
+}
+
+Combined_Mode::Combined_Mode(Combined_Mode&& other) noexcept : totalRounds(std::exchange(other.totalRounds, 0)),
+player1UsedAnyPower(std::exchange(other.player1UsedAnyPower, false)),
+player2UsedAnyPower(std::exchange(other.player2UsedAnyPower, false)),
+blockedRowForNextTurn(std::exchange(other.blockedRowForNextTurn, -1)),
+board(std::move(other.board)),
+elementPowers(std::move(other.elementPowers)),
+usedPowers(std::move(other.usedPowers)),
+player1(std::move(other.player1)),
+player2(std::move(other.player2))
+{
+    
+
+        // Mutăm pointerul către currentPlayer
+        currentPlayer = (other.currentPlayer == other.player1.get()) ? player1.get() : player2.get();
+
+        // Asigurăm că `other` nu mai are jucători activi
+        other.currentPlayer = nullptr;
+}
 
 void Combined_Mode::InitGame(std::string name1, std::string name2) {
     const int BOARD_SIZE = 4;
     const int INITIAL_ROUNDS = 5;
-
+    if (name1.empty() || name2.empty()) {
+        throw std::runtime_error("Error: Invalid game initialization, name1 or name2 is empty.");
+    }
     player1->setName(name1);
     player2->setName(name2);
     player1->setColor("red");
@@ -1984,22 +2078,3 @@ void Combined_Mode::Bolovan(int row, int col, int cardIndex)
 
     std::cout << "Iluzia de la poziția (" << row << ", " << col << ") a fost acoperită cu o carte.\n";
 }
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

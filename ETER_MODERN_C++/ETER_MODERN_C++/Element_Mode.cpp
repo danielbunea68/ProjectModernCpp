@@ -157,7 +157,7 @@ std::vector<Element_Mode::Putere> Element_Mode::GetAvailablePowers()
 Element_Mode::Element_Mode()
 {
     player1 = std::make_unique<Player>();
-    player2 = std::make_unique<Player>();
+	player2 = std::make_unique<Player>();
 
     currentPlayer = player1.get();
 }
@@ -625,8 +625,8 @@ blockedRowForNextTurn(other.blockedRowForNextTurn)
 }*/
 
 Element_Mode::Element_Mode(Element_Mode&& other) noexcept
-: tipPutere(std::move(other.tipPutere)),board(std::move(other.board)),player1(std::move(other.player1)),
-player2(std::move(other.player2)),currentPlayer(nullptr),usedPowers(std::move(other.usedPowers)),
+: tipPutere(std::move(other.tipPutere)),board(std::move(other.board)), player1(std::make_unique<Player>()),
+player2(std::make_unique<Player>()),currentPlayer(nullptr),usedPowers(std::move(other.usedPowers)),
 availablePowers(std::move(other.availablePowers)),
 blockedRowForNextTurn(other.blockedRowForNextTurn),
 gameWithIllusions(other.gameWithIllusions),

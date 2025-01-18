@@ -4,7 +4,8 @@
 #include <chrono>
 
 
-class Speed_Mode : public IGame {
+class Speed_Mode : public IGame 
+{
 private:
     Board board;
     std::unique_ptr<Player> player1;

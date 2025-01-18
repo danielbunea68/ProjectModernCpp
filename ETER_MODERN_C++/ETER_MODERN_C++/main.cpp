@@ -4,6 +4,7 @@
 #include "Wizard_Mode.h"
 #include "Tournament_Mode.h"
 #include "Combined_Mode.h"
+#include "Speed_Mode.h"
 #include <iostream>
 
 int main() {
