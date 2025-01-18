@@ -17,15 +17,15 @@ private:
     std::vector<std::vector<std::string>> speed_board;
     char m_mode;
     bool isGameOver = false;
+    Player player1;
+    Player player2;
+    Player* currentPlayer;
 
     // Timer variables
     int timeLimit;
     std::chrono::steady_clock::time_point turnStartTime;
     int remainingTimePlayer1;
     int remainingTimePlayer2;
-    Player* currentPlayer;
-
-    // Private helper methods
     void StartTurnTimer();
     bool CheckTimer();
     void ResetTimers();
@@ -47,7 +47,16 @@ public:
     void updateBoard(int row, int col, std::string color);
     void DisplaySpeedBoard();
 
-    // Timer-specific methods
     void ConfigureTimeLimit(int seconds);
     void DisplayTimeRemaining() const;
+
+    void InitGame(std::string name1, std::string name2) override;
+    void SwitchTurn();
+    void PlayGame() override;
+    void ResetGame() override;
+    void RemoveCard(int row, int col) override;
+    void ReturnCardToPlayer(int row, int col) override;
+    void CreatePit(int row, int col) override;
+    Player* CurrentTurn() override;
+    Player* PreviousTurn() override;
 };

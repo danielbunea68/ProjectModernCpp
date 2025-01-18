@@ -171,3 +171,96 @@ void Speed_Mode::DisplaySpeedBoard()
     }
     std::cout << "\n";
 }
+void Speed_Mode::ResetGame()
+{
+    isGameOver = false;
+    game->ResetGame();
+}
+
+void Speed_Mode::RemoveCard(int row, int col)
+{
+    if (row >= 0 && row < 3 && col >= 0 && col < 3)
+    {
+        speed_board[row][col] = "";
+    }
+}
+
+void Speed_Mode::ReturnCardToPlayer(int row, int col)
+{
+    if (row >= 0 && row < 3 && col >= 0 && col < 3)
+    {
+        std::cout << "Returning card at (" << row << ", " << col << ") to the player.\n";
+        speed_board[row][col] = "";
+    }
+}
+
+void Speed_Mode::CreatePit(int row, int col)
+{
+    if (row >= 0 && row < 3 && col >= 0 && col < 3)
+    {
+        speed_board[row][col] = "Pit";
+    }
+}
+
+Player* Speed_Mode::CurrentTurn()
+{
+    return currentPlayer;
+}
+
+Player* Speed_Mode::PreviousTurn()
+{
+    return game->PreviousTurn();
+}
+
+void Speed_Mode::InitGame(std::string name1, std::string name2) 
+{
+    // Initialize the game based on the selected game mode
+    chooseGame();  // Choose the game mode (Standard, Wizard, Element, or Combined)
+
+    // Initialize players with names
+    if (game) {
+        game->InitGame(name1, name2);  // Call the InitGame method of the selected game mode
+        player1 = player1.getName();
+        player2 = player2.getName();
+        currentPlayer = &player1;  // Start with player 1
+    }
+}
+
+void Speed_Mode::PlayGame() {
+    while (!isGameOver) {
+        // Start turn timer
+        StartTurnTimer();
+        //game->PlayGame();
+
+        // Switch to the other player
+        SwitchTurn();
+
+        // Display the current state of the speed board
+        DisplaySpeedBoard();
+
+        // Check if the current player ran out of time
+        if (CheckTimer()) {
+            break;  // Game ends if player runs out of time
+        }
+    }
+
+    // Final message when the game ends
+    if (isGameOver) {
+        std::cout << currentPlayer->getName() << " has won the Speed Mode game!\n";
+    }
+    else {
+        std::cout << "Game ended due to timeout or draw.\n";
+    }
+}
+
+void Speed_Mode::SwitchTurn()
+{
+    if (currentPlayer->getName() == player1.getName())
+    {
+        currentPlayer = &player2;
+    }
+    else
+    {
+        currentPlayer = &player1;
+    }
+}

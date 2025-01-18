@@ -16,7 +16,7 @@ int main() {
     Tournament_Mode* game_special = nullptr;
 
     char mode;
-    std::cout << "Choose a game mode: \nTraining (t)\nWizard Mode (w)\nElemental Cards (e)\nTournament Mode (T)\n Speed Mode (s)";
+    std::cout << "Choose a game mode: \nTraining (t)\nWizard Mode (w)\nElemental Cards (e)\nTournament Mode (T)\nSpeed Mode (s)\n";
     std::cin >> mode;
     int ok = 0;
     switch (mode) {
@@ -39,8 +39,7 @@ int main() {
         break;
     case 's':
         std::cout << "You chose Speed Mode.\n";
-        game_special = new Speed_Mode();
-        ok = 1;
+        game = new Speed_Mode();
         break;
     case 'c':
         std::cout << "You chose Combined mode.\n";
@@ -55,7 +54,7 @@ int main() {
     if (ok == 1)
     {
         char c;
-        std::cout << "Choose your game (Choose x for element + wizard): ";
+        std::cout << "Choose your game :e for element , w for wizard , x for element + wizard): ";
         std::cin >> c;
         game_special->setmode(c);
         game_special->choseGame();
