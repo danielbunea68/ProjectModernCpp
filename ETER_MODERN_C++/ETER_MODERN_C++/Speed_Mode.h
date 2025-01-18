@@ -4,7 +4,8 @@
 #include <chrono>
 
 
-class Speed_Mode : public IGame {
+class Speed_Mode : public IGame 
+{
 private:
     Board board;
     Player player1, player2;

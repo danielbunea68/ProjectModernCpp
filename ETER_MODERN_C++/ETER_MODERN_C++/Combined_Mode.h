@@ -26,7 +26,26 @@ private:
     bool UsePower();
 
 public:
+
+
     Combined_Mode();
+
+    // Destructor
+    ~Combined_Mode();
+
+    // Constructor de copiere
+    Combined_Mode(const Combined_Mode& other);
+
+    // Operator de atribuire prin copiere
+    Combined_Mode& operator=(const Combined_Mode& other);
+
+    // Constructor de mutare
+    Combined_Mode(Combined_Mode&& other) noexcept;
+
+    // Operator de atribuire prin mutare
+    Combined_Mode& operator=(Combined_Mode&& other) noexcept;
+
+    
 
     void InitGame(std::string name1, std::string name2) override;
     void PlayGame() override;
