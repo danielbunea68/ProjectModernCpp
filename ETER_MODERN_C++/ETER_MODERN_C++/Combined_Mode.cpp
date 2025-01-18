@@ -13,25 +13,25 @@ void Combined_Mode::InitGame(std::string name1, std::string name2) {
     const int BOARD_SIZE = 4;
     const int INITIAL_ROUNDS = 5;
 
-    player1.setName(name1);
-    player2.setName(name2);
-    player1.setColor("red");
-    player2.setColor("blue");
+    player1->setName(name1);
+    player2->setName(name2);
+    player1->setColor("red");
+    player2->setColor("blue");
 
     std::vector<int> values = { 1, 1, 2, 2, 2, 3, 3, 3, 4 };
     for (int value : values) {
-        player1.AddCard(Card(value, player1.getColor()));
-        player2.AddCard(Card(value, player2.getColor()));
+        player1->AddCard(Card(value, player1->getColor()));
+        player2->AddCard(Card(value, player2->getColor()));
     }
-    player1.AddCard(Card(5, player1.getColor(), "Eter"));
-    player2.AddCard(Card(5, player2.getColor(), "Eter"));
+    player1->AddCard(Card(5, player1->getColor(), "Eter"));
+    player2->AddCard(Card(5, player2->getColor(), "Eter"));
 
     board.SetSize(BOARD_SIZE);
 
     InitializeWizardPowers();
     InitializeElementPowers();
 
-    currentPlayer = &player1;
+    currentPlayer = player1.get();
     totalRounds = INITIAL_ROUNDS;
 }
 
@@ -66,7 +66,8 @@ void Combined_Mode::PlayGame() {
             }
 
             // Mark player's turn as done
-            if (currentPlayer == &player1) {
+            if (currentPlayer == player1.get()) 
+            {
                 player1ActionDone = true;
             }
             else {
@@ -119,7 +120,7 @@ bool Combined_Mode::PlayCardAction()
 }
 
 bool Combined_Mode::UsePower() {
-    bool& currentPlayerUsedPower = (currentPlayer == &player1) ? player1UsedAnyPower : player2UsedAnyPower;
+    bool& currentPlayerUsedPower = (currentPlayer == player1.get()) ? player1UsedAnyPower : player2UsedAnyPower;
 
     if (currentPlayerUsedPower) {
         std::cout << "You have already used a power this turn.\n";
@@ -221,13 +222,13 @@ bool Combined_Mode::UsePower() {
 
 void Combined_Mode::SwitchTurn() 
 {
-    if (currentPlayer->getName() == player1.getName())
+    if (currentPlayer->getName() == player1->getName())
     {
-        currentPlayer = &player2;
+        currentPlayer = player2.get();
     }
     else
     {
-        currentPlayer = &player1;
+        currentPlayer = player1.get();
     }
 
     if (blockedRowForNextTurn != -1)
@@ -240,10 +241,10 @@ void Combined_Mode::SwitchTurn()
 
 void Combined_Mode::InitializeWizardPowers() 
 {
-    player1.setRandomWizardPower();
-    player2.setRandomWizardPower();
-    std::cout << player1.getName() << "'s Wizard Power: " <<GetWizardPowerName(player1.getWizardPower()) << "\n";
-    std::cout << player2.getName() << "'s Wizard Power: " <<GetWizardPowerName(player2.getWizardPower()) << "\n";
+    player1->setRandomWizardPower();
+    player2->setRandomWizardPower();
+    std::cout << player1->getName() << "'s Wizard Power: " <<GetWizardPowerName(player1->getWizardPower()) << "\n";
+    std::cout << player2->getName() << "'s Wizard Power: " <<GetWizardPowerName(player2->getWizardPower()) << "\n";
 }
 
 void Combined_Mode::InitializeElementPowers() 
@@ -295,10 +296,10 @@ void Combined_Mode::InitializeElementPowers()
 void Combined_Mode::ResetGame() 
 {
     board.Clear();
-    player1.ClearCards();
-    player2.ClearCards();
+    player1->ClearCards();
+    player2->ClearCards();
     totalRounds = 0;
-    InitGame(player1.getName(), player2.getName());
+    InitGame(player1->getName(), player2->getName());
     std::cout << "Combined Mode game has been reset.\n";
 }
 
@@ -322,7 +323,7 @@ void Combined_Mode::ReturnCardToPlayer(int row, int col) {
             std::cout << "Card returned to " << currentPlayer->getName() << "'s hand.\n";
         }
         else {
-            Player* otherPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+            Player* otherPlayer = (currentPlayer == player1.get()) ? player2.get() : player1.get();
             otherPlayer->AddCard(card);
             std::cout << "Card returned to " << otherPlayer->getName() << "'s hand.\n";
         }
@@ -356,11 +357,11 @@ Player* Combined_Mode::CurrentTurn() {
 }
 
 Player* Combined_Mode::PreviousTurn() {
-    if (currentPlayer == &player1) {
-        return &player2;
+    if (currentPlayer == player1.get()) {
+        return player2.get();
     }
     else {
-        return &player1;
+        return player1.get();
     }
 }
 
@@ -1002,7 +1003,7 @@ void Combined_Mode::ActivateControlledExplosion()
 
 void Combined_Mode::DestroyLastOpponentCard()
 {
-    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+    Player* opponent = (currentPlayer == player1.get()) ? player2.get() : player1.get();
     std::pair<int, int> move = opponent->getLastMove();
 
     int row = move.first;
@@ -1017,7 +1018,7 @@ void Combined_Mode::DestroyLastOpponentCard()
 
 void Combined_Mode::Flacari()
 {
-    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+    Player* opponent = (currentPlayer == player1.get()) ? player2.get() : player1.get();
     bool cardRevealed = false;
 
     for (int row = 0; row < board.GetSize(); ++row)
@@ -1256,7 +1257,7 @@ void Combined_Mode::Scantei()
 
 void Combined_Mode::Viscol()
 {
-    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+    Player* opponent = (currentPlayer == player1.get()) ? player2.get() : player1.get();
     std::vector<std::pair<int, int>> visibleCards;
 
     for (int row = 0; row < board.GetSize(); ++row)
@@ -1316,15 +1317,15 @@ void Combined_Mode::Vijelie()
                     Card card = board.TopCard(row, col);
                     board.Remove(row, col);
 
-                    if (card.getColor() == player1.getColor())
+                    if (card.getColor() == player1->getColor())
                     {
-                        player1.AddCard(card);
-                        std::cout << "Card returned to " << player1.getName() << "'s hand.\n";
+                        player1->AddCard(card);
+                        std::cout << "Card returned to " << player1->getName() << "'s hand.\n";
                     }
-                    else if (card.getColor() == player2.getColor())
+                    else if (card.getColor() == player2->getColor())
                     {
-                        player2.AddCard(card);
-                        std::cout << "Card returned to " << player2.getName() << "'s hand.\n";
+                        player2->AddCard(card);
+                        std::cout << "Card returned to " << player2->getName() << "'s hand.\n";
                     }
                 }
             }
@@ -1799,7 +1800,7 @@ void Combined_Mode::Sprijin()
 
 void Combined_Mode::Sfaramare()
 {
-    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+    Player* opponent = (currentPlayer == player1.get()) ? player2.get() : player1.get();
 
     std::vector<std::pair<int, int>> eligibleCards;
     for (int row = 0; row < board.GetSize(); ++row) {
