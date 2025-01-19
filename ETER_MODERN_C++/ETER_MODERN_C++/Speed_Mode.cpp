@@ -1,108 +1,135 @@
 #include "Speed_Mode.h"
 #include <iostream>
 #include <chrono>
+#include <thread>
+#include "Game.h"
+#include "Wizard_Mode.h"
+#include "Element_Mode.h"
+#include "Combined_Mode.h"
 
 Speed_Mode::Speed_Mode()
-    : isGameOver(false), currentPlayer(nullptr), timeLimit(60), remainingTimePlayer1(60), remainingTimePlayer2(60) {}
+    : isGameOver(false), currentPlayer(nullptr), timeLimit(60), remainingTimePlayer1(60), remainingTimePlayer2(60), game(nullptr) {}
 
-Speed_Mode::~Speed_Mode() {}
+Speed_Mode::~Speed_Mode()
+{
+    delete game;
+    game = nullptr;
+}
 
-Speed_Mode::Speed_Mode(const Speed_Mode& other) : board(other.board),
-player1(other.player1), player2(other.player2), currentPlayer(other.currentPlayer == &other.player1 ? &player1 : &player2),
-isGameOver(other.isGameOver) {}
+Speed_Mode::Speed_Mode(const Speed_Mode& other)
+{
+    speed_board = other.speed_board;
+    m_mode = other.m_mode;
+    isGameOver = other.isGameOver;
+    timeLimit = other.timeLimit;
+    remainingTimePlayer1 = other.remainingTimePlayer1;
+    remainingTimePlayer2 = other.remainingTimePlayer2;
+}
 
 Speed_Mode& Speed_Mode::operator=(const Speed_Mode& other)
 {
-    if (this == &other)
-        return *this;
-
-    board = other.board;
-    player1 = other.player1;
-    player2 = other.player2;
-    currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+    if (this == &other) return *this;
+    delete game;
+    speed_board = other.speed_board;
+    m_mode = other.m_mode;
     isGameOver = other.isGameOver;
-
+    timeLimit = other.timeLimit;
+    remainingTimePlayer1 = other.remainingTimePlayer1;
+    remainingTimePlayer2 = other.remainingTimePlayer2;
     return *this;
 }
 
 Speed_Mode::Speed_Mode(Speed_Mode&& other) noexcept
-:board(std::move(other.board)), player1(std::move(other.player1)), player2(std::move(other.player2)),
- currentPlayer(other.currentPlayer == &other.player1 ? &player1 : &player2), isGameOver(other.isGameOver) 
 {
-    other.currentPlayer = nullptr;
-    other.isGameOver = false;
+    game = other.game;
+    speed_board = std::move(other.speed_board);
+    m_mode = other.m_mode;
+    isGameOver = other.isGameOver;
+    other.game = nullptr;
 }
 
 Speed_Mode& Speed_Mode::operator=(Speed_Mode&& other) noexcept
 {
-    if (this == &other)
-        return *this;
-
-    board = std::move(other.board);
-    player1 = std::move(other.player1);
-    player2 = std::move(other.player2);
-    currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+    if (this == &other) return *this;
+    delete game;
+    game = other.game;
+    speed_board = std::move(other.speed_board);
+    m_mode = other.m_mode;
     isGameOver = other.isGameOver;
-
-    other.currentPlayer = nullptr;
-    other.isGameOver = false;
-
+    other.game = nullptr;
     return *this;
 }
 
-void Speed_Mode::InitGame(std::string name1, std::string name2) {
-    player1.setName(name1);
-    player2.setName(name2);
-    board.SetSize(3);
-    player1.setColor("red");
-    player2.setColor("blue");
-
-    std::vector<int> values = { 1, 1, 2, 3, 3 };
-    for (auto value : values) {
-        player1.AddCard(Card(value, player1.getColor()));
-        player2.AddCard(Card(value, player2.getColor()));
-    }
-
-    currentPlayer = &player1; // Set the first player
-    ResetTimers(); // Ensure timers are reset at the start of the game
-    isGameOver = false;
-}
-
-/*
-Player* Speed_Mode::CurrentTurn()
+void Speed_Mode::chooseGame()
 {
-    return nullptr;
+    switch (m_mode)
+    {
+    case 't':
+        game = new Game();
+        break;
+    case 'w':
+        game = new Wizard_Mode();
+        break;
+    case 'e':
+        game = new Element_Mode();
+        break;
+    case 'x':
+        game = new Combined_Mode();
+        break;
+    default:
+        break;
+    }
 }
 
-Player* Speed_Mode::PreviousTurn()
+void Speed_Mode::setMode(char mode)
 {
-    return nullptr;
-}
-*/
-
-void Speed_Mode::SwitchTurn() {
-    auto now = std::chrono::steady_clock::now();
-    int elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - turnStartTime).count();
-
-    if (currentPlayer == &player1) {
-        remainingTimePlayer1 -= elapsed;
-    } else {
-        remainingTimePlayer2 -= elapsed;
-    }
-
-    currentPlayer = (currentPlayer == &player1) ? &player2 : &player1;
-
-    StartTurnTimer();
+    m_mode = mode;
 }
 
-void Speed_Mode::CheckWinner() {
-    if (board.CheckWinner(currentPlayer->getColor())) {
-        std::cout << currentPlayer->getName() << " wins the Speed Mode game!\n";
-        isGameOver = true;
-    } else if (board.IsDraw()) {
-        std::cout << "It's a draw!\n";
-        isGameOver = true;
+bool Speed_Mode::CheckWinner(std::string color)
+{
+    for (int i = 0; i < 3; i++)
+    {
+        if ((speed_board[i][0] == color && speed_board[i][1] == color && speed_board[i][2] == color) ||
+            (speed_board[0][i] == color && speed_board[1][i] == color && speed_board[2][i] == color)) {
+            return true;
+        }
     }
+    if ((speed_board[0][0] == color && speed_board[1][1] == color && speed_board[2][2] == color) ||
+        (speed_board[0][2] == color && speed_board[1][1] == color && speed_board[2][0] == color)) {
+        return true;
+    }
+    return false;
+}
+
+void Speed_Mode::PlayGameChosen(std::string name1, std::string name2)
+{
+    game->InitGame(name1, name2);
+    Player* player = nullptr;
+    Player* second_player = nullptr;
+    int number_of_games = 5;
+
+    while (number_of_games && !isGameOver)
+    {
+        StartTurnTimer();
+        game->PlayGame();
+
+        if (second_player != player)
+            second_player = player;
+
+        player = game->CurrentTurn();
+        int x = player->getWinnCords().first;
+        int y = player->getWinnCords().second;
+        speed_board[x][y] = player->getColor();
+        isGameOver = CheckWinner(player->getColor());
+        game->ResetGame();
+        number_of_games--;
+    }
+
+    if (isGameOver)
+        std::cout << player->getName() << " has won the Speed Mode!\n";
+    else
+        std::cout << "Game over. No winner.\n";
 }
 
 void Speed_Mode::StartTurnTimer()
@@ -110,109 +137,130 @@ void Speed_Mode::StartTurnTimer()
     turnStartTime = std::chrono::steady_clock::now();
 }
 
-void Speed_Mode::ResetTimers() {
-    remainingTimePlayer1 = timeLimit;
-    remainingTimePlayer2 = timeLimit;
-}
 bool Speed_Mode::CheckTimer()
 {
-    using namespace std::chrono;
-
-    auto now = steady_clock::now();
-    int elapsed = duration_cast<seconds>(now - turnStartTime).count();
-
-    if (currentPlayer == &player1) {
-        remainingTimePlayer1 -= elapsed;
-        if (remainingTimePlayer1 <= 0) {
-            std::cout << player1.getName() << " ran out of time and loses the game!\n";
-            isGameOver = true;
-            return false;
-        }
+    auto now = std::chrono::steady_clock::now();
+    auto elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(now - turnStartTime).count();
+    if (elapsedTime > timeLimit)
+    {
+        HandleTimeout(currentPlayer);
+        return true;
     }
-    else {
-        remainingTimePlayer2 -= elapsed;
-        if (remainingTimePlayer2 <= 0) {
-            std::cout << player2.getName() << " ran out of time and loses the game!\n";
-            isGameOver = true;
-            return false;
+    return false;
+}
+
+void Speed_Mode::HandleTimeout(Player* player)
+{
+    std::cout << player->getName() << " ran out of time and loses the game!\n";
+    isGameOver = true;
+}
+
+void Speed_Mode::DisplaySpeedBoard()
+{
+    std::cout << "\nCurrent Speed Board:\n";
+    for (const auto& row : speed_board)
+    {
+        for (const auto& cell : row)
+        {
+            if (cell.empty())
+                std::cout << "   .   ";
+            else
+                std::cout << "   " << cell << "   ";
         }
+        std::cout << "\n";
     }
-    StartTurnTimer();
-    return true;
+    std::cout << "\n";
+}
+void Speed_Mode::ResetGame()
+{
+    isGameOver = false;
+    game->ResetGame();
+}
+
+void Speed_Mode::RemoveCard(int row, int col)
+{
+    if (row >= 0 && row < 3 && col >= 0 && col < 3)
+    {
+        speed_board[row][col] = "";
+    }
+}
+
+void Speed_Mode::ReturnCardToPlayer(int row, int col)
+{
+    if (row >= 0 && row < 3 && col >= 0 && col < 3)
+    {
+        std::cout << "Returning card at (" << row << ", " << col << ") to the player.\n";
+        speed_board[row][col] = "";
+    }
+}
+
+void Speed_Mode::CreatePit(int row, int col)
+{
+    if (row >= 0 && row < 3 && col >= 0 && col < 3)
+    {
+        speed_board[row][col] = "Pit";
+    }
+}
+
+Player* Speed_Mode::CurrentTurn()
+{
+    return currentPlayer;
+}
+
+Player* Speed_Mode::PreviousTurn()
+{
+    return game->PreviousTurn();
+}
+
+void Speed_Mode::InitGame(std::string name1, std::string name2) 
+{
+    // Initialize the game based on the selected game mode
+    chooseGame();  // Choose the game mode (Standard, Wizard, Element, or Combined)
+
+    // Initialize players with names
+    if (game) {
+        game->InitGame(name1, name2);  // Call the InitGame method of the selected game mode
+        player1 = player1.getName();
+        player2 = player2.getName();
+        currentPlayer = &player1;  // Start with player 1
+    }
 }
 
 void Speed_Mode::PlayGame() {
     while (!isGameOver) {
-        board.Display();
-        std::cout << currentPlayer->getName() << "'s turn.\n";
+        // Start turn timer
+        StartTurnTimer();
+        //game->PlayGame();
 
-        TimerBasedPlay();
+        // Switch to the other player
+        SwitchTurn();
 
-        CheckWinner();
-        if (!isGameOver) {
-            SwitchTurn();
+        // Display the current state of the speed board
+        DisplaySpeedBoard();
+
+        // Check if the current player ran out of time
+        if (CheckTimer()) {
+            break;  // Game ends if player runs out of time
         }
+    }
+
+    // Final message when the game ends
+    if (isGameOver) {
+        std::cout << currentPlayer->getName() << " has won the Speed Mode game!\n";
+    }
+    else {
+        std::cout << "Game ended due to timeout or draw.\n";
     }
 }
 
-void Speed_Mode::ResetGame() {
-    board.Clear();
-    player1.ClearCards();
-    player2.ClearCards();
-    InitGame(player1.getName(), player2.getName());
-}
-
-void Speed_Mode::TimerBasedPlay() {
-    using namespace std::chrono;
-    StartTurnTimer();
-
-    int row, col;
-    bool validMove = false;
-
-    while (!validMove && !isGameOver) {
-        auto now = steady_clock::now();
-        int elapsed = duration_cast<seconds>(now - turnStartTime).count();
-
-        if (currentPlayer == &player1) {
-            remainingTimePlayer1 -= elapsed;
-        } else {
-            remainingTimePlayer2 -= elapsed;
-        }
-
-        if (remainingTimePlayer1 <= 0 || remainingTimePlayer2 <= 0) {
-            std::cout << currentPlayer->getName() << " ran out of time and loses the game!\n";
-            isGameOver = true;
-            return;
-        }
-
-        std::cout << "Remaining time for " << currentPlayer->getName() << ": "
-                  << (currentPlayer == &player1 ? remainingTimePlayer1 : remainingTimePlayer2) << " seconds.\n";
-
-        std::cout << "Enter row and column for your move: ";
-        std::cin >> row >> col;
-
-        validMove = board.MakeMove(row, col, currentPlayer->PlayCard(0));
-
-        if (!validMove) {
-            std::cout << "Invalid move. Try again!\n";
-        }
-        turnStartTime = steady_clock::now();
-    }
-}
-
-void Speed_Mode::ConfigureTimeLimit(int seconds)
+void Speed_Mode::SwitchTurn()
 {
-    timeLimit = seconds;
-    remainingTimePlayer1 = seconds;
-    remainingTimePlayer2 = seconds;
-}
-
-void Speed_Mode::HandleTimeout(Player* player) {
-    std::cout << player->getName() << " ran out of time and loses!\n";
-    isGameOver = true;
-}
-
-void Speed_Mode::DisplayTimeRemaining() const {
-    std::cout << player1.getName() << ": " << remainingTimePlayer1 << " seconds\n";
-    std::cout << player2.getName() << ": " << remainingTimePlayer2 << " seconds\n";
+    if (currentPlayer->getName() == player1.getName())
+    {
+        currentPlayer = &player2;
+    }
+    else
+    {
+        currentPlayer = &player1;
+    }
 }

@@ -6,12 +6,85 @@
 #include <algorithm>
 #include <random>
 
+Combined_Mode& Combined_Mode::operator=(Combined_Mode&& other) noexcept
+{
+    if (this != &other) {
+        totalRounds = std::exchange(other.totalRounds, 0);
+        player1UsedAnyPower = std::exchange(other.player1UsedAnyPower, false);
+        player2UsedAnyPower = std::exchange(other.player2UsedAnyPower, false);
+        blockedRowForNextTurn = std::exchange(other.blockedRowForNextTurn, -1);
+        board = std::move(other.board);
+        elementPowers = std::move(other.elementPowers);
+        usedPowers = std::move(other.usedPowers);
+        player1 = std::move(other.player1);
+        player2 = std::move(other.player2);
+        currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+        other.currentPlayer = nullptr;
+    }
+    return *this;
+}
+
 Combined_Mode::Combined_Mode()
     : totalRounds(5), currentPlayer(nullptr), player1UsedAnyPower(false), player2UsedAnyPower(false) {}
+
+Combined_Mode::~Combined_Mode()
+{
+}
+
+
+Combined_Mode::Combined_Mode(const Combined_Mode& other) : totalRounds(other.totalRounds),
+player1UsedAnyPower(other.player1UsedAnyPower),
+player2UsedAnyPower(other.player2UsedAnyPower),
+blockedRowForNextTurn(other.blockedRowForNextTurn),
+board(other.board),
+elementPowers(other.elementPowers),
+usedPowers(other.usedPowers)
+{
+    currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+}
+
+Combined_Mode& Combined_Mode::operator=(const Combined_Mode& other)
+{
+    if (this != &other) {
+        totalRounds = other.totalRounds;
+        player1UsedAnyPower = other.player1UsedAnyPower;
+        player2UsedAnyPower = other.player2UsedAnyPower;
+        blockedRowForNextTurn = other.blockedRowForNextTurn;
+        board = other.board;
+        elementPowers = other.elementPowers;
+        usedPowers = other.usedPowers;
+
+        currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+    }
+    return *this;
+}
+
+Combined_Mode::Combined_Mode(Combined_Mode&& other) noexcept : totalRounds(std::exchange(other.totalRounds, 0)),
+player1UsedAnyPower(std::exchange(other.player1UsedAnyPower, false)),
+player2UsedAnyPower(std::exchange(other.player2UsedAnyPower, false)),
+blockedRowForNextTurn(std::exchange(other.blockedRowForNextTurn, -1)),
+board(std::move(other.board)),
+elementPowers(std::move(other.elementPowers)),
+usedPowers(std::move(other.usedPowers)),
+player1(std::move(other.player1)),
+player2(std::move(other.player2))
+{
+    
+
+        // Mutăm pointerul către currentPlayer
+        currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+
+        // Asigurăm că `other` nu mai are jucători activi
+        other.currentPlayer = nullptr;
+}
 
 void Combined_Mode::InitGame(std::string name1, std::string name2) {
     const int BOARD_SIZE = 4;
     const int INITIAL_ROUNDS = 5;
+
+    if (name1.empty() || name2.empty()) {
+        throw std::runtime_error("Error: Invalid game initialization, name1 or name2 is empty.");
+    }
 
     player1.setName(name1);
     player2.setName(name2);
@@ -23,6 +96,7 @@ void Combined_Mode::InitGame(std::string name1, std::string name2) {
         player1.AddCard(Card(value, player1.getColor()));
         player2.AddCard(Card(value, player2.getColor()));
     }
+
     player1.AddCard(Card(5, player1.getColor(), "Eter"));
     player2.AddCard(Card(5, player2.getColor(), "Eter"));
 
@@ -34,6 +108,7 @@ void Combined_Mode::InitGame(std::string name1, std::string name2) {
     currentPlayer = &player1;
     totalRounds = INITIAL_ROUNDS;
 }
+
 
 void Combined_Mode::PlayGame() {
     while (totalRounds > 0) {
@@ -66,7 +141,8 @@ void Combined_Mode::PlayGame() {
             }
 
             // Mark player's turn as done
-            if (currentPlayer == &player1) {
+            if (currentPlayer == &player1) 
+            {
                 player1ActionDone = true;
             }
             else {
@@ -702,31 +778,31 @@ std::string Combined_Mode::GetPowerName(Element_Mode::Putere power)
 {
     switch (power)
     {
-    case Element_Mode::Putere::ExplozieControlata: return "Explozie Controlată";
+    case Element_Mode::Putere::ExplozieControlata: return "Explozie Controlata";
     case Element_Mode::Putere::Distrugere:        return "Distrugere";
-    case Element_Mode::Putere::Flacari:           return "Flăcări";
+    case Element_Mode::Putere::Flacari:           return "Flacari";
     case Element_Mode::Putere::Lava:              return "Lava";
-    case Element_Mode::Putere::DinCenusa:        return "Din Cenușă";
-    case Element_Mode::Putere::Scantei:           return "Scântei";
+    case Element_Mode::Putere::DinCenusa:         return "Din Cenusa";
+    case Element_Mode::Putere::Scantei:           return "Scantei";
     case Element_Mode::Putere::Viscol:            return "Viscol";
     case Element_Mode::Putere::Vijelie:           return "Vijelie";
     case Element_Mode::Putere::Uragan:            return "Uragan";
-    case Element_Mode::Putere::Rafala:            return "Rafală";
+    case Element_Mode::Putere::Rafala:            return "Rafala";
     case Element_Mode::Putere::Miraj:             return "Miraj";
-    case Element_Mode::Putere::Furtuna:           return "Furtună";
+    case Element_Mode::Putere::Furtuna:           return "Furtuna";
     case Element_Mode::Putere::Maree:             return "Maree";
-    case Element_Mode::Putere::Ceata:             return "Ceață";
+    case Element_Mode::Putere::Ceata:             return "Ceata";
     case Element_Mode::Putere::Val:               return "Val";
-    case Element_Mode::Putere::VartejDeApa:      return "Vârtej de Apă";
+    case Element_Mode::Putere::VartejDeApa:       return "Vartej de Apa";
     case Element_Mode::Putere::Tsunami:           return "Tsunami";
-    case Element_Mode::Putere::Cascada:           return "Cascadă";
+    case Element_Mode::Putere::Cascada:           return "Cascada";
     case Element_Mode::Putere::Sprijin:           return "Sprijin";
     case Element_Mode::Putere::Cutremur:          return "Cutremur";
-    case Element_Mode::Putere::Sfaramare:         return "Sfărâmare";
-    case Element_Mode::Putere::Granite:           return "Granițe";
-    case Element_Mode::Putere::Avalansa:          return "Avalanșă";
+    case Element_Mode::Putere::Sfaramare:         return "Sfaramare";
+    case Element_Mode::Putere::Granite:           return "Granite";
+    case Element_Mode::Putere::Avalansa:          return "Avalansa";
     case Element_Mode::Putere::Bolovan:           return "Bolovan";
-    default:                                       return "Necunoscută";
+    default:                                       return "Necunoscuta";
     }
 }
 
@@ -992,8 +1068,6 @@ void Combined_Mode::ActivatePower1(Element_Mode::Putere power)
     {
         elementPowers.erase(it);
     }
-
-   /// SwitchTurn();
 }
 
 void Combined_Mode::ActivateControlledExplosion()
@@ -1985,22 +2059,3 @@ void Combined_Mode::Bolovan(int row, int col, int cardIndex)
 
     std::cout << "Iluzia de la poziția (" << row << ", " << col << ") a fost acoperită cu o carte.\n";
 }
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

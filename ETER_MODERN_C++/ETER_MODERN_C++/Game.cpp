@@ -399,21 +399,25 @@ void Game::removeOpponentCard(int row, int col)
 void Game::removeRow(int row)
 {
 	if (board.GetSize() > row) {
-		bool hasPlayerCard = false;
-		for (int col = 0; col < board.GetSize(); ++col) {
-			if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() == currentPlayer->getColor()) {
-				hasPlayerCard = true;
-				break;
-			}
-		}
-		if (hasPlayerCard) {
-			for (int col = 0; col < board.GetSize(); ++col) {
-				while (!board.IsEmpty(row, col)) {
-					RemoveCard(row, col);
-				}
-			}
-			std::cout << "Row " << row << " removed.\n";
-		}
+		//bool hasPlayerCard = false;
+		//for (int col = 0; col < board.GetSize(); ++col) {
+		//	if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() == currentPlayer->getColor()) {
+		//		hasPlayerCard = true;
+		//		break;
+		//	}
+		//}
+		//if (hasPlayerCard) {
+		//	for (int col = 0; col < board.GetSize(); ++col) {
+		//		while (!board.IsEmpty(row, col)) {
+		//			RemoveCard(row, col);
+		//		}
+		//	}
+		//	std::cout << "Row " << row << " removed.\n";
+		//}
+
+		auto cols = std::views::iota(0, board.GetSize());
+
+		;
 	}
 }
 
