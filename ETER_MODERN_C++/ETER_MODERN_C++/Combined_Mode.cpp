@@ -18,19 +18,29 @@ Combined_Mode& Combined_Mode::operator=(Combined_Mode&& other) noexcept
         usedPowers = std::move(other.usedPowers);
         player1 = std::move(other.player1);
         player2 = std::move(other.player2);
-        currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+
+        // Mutăm pointerul către currentPlayer
+        currentPlayer = (other.currentPlayer == other.player1.get()) ? player1.get() : player2.get();
+
+        // Asigurăm că `other` nu mai are jucători activi
         other.currentPlayer = nullptr;
     }
     return *this;
 }
 
 Combined_Mode::Combined_Mode()
-    : totalRounds(5), currentPlayer(nullptr), player1UsedAnyPower(false), player2UsedAnyPower(false) {}
+    : totalRounds(5), currentPlayer(nullptr), player1UsedAnyPower(false), player2UsedAnyPower(false) {
+
+    player1 = std::make_unique<Player>();
+    player2 = std::make_unique<Player>();
+    currentPlayer = player1.get();
+}
 
 Combined_Mode::~Combined_Mode()
 {
+    player1.reset();
+    player2.reset();
 }
-
 
 Combined_Mode::Combined_Mode(const Combined_Mode& other) : totalRounds(other.totalRounds),
 player1UsedAnyPower(other.player1UsedAnyPower),
@@ -40,7 +50,16 @@ board(other.board),
 elementPowers(other.elementPowers),
 usedPowers(other.usedPowers)
 {
-    currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+    // Copiem jucătorii
+    if (other.player1) {
+        player1 = std::make_unique<Player>(*other.player1);
+    }
+    if (other.player2) {
+        player2 = std::make_unique<Player>(*other.player2);
+    }
+
+    // Asigurăm că `currentPlayer` indică către jucătorul corespunzător
+    currentPlayer = (other.currentPlayer == other.player1.get()) ? player1.get() : player2.get();
 }
 
 Combined_Mode& Combined_Mode::operator=(const Combined_Mode& other)
@@ -54,7 +73,16 @@ Combined_Mode& Combined_Mode::operator=(const Combined_Mode& other)
         elementPowers = other.elementPowers;
         usedPowers = other.usedPowers;
 
-        currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
+        // Copiem jucătorii
+        if (other.player1) {
+            player1 = std::make_unique<Player>(*other.player1);
+        }
+        if (other.player2) {
+            player2 = std::make_unique<Player>(*other.player2);
+        }
+
+        // Asigurăm că `currentPlayer` indică către jucătorul corespunzător
+        currentPlayer = (other.currentPlayer == other.player1.get()) ? player1.get() : player2.get();
     }
     return *this;
 }
@@ -69,46 +97,42 @@ usedPowers(std::move(other.usedPowers)),
 player1(std::move(other.player1)),
 player2(std::move(other.player2))
 {
-    
 
-        // Mutăm pointerul către currentPlayer
-        currentPlayer = (other.currentPlayer == &other.player1) ? &player1 : &player2;
 
-        // Asigurăm că `other` nu mai are jucători activi
-        other.currentPlayer = nullptr;
+    // Mutăm pointerul către currentPlayer
+    currentPlayer = (other.currentPlayer == other.player1.get()) ? player1.get() : player2.get();
+
+    // Asigurăm că `other` nu mai are jucători activi
+    other.currentPlayer = nullptr;
 }
 
 void Combined_Mode::InitGame(std::string name1, std::string name2) {
     const int BOARD_SIZE = 4;
     const int INITIAL_ROUNDS = 5;
-
     if (name1.empty() || name2.empty()) {
         throw std::runtime_error("Error: Invalid game initialization, name1 or name2 is empty.");
     }
-
-    player1.setName(name1);
-    player2.setName(name2);
-    player1.setColor("red");
-    player2.setColor("blue");
+    player1->setName(name1);
+    player2->setName(name2);
+    player1->setColor("red");
+    player2->setColor("blue");
 
     std::vector<int> values = { 1, 1, 2, 2, 2, 3, 3, 3, 4 };
     for (int value : values) {
-        player1.AddCard(Card(value, player1.getColor()));
-        player2.AddCard(Card(value, player2.getColor()));
+        player1->AddCard(Card(value, player1->getColor()));
+        player2->AddCard(Card(value, player2->getColor()));
     }
-
-    player1.AddCard(Card(5, player1.getColor(), "Eter"));
-    player2.AddCard(Card(5, player2.getColor(), "Eter"));
+    player1->AddCard(Card(5, player1->getColor(), "Eter"));
+    player2->AddCard(Card(5, player2->getColor(), "Eter"));
 
     board.SetSize(BOARD_SIZE);
 
     InitializeWizardPowers();
     InitializeElementPowers();
 
-    currentPlayer = &player1;
+    currentPlayer = player1.get();
     totalRounds = INITIAL_ROUNDS;
 }
-
 
 void Combined_Mode::PlayGame() {
     while (totalRounds > 0) {
@@ -141,7 +165,7 @@ void Combined_Mode::PlayGame() {
             }
 
             // Mark player's turn as done
-            if (currentPlayer == &player1) 
+            if (currentPlayer == player1.get())
             {
                 player1ActionDone = true;
             }
@@ -158,10 +182,11 @@ void Combined_Mode::PlayGame() {
 }
 
 
-bool Combined_Mode::PlayCardAction() 
+bool Combined_Mode::PlayCardAction()
 {
     int cardIndex;
     do {
+        currentPlayer->ShowHand();
         std::cout << currentPlayer->getName() << ", choose a card index to play: ";
         std::cin >> cardIndex;
     } while (!currentPlayer->HasCardAtIndex(cardIndex));
@@ -195,7 +220,7 @@ bool Combined_Mode::PlayCardAction()
 }
 
 bool Combined_Mode::UsePower() {
-    bool& currentPlayerUsedPower = (currentPlayer == &player1) ? player1UsedAnyPower : player2UsedAnyPower;
+    bool& currentPlayerUsedPower = (currentPlayer == player1.get()) ? player1UsedAnyPower : player2UsedAnyPower;
 
     if (currentPlayerUsedPower) {
         std::cout << "You have already used a power this turn.\n";
@@ -212,16 +237,16 @@ bool Combined_Mode::UsePower() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 
-    if (powerChoice == 1) 
+    if (powerChoice == 1)
     {
         char confirmChoice;
         std::cout << "Are you sure you want to use your Wizard Power? (y/n): ";
         std::cin >> confirmChoice;
 
-        if (confirmChoice == 'y' || confirmChoice == 'Y') 
+        if (confirmChoice == 'y' || confirmChoice == 'Y')
         {
-            std::cout << "Activating Wizard Power...\n"; 
-            WizardPower power = currentPlayer->getWizardPower(); 
+            std::cout << "Activating Wizard Power...\n";
+            WizardPower power = currentPlayer->getWizardPower();
             std::cout << "Current Wizard Power: " << GetWizardPowerName(power) << "\n";
 
             ActivatePower(power);
@@ -235,7 +260,7 @@ bool Combined_Mode::UsePower() {
             return false;
         }
     }
-    else if (powerChoice == 2 && !elementPowers.empty()) 
+    else if (powerChoice == 2 && !elementPowers.empty())
     {
         char useElementPower;
         std::cout << currentPlayer->getName() << ", do you want to use your Element Power this turn? y/[n]: ";
@@ -247,7 +272,7 @@ bool Combined_Mode::UsePower() {
                 for (size_t i = 0; i < elementPowers.size(); ++i) {
                     std::cout << i + 1 << ": " << GetPowerName(elementPowers[i])
                         << "\n - " << GetPowerDescription(elementPowers[i]) << "\n";
-                } 
+                }
 
                 int chosenElementPowerIndex;
                 std::cout << "Enter the number of the power you want to use: ";
@@ -295,15 +320,15 @@ bool Combined_Mode::UsePower() {
 
 
 
-void Combined_Mode::SwitchTurn() 
+void Combined_Mode::SwitchTurn()
 {
-    if (currentPlayer->getName() == player1.getName())
+    if (currentPlayer->getName() == player1->getName())
     {
-        currentPlayer = &player2;
+        currentPlayer = player2.get();
     }
     else
     {
-        currentPlayer = &player1;
+        currentPlayer = player1.get();
     }
 
     if (blockedRowForNextTurn != -1)
@@ -314,15 +339,15 @@ void Combined_Mode::SwitchTurn()
     blockedRowForNextTurn = -1;
 }
 
-void Combined_Mode::InitializeWizardPowers() 
+void Combined_Mode::InitializeWizardPowers()
 {
-    player1.setRandomWizardPower();
-    player2.setRandomWizardPower();
-    std::cout << player1.getName() << "'s Wizard Power: " <<GetWizardPowerName(player1.getWizardPower()) << "\n";
-    std::cout << player2.getName() << "'s Wizard Power: " <<GetWizardPowerName(player2.getWizardPower()) << "\n";
+    player1->setRandomWizardPower();
+    player2->setRandomWizardPower();
+    std::cout << player1->getName() << "'s Wizard Power: " << GetWizardPowerName(player1->getWizardPower()) << "\n";
+    std::cout << player2->getName() << "'s Wizard Power: " << GetWizardPowerName(player2->getWizardPower()) << "\n";
 }
 
-void Combined_Mode::InitializeElementPowers() 
+void Combined_Mode::InitializeElementPowers()
 {
     std::vector<Element_Mode::Putere> allPowers = {
     Element_Mode::Putere::ExplozieControlata,
@@ -368,13 +393,13 @@ void Combined_Mode::InitializeElementPowers()
     std::cout << "\n";
 }
 
-void Combined_Mode::ResetGame() 
+void Combined_Mode::ResetGame()
 {
     board.Clear();
-    player1.ClearCards();
-    player2.ClearCards();
+    player1->ClearCards();
+    player2->ClearCards();
     totalRounds = 0;
-    InitGame(player1.getName(), player2.getName());
+    InitGame(player1->getName(), player2->getName());
     std::cout << "Combined Mode game has been reset.\n";
 }
 
@@ -398,7 +423,7 @@ void Combined_Mode::ReturnCardToPlayer(int row, int col) {
             std::cout << "Card returned to " << currentPlayer->getName() << "'s hand.\n";
         }
         else {
-            Player* otherPlayer = (currentPlayer == &player1) ? &player2 : &player1;
+            Player* otherPlayer = (currentPlayer == player1.get()) ? player2.get() : player1.get();
             otherPlayer->AddCard(card);
             std::cout << "Card returned to " << otherPlayer->getName() << "'s hand.\n";
         }
@@ -432,11 +457,11 @@ Player* Combined_Mode::CurrentTurn() {
 }
 
 Player* Combined_Mode::PreviousTurn() {
-    if (currentPlayer == &player1) {
-        return &player2;
+    if (currentPlayer == player1.get()) {
+        return player2.get();
     }
     else {
-        return &player1;
+        return player1.get();
     }
 }
 
@@ -580,24 +605,24 @@ void Combined_Mode::ActivatePower(WizardPower power)
 
 void Combined_Mode::removeOpponentCard(int row, int col)
 {
-    if (!board.IsValidPosition(row, col) || board.IsEmpty(row, col) || board.TopCard(row, col).getColor() == currentPlayer->getColor()) 
+    if (!board.IsValidPosition(row, col) || board.IsEmpty(row, col) || board.TopCard(row, col).getColor() == currentPlayer->getColor())
     {
         std::cout << "Cannot remove card at (" << row << ", " << col << "). Invalid position or not an opponent's card.\n";
         return;
     }
 
-    board.Remove(row, col); 
+    board.Remove(row, col);
     std::cout << "Removed opponent's card at (" << row << ", " << col << ").\n";
 }
 
 void Combined_Mode::removeRow(int row)
 {
-    if (board.GetSize() > row) 
+    if (board.GetSize() > row)
     {
         bool hasPlayerCard = false;
-        for (int col = 0; col < board.GetSize(); ++col) 
+        for (int col = 0; col < board.GetSize(); ++col)
         {
-            if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() == currentPlayer->getColor()) 
+            if (!board.IsEmpty(row, col) && board.TopCard(row, col).getColor() == currentPlayer->getColor())
             {
                 hasPlayerCard = true;
                 break;
@@ -866,7 +891,7 @@ std::string Combined_Mode::GetPowerDescription(Element_Mode::Putere power)
 
 bool Combined_Mode::CanUsePower(Element_Mode::Putere power)
 {
-     return std::find(elementPowers.begin(), elementPowers.end(), power) != elementPowers.end() && usedPowers.find(power) == usedPowers.end();
+    return std::find(elementPowers.begin(), elementPowers.end(), power) != elementPowers.end() && usedPowers.find(power) == usedPowers.end();
 }
 
 void Combined_Mode::UsePower1(Element_Mode::Putere power)
@@ -1078,7 +1103,7 @@ void Combined_Mode::ActivateControlledExplosion()
 
 void Combined_Mode::DestroyLastOpponentCard()
 {
-    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+    Player* opponent = (currentPlayer == player1.get()) ? player2.get() : player1.get();
     std::pair<int, int> move = opponent->getLastMove();
 
     int row = move.first;
@@ -1093,7 +1118,7 @@ void Combined_Mode::DestroyLastOpponentCard()
 
 void Combined_Mode::Flacari()
 {
-    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+    Player* opponent = (currentPlayer == player1.get()) ? player2.get() : player1.get();
     bool cardRevealed = false;
 
     for (int row = 0; row < board.GetSize(); ++row)
@@ -1332,7 +1357,7 @@ void Combined_Mode::Scantei()
 
 void Combined_Mode::Viscol()
 {
-    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+    Player* opponent = (currentPlayer == player1.get()) ? player2.get() : player1.get();
     std::vector<std::pair<int, int>> visibleCards;
 
     for (int row = 0; row < board.GetSize(); ++row)
@@ -1392,15 +1417,15 @@ void Combined_Mode::Vijelie()
                     Card card = board.TopCard(row, col);
                     board.Remove(row, col);
 
-                    if (card.getColor() == player1.getColor())
+                    if (card.getColor() == player1->getColor())
                     {
-                        player1.AddCard(card);
-                        std::cout << "Card returned to " << player1.getName() << "'s hand.\n";
+                        player1->AddCard(card);
+                        std::cout << "Card returned to " << player1->getName() << "'s hand.\n";
                     }
-                    else if (card.getColor() == player2.getColor())
+                    else if (card.getColor() == player2->getColor())
                     {
-                        player2.AddCard(card);
-                        std::cout << "Card returned to " << player2.getName() << "'s hand.\n";
+                        player2->AddCard(card);
+                        std::cout << "Card returned to " << player2->getName() << "'s hand.\n";
                     }
                 }
             }
@@ -1465,17 +1490,17 @@ void Combined_Mode::ActivateMiraj(int cardIndex)
 
 void Combined_Mode::ActivateFurtuna()
 {
-    for (int row = 0; row < board.GetSize(); ++row) 
+    for (int row = 0; row < board.GetSize(); ++row)
     {
-        for (int col = 0; col < board.GetSize(); ++col) 
+        for (int col = 0; col < board.GetSize(); ++col)
         {
-            if (!board.IsEmpty(row, col)) 
+            if (!board.IsEmpty(row, col))
             {
                 std::stack<Card>& stack = board.GetBoard()[row][col];
-                if (stack.size() >= 2) 
+                if (stack.size() >= 2)
                 {
                     std::cout << "Furtuna applied: Removed stack at (" << row << ", " << col << ").\n";
-                    while (!stack.empty()) 
+                    while (!stack.empty())
                     {
                         stack.pop();
                     }
@@ -1875,7 +1900,7 @@ void Combined_Mode::Sprijin()
 
 void Combined_Mode::Sfaramare()
 {
-    Player* opponent = (currentPlayer == &player1) ? &player2 : &player1;
+    Player* opponent = (currentPlayer == player1.get()) ? player2.get() : player1.get();
 
     std::vector<std::pair<int, int>> eligibleCards;
     for (int row = 0; row < board.GetSize(); ++row) {

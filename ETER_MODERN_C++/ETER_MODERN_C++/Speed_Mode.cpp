@@ -62,6 +62,9 @@ Speed_Mode& Speed_Mode::operator=(Speed_Mode&& other) noexcept
 
 void Speed_Mode::chooseGame()
 {
+    std::cout << "Choose the game mode (Training (t), Wizard (w), Element (e), or Combined (x))\n";
+    std::cin >> m_mode;
+
     switch (m_mode)
     {
     case 't':
@@ -77,6 +80,7 @@ void Speed_Mode::chooseGame()
         game = new Combined_Mode();
         break;
     default:
+        game = new Game();
         break;
     }
 }

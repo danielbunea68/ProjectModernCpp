@@ -44,11 +44,11 @@ public:
 	};
 
 private:
-    Putere tipPutere;
+	Putere tipPutere;
 
-    std::unique_ptr<Player> player1;
-    std::unique_ptr<Player> player2;
-    Player* currentPlayer = nullptr;
+	std::unique_ptr<Player> player1;
+	std::unique_ptr<Player> player2;
+	Player* currentPlayer = nullptr;
 	std::unordered_set<Putere> usedPowers;
 	std::vector<Putere> availablePowers;
 	Board board;
@@ -73,8 +73,8 @@ public:
 	Element_Mode(Putere putere);
 	//Rule of Five 
 	~Element_Mode();
-    Element_Mode(const Element_Mode& other) = delete;
-    Element_Mode& operator=(const Element_Mode& other) = delete;
+	Element_Mode(const Element_Mode& other) = delete;
+	Element_Mode& operator=(const Element_Mode& other) = delete;
 	Element_Mode(Element_Mode&& other) noexcept;
 	Element_Mode& operator=(Element_Mode&& other) noexcept;
 	//Rule of Five ^^^
@@ -110,9 +110,9 @@ public:
 	void VartejDeApa();
 	void ActivateTsunami();
 	void Cutremur();
-    void Cascada();
-    void Sprijin();
-    void Sfaramare();
+	void Cascada();
+	void Sprijin();
+	void Sfaramare();
 	void Granita();
 	void Avalansa(int row1, int col1, int row2, int col2);
 	void Bolovan(int row, int col, int cardIndex);
