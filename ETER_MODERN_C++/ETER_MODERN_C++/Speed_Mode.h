@@ -21,7 +21,6 @@ private:
     Player player2;
     Player* currentPlayer;
 
-    // Timer variables
     int timeLimit;
     std::chrono::steady_clock::time_point turnStartTime;
     int remainingTimePlayer1;

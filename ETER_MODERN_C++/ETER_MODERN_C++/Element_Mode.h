@@ -71,13 +71,13 @@ public:
 	void SwitchTurn();
 	Element_Mode();
 	Element_Mode(Putere putere);
-	//Rule of Five 
+
 	~Element_Mode();
 	Element_Mode(const Element_Mode& other) = delete;
 	Element_Mode& operator=(const Element_Mode& other) = delete;
 	Element_Mode(Element_Mode&& other) noexcept;
 	Element_Mode& operator=(Element_Mode&& other) noexcept;
-	//Rule of Five ^^^
+
 
 	void InitGame(std::string name1, std::string name2) override;
 	void PlayGame() override;

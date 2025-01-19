@@ -92,7 +92,7 @@ Explosion_Card& Explosion_Card::operator=(Explosion_Card&& other) noexcept {
         appliedPositions = std::move(other.appliedPositions);
         board = std::move(other.board);
 
-        // Resetăm obiectul sursă
+        
         other.m_size = 0;
         other.m_row = 0;
         other.m_col = 0;
@@ -105,7 +105,7 @@ void Explosion_Card::storeAppliedPosition(int row, int col)
     appliedPositions.emplace_back(row, col); 
 }
 
-// TODO: Rename to InitializeExplosion
+
 void Explosion_Card::activateExplosion() 
 {
     std::cout << "Activating explosion:\n";
@@ -154,7 +154,6 @@ void Explosion_Card::activateExplosion()
     displayBoard(); 
 }
 
-// Methoda care returneaza pozitiile si tipul efectelor ce vor fi aplicate de cartea explozie
 std::vector<std::pair<char, std::pair<int, int>>> Explosion_Card::AppliedPositions()
 {
     std::vector<std::pair<char, std::pair<int, int>>> bombPositions;

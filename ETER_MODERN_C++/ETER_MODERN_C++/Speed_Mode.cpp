@@ -175,6 +175,7 @@ void Speed_Mode::DisplaySpeedBoard()
     }
     std::cout << "\n";
 }
+
 void Speed_Mode::ResetGame()
 {
     isGameOver = false;
@@ -218,37 +219,29 @@ Player* Speed_Mode::PreviousTurn()
 
 void Speed_Mode::InitGame(std::string name1, std::string name2) 
 {
-    // Initialize the game based on the selected game mode
-    chooseGame();  // Choose the game mode (Standard, Wizard, Element, or Combined)
+    chooseGame(); 
 
-    // Initialize players with names
     if (game) {
-        game->InitGame(name1, name2);  // Call the InitGame method of the selected game mode
+        game->InitGame(name1, name2);
         player1 = player1.getName();
         player2 = player2.getName();
-        currentPlayer = &player1;  // Start with player 1
+        currentPlayer = &player1;
     }
 }
 
 void Speed_Mode::PlayGame() {
     while (!isGameOver) {
-        // Start turn timer
         StartTurnTimer();
-        //game->PlayGame();
-
-        // Switch to the other player
+  
         SwitchTurn();
 
-        // Display the current state of the speed board
         DisplaySpeedBoard();
 
-        // Check if the current player ran out of time
         if (CheckTimer()) {
-            break;  // Game ends if player runs out of time
+            break;
         }
     }
 
-    // Final message when the game ends
     if (isGameOver) {
         std::cout << currentPlayer->getName() << " has won the Speed Mode game!\n";
     }

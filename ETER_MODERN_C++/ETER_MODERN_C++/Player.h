@@ -28,7 +28,7 @@ class Player
 private:
 	
 	std::vector<Card> m_cards;
-	//std::vector<Element_Card> m_ElementCards;
+
 	WizardPower  m_wizard_power;
 	int m_LifePoints;
 	std::string m_name;
@@ -38,7 +38,7 @@ private:
 	std::vector<Card> removedCards;
 	std::pair<int, int> m_winncords;
 	static std::vector<WizardPower> assignedPowers;
-	///static std::unordered_set<WizardPower> assignedPowers;
+
 	Bomb* bomb = nullptr;
 
 public:

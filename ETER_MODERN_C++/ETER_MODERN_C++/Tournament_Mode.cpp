@@ -15,8 +15,8 @@ Tournament_Mode::Tournament_Mode(const Tournament_Mode& other)
 
 Tournament_Mode& Tournament_Mode::operator=(const Tournament_Mode& other)
 {
-	if (this == &other) return *this; // Auto-atribuire
-	delete game; // Eliberăm resursa existentă
+	if (this == &other) return *this; 
+	delete game;
 	tournament_board = other.tournament_board;
 	m_mode = other.m_mode;
 	isover = other.isover;
@@ -34,13 +34,13 @@ Tournament_Mode::Tournament_Mode(Tournament_Mode&& other) noexcept
 
 Tournament_Mode& Tournament_Mode::operator=(Tournament_Mode&& other) noexcept
 {
-	if (this == &other) return *this; // Auto-atribuire
-	delete game; // Eliberăm resursa existentă
+	if (this == &other) return *this; 
+	delete game; 
 	game = other.game;
 	tournament_board = std::move(other.tournament_board);
 	m_mode = other.m_mode;
 	isover = other.isover;
-	other.game = nullptr; // Invalidăm resursa din other
+	other.game = nullptr; 
 	return *this;
 }
 

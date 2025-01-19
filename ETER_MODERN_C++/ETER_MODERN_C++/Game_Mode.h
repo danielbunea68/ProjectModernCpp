@@ -6,6 +6,6 @@ class Game_Mode
 {
 	std::string name;
 	std::string rules;
-	void start_model();/// des
+	void start_model();
 
 };

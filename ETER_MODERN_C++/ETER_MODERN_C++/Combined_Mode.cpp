@@ -19,10 +19,8 @@ Combined_Mode& Combined_Mode::operator=(Combined_Mode&& other) noexcept
         player1 = std::move(other.player1);
         player2 = std::move(other.player2);
 
-        // Mutăm pointerul către currentPlayer
         currentPlayer = (other.currentPlayer == other.player1.get()) ? player1.get() : player2.get();
 
-        // Asigurăm că `other` nu mai are jucători activi
         other.currentPlayer = nullptr;
     }
     return *this;
@@ -50,7 +48,6 @@ board(other.board),
 elementPowers(other.elementPowers),
 usedPowers(other.usedPowers)
 {
-    // Copiem jucătorii
     if (other.player1) {
         player1 = std::make_unique<Player>(*other.player1);
     }
@@ -58,7 +55,6 @@ usedPowers(other.usedPowers)
         player2 = std::make_unique<Player>(*other.player2);
     }
 
-    // Asigurăm că `currentPlayer` indică către jucătorul corespunzător
     currentPlayer = (other.currentPlayer == other.player1.get()) ? player1.get() : player2.get();
 }
 
@@ -73,7 +69,6 @@ Combined_Mode& Combined_Mode::operator=(const Combined_Mode& other)
         elementPowers = other.elementPowers;
         usedPowers = other.usedPowers;
 
-        // Copiem jucătorii
         if (other.player1) {
             player1 = std::make_unique<Player>(*other.player1);
         }
@@ -81,7 +76,6 @@ Combined_Mode& Combined_Mode::operator=(const Combined_Mode& other)
             player2 = std::make_unique<Player>(*other.player2);
         }
 
-        // Asigurăm că `currentPlayer` indică către jucătorul corespunzător
         currentPlayer = (other.currentPlayer == other.player1.get()) ? player1.get() : player2.get();
     }
     return *this;
@@ -99,10 +93,8 @@ player2(std::move(other.player2))
 {
 
 
-    // Mutăm pointerul către currentPlayer
     currentPlayer = (other.currentPlayer == other.player1.get()) ? player1.get() : player2.get();
 
-    // Asigurăm că `other` nu mai are jucători activi
     other.currentPlayer = nullptr;
 }
 
@@ -164,7 +156,6 @@ void Combined_Mode::PlayGame() {
                 }
             }
 
-            // Mark player's turn as done
             if (currentPlayer == player1.get())
             {
                 player1ActionDone = true;
@@ -173,7 +164,7 @@ void Combined_Mode::PlayGame() {
                 player2ActionDone = true;
             }
 
-            SwitchTurn();  // Switch turns after a valid move
+            SwitchTurn(); 
         }
 
         totalRounds--;
@@ -1858,7 +1849,7 @@ void Combined_Mode::Sprijin()
     for (int row = 0; row < board.GetSize(); ++row) {
         for (int col = 0; col < board.GetSize(); ++col) {
             if (!board.IsEmpty(row, col)) {
-                const Card& topCard = board.TopCard(row, col); // Use const reference here
+                const Card& topCard = board.TopCard(row, col); 
                 if (topCard.getColor() == currentPlayer->getColor() && !topCard.getIsFaceDown() &&
                     (topCard.getValue() == 1 || topCard.getValue() == 2 || topCard.getValue() == 3)) {
                     ownCards.emplace_back(row, col);
@@ -1890,9 +1881,9 @@ void Combined_Mode::Sprijin()
     int chosenRow = ownCards[choice].first;
     int chosenCol = ownCards[choice].second;
 
-    Card updatedCard = board.TopCard(chosenRow, chosenCol); // Get a copy of the card
-    updatedCard.setValue(updatedCard.getValue() + 1); // Modify the copy
-    board.UpdateCard(chosenRow, chosenCol, updatedCard); // Update the card on the board
+    Card updatedCard = board.TopCard(chosenRow, chosenCol);
+    updatedCard.setValue(updatedCard.getValue() + 1); 
+    board.UpdateCard(chosenRow, chosenCol, updatedCard);
 
     std::cout << "Sprijin applied: Card at (" << chosenRow << ", " << chosenCol
         << ") now has a value of " << updatedCard.getValue() << ".\n";

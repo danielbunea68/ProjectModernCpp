@@ -40,7 +40,7 @@ Player::Player(const std::string& playerName) :
 
 Player& Player::operator=(const Player& other)
 {
-	if (this != &other) // Self-assignment check
+	if (this != &other)
 	{
 		m_cards = other.m_cards;
 		m_wizard_power = other.m_wizard_power;
@@ -75,7 +75,7 @@ Player::Player(Player&& other) noexcept
 
 Player& Player::operator=(Player&& other) noexcept
 {
-	if (this != &other) // Self-assignment check
+	if (this != &other) 
 	{
 		m_cards = std::move(other.m_cards);
 		m_LifePoints = other.m_LifePoints;
@@ -88,7 +88,6 @@ Player& Player::operator=(Player&& other) noexcept
 		removedCards = std::move(other.removedCards);
 		powerUsed = other.powerUsed;
 
-		// Reset the moved-from object to a valid state
 		other.m_LifePoints = 0;
 		other.m_placedCardFaceDown = false;
 		other.powerUsed = false;

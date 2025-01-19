@@ -19,17 +19,8 @@ Board::Board(const Board& other)
 Board& Board::operator=(const Board& other)
 {
 
-	/*
-	if (this != &other) // Self-assignment check
-	{
-		m_size = other.m_size;
-		board = other.board;
-		blockedRow = other.blockedRow;
-	}
-	return *this;
-	*/
 	if (this == &other || &other == nullptr) {
-		return *this;  // Handle self-assignment or null object
+		return *this;
 	}
 	m_size = other.m_size;
 	board = other.board;
@@ -52,13 +43,12 @@ Board::Board(Board&& other) noexcept
 
 Board& Board::operator=(Board&& other) noexcept
 {
-	if (this != &other) // Self-assignment check
+	if (this != &other) 
 	{
 		m_size = other.m_size;
 		board = std::move(other.board);
 		blockedRow = other.blockedRow;
 
-		// Reset the moved-from object to a valid state
 		other.m_size = 0;
 		other.blockedRow = -1;
 	}
@@ -89,42 +79,14 @@ std::vector<std::vector<std::stack<Card>>>& Board::GetBoard()
 
 bool Board::IsEmpty(int row, int col) const
 {
-	return IsValidPosition(row,col) && board[row][col].empty(); ///modificat
+	return IsValidPosition(row,col) && board[row][col].empty();
 }
 
 void Board::Display() const
 {
-	/*
-	for (int i = 0; i < m_size; i++) {
-		for (int j = 0; j < m_size; j++) {
-			if (board[i][j].empty()) {
-				std::cout << "     ";
-			}
-			else {
-				std::cout << board[i][j].top().getColor() << ' ';
+	
+	auto indices = std::views::iota(0, m_size); 
 
-				if (board[i][j].top().getIsFaceDown()) {
-					std::cout << "x";
-				}
-				else {
-					std::cout << board[i][j].top().getValue();
-				}
-			}
-			if (j < GetSize() ) std::cout << " | ";
-		}
-		std::cout << "\n";
-		/// 8 
-		if (i < GetSize()) {
-			if (GetSize() > 3) std::cout << "-------------------------------\n";
-			else 
-			std::cout << "-----------------------\n";
-			
-		}
-	}
-	std::cout << "\n";*/
-	auto indices = std::views::iota(0, m_size); // Range of indices for rows and columns
-
-	// Lambda to format each cell
 	auto formatCell = [&](int i, int j) -> std::string {
 		if (board[i][j].empty()) {
 			return "     ";
@@ -143,14 +105,14 @@ void Board::Display() const
 
 
 	std::ranges::for_each(indices, [&](int i) {
-		// Print row
+		
 		std::ranges::for_each(indices, [&](int j) {
 			std::cout << formatCell(i, j);
 			if (j < m_size - 1) std::cout << " | ";
 			});
 		std::cout << "\n";
 
-		// Print separator
+
 		if (i < m_size - 1) {
 			std::cout << (m_size > 3 ? "-------------------------------\n" : "-----------------------\n");
 		}
@@ -255,49 +217,28 @@ bool Board::MakeMove(int row, int col, Card card)
 
 bool Board::CheckWinner(std::string color)
 {
-	int boardSize = board.size(); // Assuming a square board
+	int boardSize = board.size();
 
-	// Helper lambda to check if a stack has the given color on top
 	auto hasTopCardWithColor = [&](int row, int col) -> bool {
 		return !board[row][col].empty() && board[row][col].top().getColor() == color;
 		};
 
-	// Check rows for a win
-	//for (int i = 0; i < boardSize; ++i) {
-	//	bool rowWin = true;
-	//	for (int j = 0; j < boardSize; ++j) {
-	//		if (!hasTopCardWithColor(i, j)) {
-	//			rowWin = false;
-	//			break;
-	//		}
-	//	}
-	//	if (rowWin) return true;
-	//}
-	auto rows = std::views::iota(0, boardSize); // Range of row indices
+	
+	auto rows = std::views::iota(0, boardSize);
 
 	bool rowWin= std::ranges::any_of(rows, [&](int i) {
-		auto columns = std::views::iota(0, boardSize); // Range of column indices
+		auto columns = std::views::iota(0, boardSize); 
 		return std::ranges::all_of(columns, [&](int j) {
 			return hasTopCardWithColor(i, j);
 			});
 		});
 	if (rowWin) return true;
 
-	// Check columns for a win
-	/*for (int j = 0; j < boardSize; ++j) {
-		bool colWin = true;
-		for (int i = 0; i < boardSize; ++i) {
-			if (!hasTopCardWithColor(i, j)) {
-				colWin = false;
-				break;
-			}
-		}
-		if (colWin) return true;
-	}*/
+	
 
-	auto columns = std::views::iota(0, boardSize); // Range of column indices
+	auto columns = std::views::iota(0, boardSize); 
 	bool colWin = std::ranges::any_of(columns, [&](int j) {
-		auto rows = std::views::iota(0, boardSize); // Range of row indices
+		auto rows = std::views::iota(0, boardSize);
 		return std::ranges::all_of(rows, [&](int i) {
 			return hasTopCardWithColor(i, j);
 			});
@@ -306,31 +247,12 @@ bool Board::CheckWinner(std::string color)
 
 
 
-	//// Check main diagonal (top-left to bottom-right)
-	//bool mainDiagonalWin = true;
-	//for (int i = 0; i < boardSize; ++i) {
-	//	if (!hasTopCardWithColor(i, i)) {
-	//		mainDiagonalWin = false;
-	//		break;
-	//	}
-	//}
-	//if (mainDiagonalWin) return true;
-
 	auto indices = std::views::iota(0, boardSize); 
 	bool mainDiagonalWin =  std::ranges::all_of(indices, [&](int i) {
 		return hasTopCardWithColor(i, i);
 		});
 	if (mainDiagonalWin) return true;
 
-	// Check anti-diagonal (top-right to bottom-left)
-	/*bool antiDiagonalWin = true;
-	for (int i = 0; i < boardSize; ++i) {
-		if (!hasTopCardWithColor(i, boardSize - 1 - i)) {
-			antiDiagonalWin = false;
-			break;
-		}
-	}
-	if (antiDiagonalWin) return true;*/
 	
 	
 	bool antiDiagonalWin= std::ranges::all_of(indices, [&](int i) {
@@ -345,48 +267,17 @@ bool Board::CheckWinner(std::string color)
 bool Board::CheckIsBomb()
 {
 	int nr = 0;
-	/*for (int i = 0; i < GetSize(); i++)
-	{
-		bool verif = true;
+	auto indices1 = std::views::iota(0, static_cast<int>(board.size()));
 
-		for (int j = 0; j < GetSize(); j++)
-		{
-			if (board[i][j].empty())
-				verif = false;
-		}
-		if (verif)
-		{
-
-			nr++;
-		}
-	}*/
-	auto indices1 = std::views::iota(0, static_cast<int>(board.size())); // Range of row indices
-
-	// Count rows where all cells are non-empty
 	std::ranges::for_each(indices1, [&](int i) {
 		auto row = board[i];
 		if (std::ranges::all_of(row, [](const std::stack<Card>& stack) {
 			return !stack.empty();
 			})) {
-			nr++; // Incrementăm dacă rândul este complet
+			nr++;
 		}
-		});
+	});
 
-
-	/*for (int j = 0; j < GetSize(); j++)
-{
-	bool verif = true;
-
-	for (int i = 0; i < GetSize(); i++)
-	{
-		if (board[i][j].empty())
-			verif = false;
-	}
-	if (verif)
-	{
-		nr++;
-	}
-}*/
 	auto indices2 = std::views::iota(0, static_cast<int>(board.size()));
 	std::ranges::for_each(indices2, [&](int j) {
 		auto col = board[j];
@@ -395,7 +286,7 @@ bool Board::CheckIsBomb()
 			})) {
 			nr++; 
 		}
-		});
+	});
 
 	if (nr == 2)
 		return true;
@@ -512,11 +403,9 @@ void Board::Remove(int row, int col)
 {
 	if (IsValidPosition(row, col) && !IsEmpty(row, col))
 	{
-		// Pop the top card from the stack at the specified position
 		board[row][col].pop();
 		std::cout << "Card removed from position (" << row << ", " << col << ").\n";
 
-		// After removing the card, unmark the position (assuming the pit is no longer relevant after the card is removed)
 
 	}
 	else

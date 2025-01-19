@@ -22,23 +22,15 @@ void BoardWidget::setGame(Game* gameInstance)
 
 void BoardWidget::DrawBoard(QPainter& painter)
 {
-	//for (int i = 0; i <= boardSize; ++i) {
-	//	painter.drawLine(0, i * cellHeight, width(), i * cellHeight); // Horizontal
-	//}
-	//for (int i = 0; i <= boardSize; ++i) {
-	//	painter.drawLine(i * cellWidth, 0, i * cellWidth, height()); // Vertical
-	//}
 	auto indices = std::views::iota(0, boardSize + 1);
 
-	// Draw horizontal lines
 	std::ranges::for_each(indices, [&](int i) {
 		painter.drawLine(0, i * cellHeight, width(), i * cellHeight);
-		});
+	});
 
-	// Draw vertical lines
 	std::ranges::for_each(indices, [&](int i) {
 		painter.drawLine(i * cellWidth, 0, i * cellWidth, height());
-		});
+	});
 
 }
 
@@ -52,31 +44,27 @@ void BoardWidget::DrawCards(QPainter& painter)
 				QString imagePath = "./images/" + QString::number(card.getValue()) + "_" + QString::fromStdString(card.getColor()) + ".png";
 				QPixmap cardImage(imagePath);
 
-				// Definirea dreptunghiului celulei
+				
 				QRect cell(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
 
 				if (!cardImage.isNull()) {
 					painter.drawPixmap(cell, cardImage.scaled(cell.size(), Qt::KeepAspectRatio));
 				}
 				else {
-					// Setează culoarea de fundal la culoarea cărții
+
 					QColor backgroundColor(QString::fromStdString(card.getColor()));
 					painter.fillRect(cell, backgroundColor);
 
-					// Setează culoarea textului la alb
 					painter.setPen(Qt::white);
 
-					// Setează fontul mai mare
 					QFont font = painter.font();
-					font.setPointSize(16); // Ajustează mărimea fontului după necesități
+					font.setPointSize(16); 
 					painter.setFont(font);
 
-					// Desenează valoarea cărții în centrul celulei
 					QString cardValue = QString::number(card.getValue());
 					painter.drawText(cell, Qt::AlignCenter, cardValue);
 				}
 
-				// Desenează bordura neagră în jurul celulei
 				painter.setPen(Qt::black);
 				painter.drawRect(cell);
 			}
@@ -87,14 +75,14 @@ void BoardWidget::DrawCards(QPainter& painter)
 char  BoardWidget::isCoordInVector(int row, int col, const std::vector<std::pair<char, std::pair<int, int>>>& coords)
 {
 	for (const auto& item : coords) {
-		int coordRow = item.second.first;  // Extragem coordonata x
-		int coordCol = item.second.second; // Extragem coordonata y
+		int coordRow = item.second.first; 
+		int coordCol = item.second.second; 
 
 		if (coordRow == row && coordCol == col) {
-			return item.first; // Găsit
+			return item.first; 
 		}
 	}
-	return 'C'; // Nu a fost găsit
+	return 'C'; 
 }
 
 void BoardWidget::paintEvent(QPaintEvent* event) {
@@ -186,6 +174,6 @@ void BoardWidget::mousePressEvent(QMouseEvent* event) {
 }
 
 void BoardWidget::mouseReleaseEvent(QMouseEvent* event) {
-	// TODO: Maybe delete this
+	
 }
 

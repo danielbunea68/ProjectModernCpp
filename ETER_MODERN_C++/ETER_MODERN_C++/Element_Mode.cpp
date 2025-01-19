@@ -308,7 +308,7 @@ void Element_Mode::PlayGame()
 		}
 
 
-		if (board.CheckIsBomb())//aici
+		if (board.CheckIsBomb())
 		{
 			Explosion_Card explosion_card(board.GetSize());
 			explosion_card.activateExplosion();
@@ -538,13 +538,11 @@ void Element_Mode::ReturnCardToPlayer(int row, int col)
 
 void Element_Mode::DestroyLastOpponentCard()
 {
-	// Identify the opponent
 	Player* opponent = (currentPlayer == player1.get()) ? player2.get() : player1.get();
 	std::pair<int, int> move = opponent->getLastMove();
 
 	int row = move.first;
 	int col = move.second;
-	// Locate and remove the card from the board if present
 	bool cardFound = false;
 
 	Card card1 = board.TopCard(row, col);
@@ -598,31 +596,6 @@ Element_Mode::~Element_Mode()
 	std::cout << "Element_Mode destructor called.\n";
 }
 
-/*Element_Mode::Element_Mode(const Element_Mode& other) : tipPutere(other.tipPutere), board(other.board),
-player1(other.player1), player2(other.player2), currentPlayer((other.currentPlayer == &other.player1) ? player1.get()  : player2.get()),
-blockedRowForNextTurn(other.blockedRowForNextTurn)
-{
-	std::cout << "Element_Mode copy constructor called.\n";
-}
-*/
-
-/*Element_Mode& Element_Mode::operator=(const Element_Mode& other)
-{
-	if (this == &other) {
-		return *this;
-	}
-
-	tipPutere = other.tipPutere;
-	board = other.board;
-	player1 = other.player1;
-	player2 = other.player2;
-	currentPlayer = (other.currentPlayer == &other.player1) ? player1.get()  : player2.get();
-	blockedRowForNextTurn = other.blockedRowForNextTurn;
-
-	std::cout << "Element_Mode copy assignment operator called.\n";
-
-	return *this;
-}*/
 
 Element_Mode::Element_Mode(Element_Mode&& other) noexcept
 	: tipPutere(std::move(other.tipPutere)), board(std::move(other.board)), player1(std::make_unique<Player>()),
@@ -1627,7 +1600,7 @@ void Element_Mode::Sprijin()
 	for (int row = 0; row < board.GetSize(); ++row) {
 		for (int col = 0; col < board.GetSize(); ++col) {
 			if (!board.IsEmpty(row, col)) {
-				const Card& topCard = board.TopCard(row, col); // Use const reference here
+				const Card& topCard = board.TopCard(row, col); 
 				if (topCard.getColor() == currentPlayer->getColor() && !topCard.getIsFaceDown() &&
 					(topCard.getValue() == 1 || topCard.getValue() == 2 || topCard.getValue() == 3)) {
 					ownCards.emplace_back(row, col);
@@ -1659,9 +1632,9 @@ void Element_Mode::Sprijin()
 	int chosenRow = ownCards[choice].first;
 	int chosenCol = ownCards[choice].second;
 
-	Card updatedCard = board.TopCard(chosenRow, chosenCol); // Get a copy of the card
-	updatedCard.setValue(updatedCard.getValue() + 1); // Modify the copy
-	board.UpdateCard(chosenRow, chosenCol, updatedCard); // Update the card on the board
+	Card updatedCard = board.TopCard(chosenRow, chosenCol);
+	updatedCard.setValue(updatedCard.getValue() + 1);
+	board.UpdateCard(chosenRow, chosenCol, updatedCard);
 
 	std::cout << "Sprijin applied: Card at (" << chosenRow << ", " << chosenCol
 		<< ") now has a value of " << updatedCard.getValue() << ".\n";
@@ -1838,13 +1811,12 @@ void Element_Mode::Bolovan(int row, int col, int cardIndex)
 		std::cout << currentPlayer->getName() << ", alegi un index de card valid: ";
 		std::cin >> cardIndex;
 
-		// Limit the number of attempts to prevent infinite loop (optional)
 		static int attemptCount = 0;
 		attemptCount++;
 		if (attemptCount > 3)
 		{
 			std::cout << "Ai depășit numărul maxim de încercări. Runda ta s-a încheiat.\n";
-			return; // Exit after 3 invalid attempts
+			return;
 		}
 	}
 

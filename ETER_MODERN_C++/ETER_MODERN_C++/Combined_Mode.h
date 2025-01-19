@@ -30,19 +30,14 @@ public:
 
     Combined_Mode();
 
-    // Destructor
     ~Combined_Mode();
 
-    // Constructor de copiere
     Combined_Mode(const Combined_Mode& other);
 
-    // Operator de atribuire prin copiere
     Combined_Mode& operator=(const Combined_Mode& other);
 
-    // Constructor de mutare
     Combined_Mode(Combined_Mode&& other) noexcept;
 
-    // Operator de atribuire prin mutare
     Combined_Mode& operator=(Combined_Mode&& other) noexcept;
 
 
@@ -58,7 +53,6 @@ public:
     void CreatePit(int row, int col) override;
     Player* PreviousTurn() override;
 
-    //Functii wizard mode
 
     std::string GetWizardPowerName(WizardPower power);
     void ActivatePower(WizardPower power);
@@ -71,7 +65,6 @@ public:
     void moveOpponentStack(int fromRow, int fromCol, int toRow, int toCol);
     void moveEdgeRow(int row);
 
-    //Functii element mode
 
     std::string GetPowerName(Element_Mode::Putere power);
     std::string GetPowerDescription(Element_Mode::Putere power);
