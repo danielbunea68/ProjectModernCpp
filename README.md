@@ -1,3 +1,3 @@
 
 AICI ESTE VIDEOUL DE LA PROIECT:
-https://we.tl/t-THmVODDWEn
+ https://youtu.be/k5eDTCI1AGc?si=3CALewA9e0uGpg1d
